@@ -6,6 +6,12 @@ ai-matrices-flux
 
 ## model download
 
+* llama-translate
+  * app_data/ai-models/huggingface/dahara1/llama-translate-gguf/llama-translate.f16.Q4_K_M.gguf
+  * download: https://huggingface.co/dahara1/llama-translate-gguf/llama-translate.f16.Q4_K_M.gguf
+  * download(mirror): https://hf-mirror.com/dahara1/llama-translate-gguf/llama-translate.f16.Q4_K_M.gguf
+
+
 * diffusion-model 
   * path: app_data/ai-models/huggingface/city96/FLUX.1-dev-gguf/flux1-dev-Q4_0.gguf
   * download: https://huggingface.co/city96/FLUX.1-dev-gguf/resolve/main/flux1-dev-Q4_0.gguf

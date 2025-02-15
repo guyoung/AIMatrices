@@ -1,0 +1,29 @@
+[package]
+name = "rocksdb-wrapper"
+version = "0.22.0"
+edition = "2021"
+
+
+
+
+[target.'cfg(target_os="windows")'.dependencies]
+rocksdb-win = { package = "rocksdb", path="rocksdb", default-features = false, features = ["lz4", "snappy"]   }
+
+[target.'cfg(not(target_os="windows"))'.dependencies]
+rocksdb = { version = "0.22", default-features = false, features = ["lz4", "snappy"] }
+
+
+[features]
+default = []
+bzip2 =[]
+io-uring = []
+jemalloc = []
+lz4 = []
+multi-threaded-cf = []
+rtti = []
+serde = []
+serde1 = []
+snappy = []
+valgrind = []
+zlib = []
+zstd = []

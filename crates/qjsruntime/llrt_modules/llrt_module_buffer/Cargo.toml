@@ -1,0 +1,13 @@
+[package]
+name = "llrt_module_buffer"
+version = "0.4.0-beta"
+edition = "2021"
+
+
+[dependencies]
+llrt_encoding = { path = "../../llrt/llrt_encoding" }
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+rquickjs = { workspace = true, features = [
+  "macro",
+], default-features = false }
+

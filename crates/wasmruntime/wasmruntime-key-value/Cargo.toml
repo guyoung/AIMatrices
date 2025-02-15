@@ -1,0 +1,18 @@
+[package]
+name = "wasmruntime-key-value"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+spin-factors = { path = "../spin/spin-factors" }
+spin-factors-executor = { path = "../spin/spin-factors-executor" }
+spin-factor-key-value = { path = "../spin-factor/spin-factor-key-value" }
+
+anyhow = { workspace = true }
+serde = { workspace = true }
+
+async-trait = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread"] }
+
+rusqlite = { version = "0.32", features = ["bundled", "array"] }

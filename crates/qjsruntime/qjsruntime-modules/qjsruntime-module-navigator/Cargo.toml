@@ -1,0 +1,8 @@
+[package]
+name = "qjsruntime-module-navigator"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+rquickjs = { workspace = true, default-features = false }

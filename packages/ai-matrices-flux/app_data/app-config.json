@@ -1,0 +1,59 @@
+{
+  "lock_version": 0,
+  "metadata": {
+    "name": "ai-matrices",
+    "description": "",
+    "version": "1.0.0",
+    "authors": []
+  },
+  "triggers": [
+    {
+      "id": "http-flux-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "flux",
+        "route": "/service/flux/..."
+      }
+    },
+    {
+      "id": "http-static-file-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "static-file",
+        "route": "/..."
+      }
+    }
+  ],
+  "components": [
+    {
+      "id": "flux",
+      "metadata": {
+        "build": { },
+        "local_llm_models": {
+          "local/llama-translate": "../../ai-models/huggingface/dahara1/llama-translate-gguf/llama-translate.f16.Q4_K_M.gguf"
+        },
+        "local_sd_models": {
+          "stable-diffusion-v1-5": "../../ai-models/huggingface/runwayml/stable-diffusion-v1-5/v1-5-pruned-emaonly.safetensors",
+          "flux1-dev": "../../ai-models/huggingface/city96/FLUX.1-dev-gguf/flux1-dev-Q4_0.gguf",
+          "t5xxl": "../../ai-models/huggingface/comfyanonymous/flux_text_encoders/t5xxl_fp8_e4m3fn.safetensors",
+          "vae": "../../ai-models/huggingface/black-forest-labs/FLUX.1-dev/ae.safetensors",
+          "clip_l": "../../ai-models/huggingface/comfyanonymous/flux_text_encoders/clip_l.safetensors"
+        }
+      },
+      "source": {
+        "content_type": "application/wasm",
+        "source": "../../target/wasm32-wasip1/release/ai_matrices_flux_handler_component.wasm"
+      }
+    },
+    {
+      "id": "static-file",
+      "metadata": {
+        "build": {}
+      },
+      "source": {
+        "content_type": "application/wasm",
+        "source": "../../target/wasm32-wasip1/release/ai_matrices_static_file_handler_component.wasm"
+      }
+    }
+  ]
+}

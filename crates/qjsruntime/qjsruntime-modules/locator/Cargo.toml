@@ -1,0 +1,77 @@
+[package]
+name = "qjsruntime-module-locator"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[features]
+default = ["general"]
+general = [
+    "assert",
+    "buffer",
+    "crypto",
+    "events",
+    "exceptions",
+    "fs",
+    "path",
+    "perf-hooks",
+    "timers",
+    "url",
+
+    "navigator",
+    "process",
+    "zlib",
+
+    "variables",
+    "key-value",
+    "http",
+    "dbs",
+    "openai"
+
+]
+
+# Modules
+assert = ["llrt_module_assert"]
+buffer = ["llrt_module_buffer"]
+crypto = ["llrt_module_crypto"]
+events = ["llrt_module_events"]
+exceptions = ["llrt_module_exceptions"]
+fs = ["llrt_module_fs"]
+path = ["llrt_module_path"]
+perf-hooks = ["llrt_module_perf_hooks"]
+timers = ["llrt_module_timers"]
+url = ["llrt_module_url"]
+
+navigator = ["qjsruntime-module-navigator"]
+process = ["qjsruntime-module-process"]
+zlib = ["qjsruntime-module-zlib"]
+
+variables = ["qjsruntime-module-variables"]
+key-value = ["qjsruntime-module-key-value"]
+http= ["qjsruntime-module-http"]
+dbs = ["qjsruntime-module-dbs"]
+openai = ["qjsruntime-module-openai"]
+
+[dependencies]
+llrt_utils = { path = "../../llrt/llrt_utils", default-features =  false }
+llrt_module_assert = {path = "../../llrt_modules/llrt_module_assert", optional = true }
+llrt_module_buffer = {path = "../../llrt_modules/llrt_module_buffer", optional = true }
+llrt_module_crypto = {path = "../../llrt_modules/llrt_module_crypto", optional = true }
+llrt_module_events = {path = "../../llrt_modules/llrt_module_events", optional = true }
+llrt_module_exceptions = {path = "../../llrt_modules/llrt_module_exceptions", optional = true }
+llrt_module_fs = {path = "../../llrt_modules/llrt_module_fs", optional = true }
+llrt_module_path = {path = "../../llrt_modules/llrt_module_path", optional = true }
+
+llrt_module_perf_hooks = {path = "../../llrt_modules/llrt_module_perf_hooks", optional = true }
+llrt_module_timers = {path = "../../llrt_modules/llrt_module_timers", optional = true }
+llrt_module_url = {path = "../../llrt_modules/llrt_module_url", optional = true }
+
+qjsruntime-module-navigator = {path = "../qjsruntime-module-navigator", optional = true }
+qjsruntime-module-process = {path = "../qjsruntime-module-process", optional = true }
+qjsruntime-module-zlib = {path = "../qjsruntime-module-zlib", optional = true }
+
+qjsruntime-module-variables = {path = "../qjsruntime-module-variables", optional = true }
+qjsruntime-module-key-value = {path = "../qjsruntime-module-key-value", optional = true }
+qjsruntime-module-http = {path = "../qjsruntime-module-http", optional = true }
+qjsruntime-module-dbs = {path = "../qjsruntime-module-dbs", optional = true }
+qjsruntime-module-openai = {path = "../qjsruntime-module-openai", optional = true }

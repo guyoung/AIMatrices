@@ -1,0 +1,57 @@
+[package]
+name = "wasmruntime-system"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+
+[dependencies]
+
+spin-app = { path = "../spin/spin-app" }
+spin-expressions = { path = "../spin/spin-expressions" }
+spin-factors = { path = "../spin/spin-factors" }
+spin-factor-wasi = { path = "../spin/spin-factor-wasi" }
+spin-factors-executor = { path = "../spin/spin-factors-executor" }
+
+spin-factor-key-value = { path = "../spin-factor/spin-factor-key-value" }
+spin-factor-outbound-networking = { path = "../spin-factor/spin-factor-outbound-networking" }
+spin-factor-outbound-http = { path = "../spin-factor/spin-factor-outbound-http" }
+spin-factor-variables = { path = "../spin-factor/spin-factor-variables" }
+
+
+wasmruntime-core = { path = "../wasmruntime-core" }
+wasmruntime-key-value = { path = "../wasmruntime-key-value" }
+
+wasmruntime-factor-dbs = { path = "../wasmruntime-factors/wasmruntime-factor-dbs", optional = true }
+wasmruntime-factor-llm-infer = { path = "../wasmruntime-factors/wasmruntime-factor-llm-infer", optional = true }
+wasmruntime-factor-sd-infer = { path = "../wasmruntime-factors/wasmruntime-factor-sd-infer", optional = true }
+
+
+wasmtime = { workspace = true }
+
+surrealdb = { workspace = true, optional = true }
+
+anyhow = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
+
+async-trait = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread"] }
+futures = { workspace = true }
+
+
+dotenvy =  { workspace = true }
+toml =  { workspace = true }
+
+[features]
+default = []
+dbs = ["wasmruntime-factor-dbs", "surrealdb"]
+llm-infer-v1 = ["wasmruntime-factor-llm-infer/v1"]
+llm-infer-v2 = ["wasmruntime-factor-llm-infer/v2"]
+sd-infer = ["wasmruntime-factor-sd-infer"]
+
+
+whisper-infer = []
+ncnn-infer = []
+opencv = []
+ffmpeg = []

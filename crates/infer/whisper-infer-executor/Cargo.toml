@@ -1,0 +1,14 @@
+[package]
+name = "whisper-infer-executor"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+
+whisper-rs = { path = "whisper-rs" }
+whisper-rs-sys = { path = "whisper-rs-sys" }
+
+
+anyhow = { workspace = true }
+

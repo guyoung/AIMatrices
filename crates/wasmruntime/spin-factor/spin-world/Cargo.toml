@@ -1,0 +1,9 @@
+[package]
+name = "spin-world"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+wasmtime = { workspace = true }
+
+async-trait = { workspace = true }

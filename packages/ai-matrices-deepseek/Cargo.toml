@@ -1,0 +1,23 @@
+[package]
+name = "ai-matrices-deepseek"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+
+spin-app = { path = "../../crates/wasmruntime/spin/spin-app" }
+
+wasmruntime-core = { path = "../../crates/wasmruntime/wasmruntime-core" }
+wasmruntime-http-server = { path = "../../crates/wasmruntime/wasmruntime-server/wasmruntime-http-server", features = ["dbs", "llm-infer-v2"] }
+wasmruntime-task-server = { path = "../../crates/wasmruntime/wasmruntime-server/wasmruntime-task-server" }
+
+anyhow = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+serde_json = { workspace = true }
+
+futures = { workspace = true }
+tokio = {workspace = true, features = ["full"]}
+
+ctrlc = { workspace = true }

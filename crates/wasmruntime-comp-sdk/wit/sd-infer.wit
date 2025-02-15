@@ -1,0 +1,19 @@
+
+
+interface sd-infer {
+    record inferencing-params {
+        max-tokens: u32,
+    }
+
+    variant error {
+		model-not-supported,
+		runtime-error(string),
+		invalid-input(string)
+	}
+
+	record inferencing-result {
+    	images: list<string>,
+    }
+
+	txt2img: func(preset: string, prompt: string, params: option<inferencing-params>) -> result<inferencing-result, error>;
+}

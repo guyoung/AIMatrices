@@ -1,0 +1,24 @@
+[package]
+name = "ai-matrices-flux"
+version = "0.2.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+
+spin-app = { path = "../../crates/wasmruntime/spin/spin-app" }
+
+wasmruntime-core = { path = "../../crates/wasmruntime/wasmruntime-core" }
+wasmruntime-http-server = { path = "../../crates/wasmruntime/wasmruntime-server/wasmruntime-http-server", features = ["llm-infer-v1", "sd-infer"] }
+wasmruntime-task-server = { path = "../../crates/wasmruntime/wasmruntime-server/wasmruntime-task-server" }
+
+anyhow = { workspace = true }
+clap = { workspace = true }
+tracing = { workspace = true }
+serde_json = { workspace = true }
+
+
+futures = { workspace = true }
+tokio = {workspace = true, features = ["full"]}
+
+ctrlc = { workspace = true }

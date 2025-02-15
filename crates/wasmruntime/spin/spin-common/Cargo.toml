@@ -1,0 +1,11 @@
+[package]
+name = "spin-common"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+dirs = { workspace = true }
+sha2 = { workspace = true }
+tokio = { workspace = true, features = ["rt", "time"] }
+url = { workspace = true }

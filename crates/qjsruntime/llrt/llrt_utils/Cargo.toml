@@ -1,0 +1,17 @@
+[package]
+name = "llrt_utils"
+version = "0.4.0-beta"
+edition = "2021"
+
+[features]
+default = []
+
+[dependencies]
+rquickjs = { workspace = true, features = [
+  "array-buffer",
+  "macro",
+], default-features = false }
+
+tracing = { workspace = true }
+
+

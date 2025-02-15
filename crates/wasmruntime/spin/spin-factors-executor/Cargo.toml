@@ -1,0 +1,14 @@
+[package]
+name = "spin-factors-executor"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+spin-core = { path = "../spin-core" }
+spin-app = { path = "../spin-app" }
+spin-factors = { path = "../spin-factors" }
+
+wasmtime = { workspace = true }
+
+anyhow = { workspace = true }
+async-trait = { workspace = true }

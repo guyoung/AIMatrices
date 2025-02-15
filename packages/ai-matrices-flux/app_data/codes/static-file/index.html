@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIMatrices(Flux)</title>
+    <!-- Bootstrap CSS -->
+    <link href="npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h1 class="card-title">AIMatrices(Flux) </h1>
+                        <h2>Text-to-Image Generator</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="generate-form" class="mb-4">
+                            <div class="mb-3">
+                                <label for="prompt" class="form-label">Enter your prompt:</label>
+                                <textarea
+                                    id="prompt"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="e.g., A futuristic cityscape at sunset"
+                                    required
+                                ></textarea>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        id="translate-checkbox"
+                                />
+                                <label class="form-check-label" for="translate-checkbox">
+                                    Translate the input into English
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                Generate Image
+                            </button>
+                        </form>
+                        <div id="result" class="row justify-content-center">
+                            <img
+                                id="generated-image"
+                                src=""
+                                alt="Generated Image"
+                                class="img-fluid rounded"
+                                style="display: none;"
+                            />
+                            <div id="loading-spinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional, for interactive components) -->
+    <script src="npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>

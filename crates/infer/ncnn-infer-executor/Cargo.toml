@@ -1,0 +1,20 @@
+[package]
+name = "ncnn-infer-executor"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+
+[dependencies]
+anyhow = { workspace = true }
+encoding_rs = { workspace = true }
+libc = { workspace = true }
+
+[build-dependencies]
+bindgen = { workspace = true }
+anyhow = { workspace = true }
+path-absolutize = { workspace = true }
+
+[features]
+default = []
+cpu = [] # 默认启用vulkan，开启此特质将仅使用cpu

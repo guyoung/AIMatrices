@@ -1,0 +1,13 @@
+[package]
+name = "qjsruntime-module-variables"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+
+wasmruntime-comp-sdk = { path = "../../../wasmruntime-comp-sdk" }
+
+rquickjs = { workspace = true, default-features = false }
+

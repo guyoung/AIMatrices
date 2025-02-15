@@ -1,0 +1,62 @@
+[package]
+name = "qjsruntime-core"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+
+llrt_encoding = { path = "../llrt/llrt_encoding" }
+llrt_json = { path = "../llrt/llrt_json" }
+llrt_numbers = { path = "../llrt/llrt_numbers" }
+llrt_utils = { path = "../llrt/llrt_utils", default-features = false}
+
+qjsruntime-module-http = { path = "../qjsruntime-modules/qjsruntime-module-http" }
+
+qjsruntime-module-locator = { path = "../qjsruntime-modules/locator" }
+
+rquickjs = { workspace = true, default-features = false, features = [
+    "chrono",  # Chrono support.
+    "either", # Enable support for Either type
+    "indexmap", # Enable support for IndexMap and IndexSet types type
+    "phf",  # Enable support for perfect hash maps
+    "classes", # Enable user-defined classes support
+    "properties", # Enable user-defined properties support
+    "array-buffer", # Enable ArrayBuffer and TypedArray support
+    "macro", # Enable helper macros
+     "loader", # Enable user-defined module loader support
+    # "allocator", # Enable user-defined allocator support
+    # "rust-alloc", # Use Rust global allocator by default otherwise libc allocator will be used
+]}
+
+bytes = { workspace = true }
+chrono = { workspace = true }
+once_cell =  { workspace = true }
+serde = { workspace = true }
+tracing=  { workspace = true }
+
+tokio = { workspace = true, default-features = false, features = ["sync"] }
+
+ring = { workspace = true }
+
+simd-json = { workspace = true, default-features = false, features = [
+    "big-int-as-float",
+] }
+uuid = { workspace = true, default-features = false, features = [
+    "v1",
+    "v3",
+    "v4",
+    "v5",
+    "v6",
+    "v7",
+    "fast-rng",
+] }
+uuid-simd = { workspace = true }
+
+http = { workspace = true }
+
+itoa = { workspace = true }
+ryu = { workspace = true }
+
+quick-xml = { workspace = true }
+terminal_size = { workspace = true }

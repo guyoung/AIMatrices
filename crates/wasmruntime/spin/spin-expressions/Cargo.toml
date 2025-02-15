@@ -1,0 +1,13 @@
+[package]
+name = "spin-expressions"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+spin-locked-app = { path = "../spin-locked-app" }
+
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+thiserror = { workspace = true }
+

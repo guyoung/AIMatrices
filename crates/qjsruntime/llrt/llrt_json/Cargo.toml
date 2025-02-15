@@ -1,0 +1,18 @@
+[package]
+name = "llrt_json"
+version = "0.4.0-beta"
+edition = "2021"
+
+
+[dependencies]
+llrt_utils = { path = "../llrt_utils", default-features = false }
+
+rquickjs = { workspace = true, default-features = false }
+
+simd-json = { workspace = true, default-features = false, features = [
+  "big-int-as-float",
+] }
+itoa = { workspace = true }
+ryu = { workspace = true }
+
+

@@ -1,0 +1,12 @@
+[package]
+name = "llrt_module_events"
+version = "0.4.0-beta"
+edition = "2021"
+
+
+[dependencies]
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+rquickjs = { workspace = true, features = [
+  "macro",
+], default-features = false }
+tracing = { workspace = true }

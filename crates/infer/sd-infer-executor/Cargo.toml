@@ -1,0 +1,20 @@
+[package]
+name = "sd-infer-executor"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+
+sd-infer-executor-sys = { path = "sys" }
+
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+base64 = { workspace = true }
+image = { workspace = true, default-features = false, features = ["png", "jpeg"]}
+
+derive_builder = { workspace = true }
+libc = { workspace = true }
+
+num_cpus = { workspace = true }

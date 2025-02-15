@@ -1,0 +1,20 @@
+[package]
+name = "spin-factor-wasi"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+spin-app = { path = "../spin-app" }
+spin-common = { path = "../spin-common" }
+spin-factors = { path = "../spin-factors" }
+
+wasmtime = { workspace = true }
+wasmtime-wasi = { workspace = true }
+
+anyhow = { workspace = true }
+bytes = { workspace = true }
+async-trait = { workspace = true }
+
+path-absolutize  = { workspace = true }
+
+

@@ -1,0 +1,16 @@
+[package]
+name = "spin-core"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+tracing = { workspace = true }
+wasmtime = { workspace = true }
+
+[features]
+# Enables support for the `wasmtime::Store::call_hook` API which enables injecting custom
+# logic around all entries/exits from WebAssembly. This has a slight performance
+# cost for all host functions.
+call-hook = ["wasmtime/call-hook"]

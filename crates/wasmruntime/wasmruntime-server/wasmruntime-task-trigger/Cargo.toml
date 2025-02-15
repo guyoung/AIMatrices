@@ -1,0 +1,25 @@
+[package]
+name = "wasmruntime-task-trigger"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+spin-app = { path = "../../spin/spin-app" }
+spin-core = { path = "../../spin/spin-core" }
+spin-factors = { path = "../../spin/spin-factors" }
+spin-factor-wasi = { path = "../../spin/spin-factor-wasi" }
+
+wasmruntime-core = { path = "../../wasmruntime-core" }
+
+wasmtime = { workspace = true }
+wasmtime-wasi = { workspace = true }
+
+anyhow = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+
+
+
+
+

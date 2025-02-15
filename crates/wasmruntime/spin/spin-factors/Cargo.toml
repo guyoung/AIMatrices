@@ -1,0 +1,11 @@
+[package]
+name = "spin-factors"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+spin-app = { path = "../spin-app" }
+
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+wasmtime = { workspace = true }

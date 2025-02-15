@@ -1,0 +1,17 @@
+[package]
+name = "llrt_module_fs"
+version = "0.4.0-beta"
+edition = "2021"
+
+[dependencies]
+either = "1"
+llrt_buffer = {  package = "llrt_module_buffer", path = "../llrt_module_buffer" }
+
+llrt_path = { package = "llrt_module_path", path = "../llrt_module_path" }
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+ring = {workspace = true}
+rquickjs = { workspace = true, features = [
+  "either",
+  "macro",
+], default-features = false }
+

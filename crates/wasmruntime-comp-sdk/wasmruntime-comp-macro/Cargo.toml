@@ -1,0 +1,17 @@
+[package]
+name = "wasmruntime-comp-macro"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+
+[lib]
+name = "wasmruntime_comp_macro"
+proc-macro = true
+
+[dependencies]
+
+## rust macro
+proc-macro2 = { version = "1.0" }
+quote = { version = "1.0" }
+syn = { version = "1.0", features = [ "full" ]}

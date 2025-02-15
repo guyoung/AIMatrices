@@ -1,0 +1,20 @@
+[package]
+name = "qjsruntime-module-http"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+llrt_json = { path = "../../llrt/llrt_json" }
+llrt_module_url = { path = "../../llrt_modules/llrt_module_url" }
+
+wasmruntime-comp-sdk = { path = "../../../wasmruntime-comp-sdk" }
+
+rquickjs = { workspace = true, default-features = false }
+
+bytes = { workspace = true }
+either = { workspace = true }
+once_cell = { workspace = true }
+
+http = { workspace = true }

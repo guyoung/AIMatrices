@@ -1,0 +1,16 @@
+[package]
+name = "llrt_module_timers"
+version = "0.4.0-beta"
+edition = "2021"
+
+
+[dependencies]
+
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+
+rquickjs = { workspace = true, default-features = false }
+
+once_cell =  { workspace = true }
+
+tokio = { workspace = true, features = ["sync", "time", "macros"] }
+

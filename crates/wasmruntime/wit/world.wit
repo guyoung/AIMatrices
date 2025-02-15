@@ -1,0 +1,16 @@
+package wasmruntime:comp@1.0.0;
+
+/// The imports needed for a guest to run on a Spin host
+world platform {
+  include wasi:keyvalue/imports@0.2.0-draft2;
+  include wasi:cli/imports@0.2.2;
+
+  import wasi:http/outgoing-handler@0.2.2;
+  import wasi:config/store@0.2.0-draft-2024-09-27;
+
+  import key-value;
+  import variables;
+  import dbs;
+  import llm-infer;
+  import sd-infer;
+}

@@ -1,0 +1,10 @@
+[package]
+name = "llrt_encoding"
+version = "0.4.0-beta"
+edition = "2021"
+
+
+[dependencies]
+base64-simd = { workspace = true }
+hex-simd = { workspace = true }
+phf = { workspace = true }

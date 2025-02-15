@@ -1,0 +1,16 @@
+[package]
+name = "qjsruntime-module-openai"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+llrt_json = { path = "../../llrt/llrt_json" }
+
+wasmruntime-comp-sdk = { path = "../../../wasmruntime-comp-sdk" }
+
+rquickjs = { workspace = true, default-features = false }
+
+serde = { workspace = true }
+serde_json = { workspace = true }

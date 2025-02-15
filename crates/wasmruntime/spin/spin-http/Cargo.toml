@@ -1,0 +1,28 @@
+[package]
+name = "spin-http"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+spin-app = { path = "../spin-app" }
+
+wasmtime = { workspace = true }
+wasmtime-wasi-http = { workspace = true}
+
+anyhow = { workspace = true }
+tracing = { workspace = true }
+indexmap = { workspace = true }
+serde = { workspace = true }
+
+percent-encoding = { workspace = true }
+
+http = { workspace = true }
+http-body-util = { workspace = true }
+hyper = { workspace = true }
+routefinder = { workspace = true }
+
+
+
+
+
+

@@ -1,0 +1,69 @@
+[package]
+name = "llama-cpp-sys-2-v1"
+description = "Low Level Bindings to llama.cpp"
+version = "0.1.85"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/utilityai/llama-cpp-rs"
+links = "llamav1"
+
+include = [
+    "wrapper.h",
+    "build.rs",
+    "/src",
+
+    "/llama.cpp/common/*.h",
+    "/llama.cpp/common/*.hpp",
+    "/llama.cpp/common/*.cpp",
+    "/llama.cpp/ggml/include/*.h",
+    "/llama.cpp/ggml/src/*.h",
+    "/llama.cpp/ggml/src/*.c",
+    "/llama.cpp/ggml/src/*.cpp",
+    "/llama.cpp/src/*.h",
+    "/llama.cpp/src/*.cpp",
+
+    "/llama.cpp/convert_hf_to_gguf.py", # Yes, it's required
+
+    "/llama.cpp/common/build-info.cpp.in",
+
+    "/llama.cpp/ggml/src/ggml-cuda.cu",
+    "/llama.cpp/ggml/src/ggml-metal.m",
+    "/llama.cpp/ggml/src/ggml-metal.metal",
+
+    "/llama.cpp/include/llama.h",
+    "/llama.cpp/include/llama-cpp.h",
+
+    "/llama.cpp/ggml/src/ggml-cpu/**/*",
+    "/llama.cpp/ggml/src/ggml-cuda/**/*",
+    "/llama.cpp/ggml/src/ggml-vulkan/**/*",
+
+    "/llama.cpp/ggml/src/llamafile/sgemm.h",
+    "/llama.cpp/ggml/src/llamafile/sgemm.cpp",
+
+    "/llama.cpp/pocs",
+
+    "/llama.cpp/CMakeLists.txt",
+    "/llama.cpp/common/CMakeLists.txt",
+    "/llama.cpp/ggml/CMakeLists.txt",
+    "/llama.cpp/ggml/src/CMakeLists.txt",
+    "/llama.cpp/src/CMakeLists.txt",
+
+    "/llama.cpp/cmake",
+    "/llama.cpp/ggml/cmake",
+    "/llama.cpp/common/cmake",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[build-dependencies]
+bindgen = { workspace = true }
+cc = { workspace = true, features = ["parallel"] }
+cmake = { workspace = true }
+glob = { workspace = true }
+
+[features]
+vulkan = []
+
+

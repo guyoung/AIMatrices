@@ -1,0 +1,6 @@
+[package]
+name = "spin-resource-table"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]

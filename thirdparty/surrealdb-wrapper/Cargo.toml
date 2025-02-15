@@ -1,0 +1,31 @@
+[package]
+name = "surrealdb-wrapper"
+version = "2.1.4"
+edition = "2021"
+
+
+[dependencies]
+
+surrealdb = { path = "sdk", default-features = false, features = ["kv-rocksdb", "scripting", "protocol-ws", "rustls", "protocol-http"] }
+
+
+[features]
+default = []
+protocol-http = []
+protocol-ws  = []
+kv-mem  = []
+kv-indxdb  = []
+kv-rocksdb  = []
+kv-tikv  = []
+kv-fdb  = []
+kv-surrealkv  = []
+kv-surrealcs  = []
+scripting  = []
+http  = []
+native-tls  = []
+rustls  = []
+ml  = []
+jwks  = []
+arbitrary  = []
+#kv-fdb-7_1  = []
+kv-fdb-7_3  = []

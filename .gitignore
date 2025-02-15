@@ -1,0 +1,15 @@
+.idea
+
+debug/
+target/
+
+node_modules/
+
+temp/
+logs/
+
+llama.cpp/
+stable-diffusion.cpp/
+whisper.cpp/
+
+app__db/

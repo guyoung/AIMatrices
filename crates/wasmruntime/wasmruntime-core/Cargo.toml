@@ -1,0 +1,26 @@
+[package]
+name = "wasmruntime-core"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+
+spin-app = { path = "../spin/spin-app" }
+spin-core = { path = "../spin/spin-core" }
+spin-common = { path = "../spin/spin-common" }
+
+
+spin-factor-wasi = { path = "../spin/spin-factor-wasi" }
+spin-factors = { path = "../spin/spin-factors" }
+spin-factors-executor = { path = "../spin/spin-factors-executor" }
+
+wasmtime = { workspace = true }
+
+anyhow = { workspace = true }
+
+async-trait = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true, features = ["fs", "rt"] }
+
+sanitize-filename =  { workspace = true }

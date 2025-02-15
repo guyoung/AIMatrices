@@ -1,0 +1,14 @@
+[package]
+name = "spin-factor-variables"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+spin-expressions = { path = "../../spin/spin-expressions" }
+spin-factors = { path = "../../spin/spin-factors" }
+spin-world = { path = "../spin-world" }
+
+anyhow = { workspace = true }
+tracing = { workspace = true }
+
+

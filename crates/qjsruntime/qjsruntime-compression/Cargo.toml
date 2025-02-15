@@ -1,0 +1,11 @@
+[package]
+name = "qjsruntime-compression"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+
+[dependencies]
+brotli = { workspace = true }
+flate2 = { workspace = true, default-features = false, features = ["zlib-rs"] }
+zstd = { workspace = true, default-features = false }

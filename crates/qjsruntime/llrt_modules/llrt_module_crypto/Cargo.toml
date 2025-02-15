@@ -1,0 +1,37 @@
+[package]
+name = "llrt_module_crypto"
+version = "0.4.0-beta"
+edition = "2021"
+
+[dependencies]
+
+llrt_encoding = { path = "../../llrt/llrt_encoding" }
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+
+llrt_buffer = { package = "llrt_module_buffer", path = "../llrt_module_buffer" }
+
+rquickjs = { workspace = true, features = [
+  "macro",
+], default-features = false }
+
+
+once_cell = { workspace = true }
+rand = { workspace = true }
+
+ring = { workspace = true, features = ["std"] }
+
+crc32c = { workspace = true }
+crc32fast = { workspace = true }
+uuid = { workspace = true, default-features = false, features = [
+  "v4",
+  "fast-rng",
+] }
+uuid-simd = { workspace = true }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+memchr = { workspace = true }
+md-5 = { workspace = true }
+[target.'cfg(not(target_os = "windows"))'.dependencies]
+md-5 = { workspace = true, features = ["asm"] }
+
+

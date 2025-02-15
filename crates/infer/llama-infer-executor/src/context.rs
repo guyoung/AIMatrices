@@ -1,0 +1,381 @@
+
+use std::num::NonZeroU32;
+use std::time::Duration;
+
+use anyhow::{bail, Context};
+
+use crate::llama_cpp_2;
+use crate::llama_cpp_2::context::params::LlamaContextParams;
+use crate::llama_cpp_2::ggml_time_us;
+use crate::llama_cpp_2::llama_batch::LlamaBatch;
+use crate::llama_cpp_2::model::AddBos;
+use crate::llama_cpp_2::token::LlamaToken;
+
+use crate::{EmbeddingsResult, InferencingParams, InferencingResult};
+use crate::ModelInstance;
+use crate::sampler::generate_sampler;
+use crate::InferBatch;
+
+#[derive(Debug, Clone, Default)]
+pub struct LlamaContextConfig {
+    /// size of the prompt context (default: loaded from themodel)
+    pub ctx_size: Option<NonZeroU32>,
+
+    /// number of threads to use during generation (default: use all available threads)
+    pub threads: Option<i32>,
+
+    /// number of threads to use during batch and prompt processing (default: use all available threads)
+    pub threads_batch: Option<i32>,
+}
+
+
+pub struct LlamaContext<'a>(llama_cpp_2::context::LlamaContext<'a>);
+
+unsafe impl Send for LlamaContext<'_> {}
+unsafe impl Sync for LlamaContext<'_> {}
+
+impl<'a> LlamaContext<'a> {
+    pub fn new(
+        model_instance: &'a ModelInstance,
+        config: &LlamaContextConfig,
+        embeddings: bool,
+    ) -> anyhow::Result<Self> {
+        let ctx_params = if !embeddings {
+            let mut ctx_params = LlamaContextParams::default();
+
+            ctx_params =
+                ctx_params.with_n_ctx(config.ctx_size.or(Some(NonZeroU32::new(2048).unwrap())));
+
+            if let Some(threads) = config.threads {
+                ctx_params = ctx_params.with_n_threads(threads);
+            }
+
+            if let Some(threads_batch) = config.threads_batch.or(config.threads) {
+                ctx_params = ctx_params.with_n_threads_batch(threads_batch);
+            }
+
+            ctx_params
+        } else {
+            let mut ctx_params = LlamaContextParams::default();
+
+            let threads_batch = config
+                .threads_batch
+                .unwrap_or(std::thread::available_parallelism()?.get().try_into()?);
+            ctx_params = ctx_params.with_n_threads_batch(threads_batch);
+
+            ctx_params = ctx_params.with_embeddings(true);
+
+            ctx_params
+        };
+
+        let context = model_instance.model
+            .new_context(&model_instance.backend, ctx_params)
+            .with_context(|| "unable to create the llama_context")?;
+
+        return Ok(Self(context));
+    }
+
+    pub fn crate_infer_batch(
+        mut self,
+        tokens_list: Vec<LlamaToken>,
+        params: &InferencingParams,
+    ) -> anyhow::Result<InferBatch<'a>> {
+
+
+        let last_index: i32 = (tokens_list.len() - 1) as i32;
+
+        // create a llama_batch with size 512
+        // we use this object to submit token data for decoding
+        let mut batch = LlamaBatch::new(512, 1);
+
+
+        /***
+        for (i, token) in (0_i32..).zip(tokens_list.into_iter()) {
+            // llama_decode will output logits only for the last token of the prompt
+            let is_last = i == last_index;
+            batch.add(token, i, &[0], is_last)?;
+        }
+         ***/
+
+        for (i, token) in tokens_list.into_iter().enumerate() {
+            batch
+                .add(token, i as i32, &[0], i as i32 == last_index)
+                .expect("Failed to add token...");
+        }
+
+        self.0
+            .decode(&mut batch)
+            .with_context(|| "Failed to decode batch")?;
+
+
+        let sampler = generate_sampler(
+            &params,
+            self.0.model.n_vocab(),
+            self.0.model.token_eos().0,
+            self.0.model.token_nl().0,
+        )?;
+
+        let decoder = encoding_rs::UTF_8.new_decoder();
+
+        Ok(InferBatch{
+            ctx: self.0,
+            n_cur: batch.n_tokens(),
+            max_token: params.max_tokens,
+            batch,
+            sampler,
+            decoder
+        })
+
+    }
+
+    pub fn infer(
+        self,
+        prompt: &str,
+        params: InferencingParams,
+    ) -> anyhow::Result<InferencingResult> {
+        let tokens_list = self.generate_infer_tokens(prompt, &params)?;
+        let prompt_token_count = tokens_list.len();
+
+        let mut infer_batch = self.crate_infer_batch(tokens_list, &params)?;
+
+        let t_main_start = ggml_time_us();
+
+        let mut text: Vec<String> = Vec::new();
+        let mut n_decode = 0;
+
+        loop {
+            let str = infer_batch.next_token()?;
+
+            match str {
+                Some(str) => text.push(str),
+                None => break
+            }
+
+            n_decode+=1;
+        }
+
+        let t_main_end = ggml_time_us();
+        let duration = Duration::from_micros((t_main_end - t_main_start) as u64);
+
+        // println!(
+        //     "decoded {} tokens in {:.2} s, speed {:.2} t/s\n",
+        //     n_decode,
+        //     duration.as_secs_f32(),
+        //     n_decode as f32 / duration.as_secs_f32()
+        // );
+        // println!("{}", self.0.timings());
+
+        let text = text.join("");
+
+        Ok(InferencingResult {
+            text: text.as_bytes().to_vec(),
+            prompt_token_count,
+            generated_token_count: n_decode as usize,
+            secs: duration.as_secs_f32(),
+            speed: n_decode as f32 / duration.as_secs_f32(),
+        })
+
+    }
+
+    pub fn generate_infer_tokens(
+        &self,
+        prompt: &str,
+        params: &InferencingParams,
+    ) -> anyhow::Result<Vec<LlamaToken>> {
+        //println!("generate_infer_tokens");
+
+        let tokens_list = self
+            .0
+            .model
+            .str_to_token(&prompt, AddBos::Always)
+            .with_context(|| format!("Failed to tokenize {prompt}"))?;
+
+        //println!("tokens_list: {:?}", tokens_list);
+
+        /***
+        let n_cxt = self.0.n_ctx() as i32;
+        let n_kv_req = tokens_list.len() as i32 + (n_len - tokens_list.len() as i32);
+
+        // println!("n_len = {n_len}, n_ctx = {n_cxt}, k_kv_req = {n_kv_req}");
+
+        // make sure the KV cache is big enough to hold all the prompt and generated tokens
+        if n_kv_req > n_cxt {
+            bail!(
+                "n_kv_req > n_ctx, the required kv cache size is not big enough
+either reduce n_len or increase n_ctx"
+            )
+        }
+
+        if tokens_list.len() >= usize::try_from(n_len)? {
+            bail!("the prompt is too long, it has more tokens than n_len")
+        }
+
+        // print the prompt token-by-token
+        //println!();
+
+        //for token in &tokens_list {
+        //   print!("{}", model.token_to_str(*token, Special::Tokenize)?);
+        //}
+         ***/
+
+        if tokens_list.len() >= params.max_tokens as usize {
+            bail!("Maximum token length is smaller than the prompt...");
+        }
+
+        Ok(tokens_list)
+    }
+
+    pub fn generate_embeddings(
+        mut self,
+        text: Vec<String>,
+    ) -> anyhow::Result<EmbeddingsResult> {
+        // Whether to normalise the produced embeddings
+        let normalise: bool = false;
+
+        let n_ctx = self.0.n_ctx() as usize;
+
+        // create a llama_batch with the size of the context
+        // we use this object to submit token data for decoding
+        let mut batch = LlamaBatch::new(n_ctx, 1);
+        let mut max_seq_id_batch = 0;
+
+        let tokens_lines_list = self.generate_embeddings_tokens(text)?;
+        let prompt_token_count = tokens_lines_list.len();
+
+        let mut output = Vec::with_capacity(tokens_lines_list.len());
+
+        let t_main_start = ggml_time_us();
+
+        for tokens in &tokens_lines_list {
+            // Flush the batch if the next prompt would exceed our batch size
+            if (batch.n_tokens() as usize + tokens.len()) > n_ctx {
+                embeddings_batch_decode(
+                    &mut self.0,
+                    &mut batch,
+                    max_seq_id_batch,
+                    &mut output,
+                    normalise,
+                )?;
+                max_seq_id_batch = 0;
+            }
+
+            batch.add_sequence(tokens, max_seq_id_batch, false)?;
+            max_seq_id_batch += 1;
+        }
+        // Handle final batch
+        embeddings_batch_decode(
+            &mut self.0,
+            &mut batch,
+            max_seq_id_batch,
+            &mut output,
+            normalise,
+        )?;
+
+        let t_main_end = ggml_time_us();
+
+        // for (i, embeddings) in output.iter().enumerate() {
+        //     println!("Embeddings {i}: {embeddings:?}");
+        //     println!();
+        // }
+
+        let duration = Duration::from_micros((t_main_end - t_main_start) as u64);
+        let total_tokens: usize = tokens_lines_list.iter().map(Vec::len).sum();
+
+        // println!(
+        //     "Created embeddings for {} tokens in {:.2} s, speed {:.2} t/s\n",
+        //     total_tokens,
+        //     duration.as_secs_f32(),
+        //     total_tokens as f32 / duration.as_secs_f32()
+        // );
+        //
+        // println!("{}", self.0.timings());
+
+        Ok(EmbeddingsResult {
+            embeddings: output,
+            prompt_token_count,
+            generated_token_count: total_tokens,
+            secs: duration.as_secs_f32(),
+            speed: total_tokens as f32 / duration.as_secs_f32(),
+        })
+    }
+
+
+
+    fn generate_embeddings_tokens(
+        &self,
+        text: Vec<String>,
+    ) -> anyhow::Result<Vec<Vec<LlamaToken>>> {
+        // tokenize the prompt
+        let tokens_lines_list = text
+            .into_iter()
+            .map(|line| self.0.model.str_to_token(line.as_str(), AddBos::Always))
+            .collect::<Result<Vec<_>, _>>()
+            .with_context(|| "failed to tokenize")?;
+
+        let n_ctx = self.0.n_ctx() as usize;
+        let _n_ctx_train = self.0.model.n_ctx_train();
+
+        // println!("n_ctx = {n_ctx}, n_ctx_train = {n_ctx_train}");
+
+        if tokens_lines_list.iter().any(|tok| n_ctx < tok.len()) {
+            bail!("One of the provided prompts exceeds the size of the context window");
+        }
+
+        // print the prompt token-by-token
+        // println!();
+
+        // for (i, token_line) in tokens_lines_list.iter().enumerate() {
+        //     println!("Prompt {i}");
+        //     for token in token_line {
+        //         // Attempt to convert token to string and print it; if it fails, print the token instead
+        //         match self.0.model.token_to_str(*token, Special::Tokenize) {
+        //             Ok(token_str) => println!("{token} --> {token_str}"),
+        //             Err(e) => {
+        //                 println!("Failed to convert token to string, error: {e}");
+        //                 println!("Token value: {token}");
+        //             }
+        //         }
+        //     }
+        //     println!();
+        // }
+
+        Ok(tokens_lines_list)
+    }
+}
+
+fn embeddings_batch_decode(
+    ctx: &mut llama_cpp_2::context::LlamaContext,
+    batch: &mut LlamaBatch,
+    s_batch: i32,
+    output: &mut Vec<Vec<f32>>,
+    normalise: bool,
+) -> anyhow::Result<()> {
+    ctx.clear_kv_cache();
+    ctx.decode(batch).with_context(|| "llama_decode() failed")?;
+
+    for i in 0..s_batch {
+        let embedding = ctx
+            .embeddings_seq_ith(i)
+            .with_context(|| "Failed to get embeddings")?;
+        let output_embeddings = if normalise {
+            normalize(embedding)
+        } else {
+            embedding.to_vec()
+        };
+
+        output.push(output_embeddings);
+    }
+
+    batch.clear();
+
+    Ok(())
+}
+
+fn normalize(input: &[f32]) -> Vec<f32> {
+    let magnitude = input
+        .iter()
+        .fold(0.0, |acc, &val| val.mul_add(val, acc))
+        .sqrt();
+
+    input.iter().map(|&val| val / magnitude).collect()
+}

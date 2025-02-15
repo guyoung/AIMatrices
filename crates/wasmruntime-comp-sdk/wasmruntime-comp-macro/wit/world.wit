@@ -1,0 +1,11 @@
+package wasmruntime:comp;
+
+world redis-trigger {
+  export inbound-redis;
+}
+
+
+world wasi-http-trigger {
+  import wasi:http/outgoing-handler@0.2.0;
+  export wasi:http/incoming-handler@0.2.0;
+}

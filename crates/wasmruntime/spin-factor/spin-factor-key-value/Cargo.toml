@@ -1,0 +1,22 @@
+[package]
+name = "spin-factor-key-value"
+version = "3.1.1"
+edition = "2021"
+
+[dependencies]
+
+spin-locked-app = { path = "../../spin/spin-locked-app" }
+spin-resource-table = { path = "../../spin/spin-resource-table" }
+spin-factors = { path = "../../spin/spin-factors" }
+spin-world = { path = "../spin-world" }
+
+wasmtime = { workspace = true }
+
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+async-trait = { workspace = true }
+tokio = { workspace = true, features = ["macros", "sync", "rt"] }
+
+lru = { workspace = true }

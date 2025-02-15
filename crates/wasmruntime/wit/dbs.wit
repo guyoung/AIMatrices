@@ -1,0 +1,30 @@
+interface dbs {
+
+    type payload = list<u8>;
+
+    resource connection {
+        open: static func(database: string, shared: bool) -> result<connection, error>;
+
+        create: func(table: string, uid: option<string>, data: payload) -> result<payload, error>;
+
+        update: func(table: string, uid: string, data: payload) -> result<payload, error>;
+
+        delete: func(table: string, uid: string) -> result<payload, error>;
+
+        select-all: func(table: string) -> result<payload, error>;
+
+        select: func(table: string, uid: string) -> result<payload, error>;
+
+        query: func(sql: string) -> result<payload, error>;
+
+    }
+
+    variant error {
+        success,
+        bad-parameter,
+        connection-failed,
+        operation-failed,
+        other-error
+    }
+
+}

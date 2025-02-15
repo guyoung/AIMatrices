@@ -1,0 +1,14 @@
+[package]
+name = "qjsruntime-module-zlib"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+qjsruntime-compression = { path = "../../qjsruntime-compression", default-features = false }
+
+llrt_buffer = { package = "llrt_module_buffer", path = "../../llrt_modules/llrt_module_buffer" }
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+
+rquickjs = { workspace = true, default-features = false }
+

@@ -1,0 +1,14 @@
+[package]
+name = "wasmruntime-comp-executor"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+
+
+[dependencies]
+### support version 0.16
+wit-bindgen = { version = "0.16" }
+
+futures = { workspace = true }
+

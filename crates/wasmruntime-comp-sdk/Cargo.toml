@@ -1,0 +1,36 @@
+[package]
+name = "wasmruntime-comp-sdk"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+
+
+
+[dependencies]
+wasmruntime-comp-macro = { path = "wasmruntime-comp-macro" }
+
+wasmruntime-comp-executor = { path = "wasmruntime-comp-executor" }
+
+### support version 0.16
+wit-bindgen = { version = "0.16" }
+
+anyhow = { workspace = true }
+bytes = { workspace = true }
+serde_json = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
+thiserror = { workspace = true}
+
+async-trait = { workspace = true}
+futures = { workspace = true}
+
+http = { workspace = true}
+routefinder = { workspace = true}
+
+
+[features]
+default = ["json"]
+json = ["dep:serde", "dep:serde_json"]
+dbs = []
+llm-infer = []
+sd-infer = []

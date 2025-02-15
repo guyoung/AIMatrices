@@ -1,0 +1,81 @@
+{
+  "lock_version": 0,
+  "metadata": {
+    "name": "ai-matrices",
+    "description": "",
+    "version": "1.0.0",
+    "authors": [],
+    "model_cached": "true"
+  },
+  "triggers": [
+    {
+      "id": "http-deepseek-api-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "deepseek-api",
+        "route": "/service/deepseek-api/..."
+      }
+    },
+    {
+      "id": "http-deepseek-local-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "deepseek-local",
+        "route": "/service/deepseek-local/..."
+      }
+    },
+    {
+      "id": "http-static-file-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "static-file",
+        "route": "/..."
+      }
+    }
+
+  ],
+  "components": [
+    {
+      "id": "deepseek-api",
+      "metadata": {
+        "build": { },
+        "allowed_outbound_hosts": [
+          "http://self",
+          "https://api.deepseek.com",
+          "https://api.siliconflow.cn"
+        ],
+
+        "key_value_stores": [
+          "default"
+        ]
+      },
+      "source": {
+        "content_type": "application/wasm",
+        "source": "../../target/wasm32-wasip1/release/ai_matrices_llm_handler_component.wasm"
+      }
+    },
+    {
+      "id": "deepseek-local",
+      "metadata": {
+        "build": {},
+        "local_llm_models": {
+          "local/DeepSeek-R1": "../../ai-models/huggingface/lmstudio-community/DeepSeek-R1-Distill-Qwen-7B-GGUF/DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf"
+        }
+      },
+      "source": {
+        "content_type": "application/wasm",
+        "source": "../../target/wasm32-wasip1/release/ai_matrices_llm_local_handler_component.wasm"
+      }
+    },
+    {
+      "id": "static-file",
+      "metadata": {
+        "build": {}
+      },
+      "source": {
+        "content_type": "application/wasm",
+        "source": "../../target/wasm32-wasip1/release/ai_matrices_static_file_handler_component.wasm"
+      }
+    }
+  ]
+}

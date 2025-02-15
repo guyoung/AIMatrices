@@ -1,0 +1,11 @@
+[package]
+name = "qjsruntime-module-process"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+
+rquickjs = { workspace = true, default-features = false }
+

@@ -1,0 +1,31 @@
+[package]
+name = "wasmruntime-task-server"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+spin-core = { path = "../../spin/spin-core" }
+spin-app = { path = "../../spin/spin-app" }
+spin-factors-executor = { path = "../../spin/spin-factors-executor" }
+
+wasmruntime-core = { path = "../../wasmruntime-core" }
+wasmruntime-system = { path = "../../wasmruntime-system" }
+wasmruntime-task-trigger = { path = "../wasmruntime-task-trigger" }
+
+
+anyhow = { workspace = true }
+
+tokio = { workspace = true, features = ["full"] }
+tokio-cron-scheduler = { workspace = true }
+
+[features]
+default = []
+dbs = ["wasmruntime-system/dbs"]
+llm-infer-v1 = ["wasmruntime-system/llm-infer-v1"]
+llm-infer-v2 = ["wasmruntime-system/llm-infer-v2"]
+sd-infer = ["wasmruntime-system/sd-infer"]
+whisper-infer = []
+ncnn-infer = []
+opencv = []
+ffmpeg = []

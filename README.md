@@ -28,27 +28,30 @@ AIMatrices 是一款轻量级、高性能、可扩展、开源的AI应用快速�
 
 遵循 OpenAI API 规范进行模型 API 调用，通过标准化的接口参数，如输入文本、模型选择、温度参数等，实现对模型的调用和结果获取。同时支持使用 JavaScript 代码进行自定义扩展，允许用户根据业务需求实现个性化的逻辑处理。
 
-
-
 **完全开源**
 
 AIMatrices 是一个开源项目，开发者可以自由访问其代码，进行定制和扩展。
 
 
+## 应用案例
 
-## 文档
+### [AIMatrices DeepSeek](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-deepseek)
 
-## 实际案例
-
-* [AIMatrices DeepSeek](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-deepseek)
+AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 开发的开源 DeepSeek 本地化部署工具，支持本地模型、远程 API 灵活切换，旨在为用户提供高效、灵活且低成本的 DeepSeek 大模型部署解决方案。
 
 ![AIMatrices DeepSeek](docs/ai-matrices-deepseek/assets/20250215-ai-matrices-deepseek3.png)
 
-* [AIMatrices Flux](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-flux)
+### [AIMatrices Flux](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-flux)
 
-![AIMatrices Flux](docs/ai-matrices-deepseek/assets/20250214-ai-matrices-flux.png)
+AIMatrices Flux 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 使用 Flux 模型开发的开文生图应用程序，支持提示词自动翻译功能。
+
+![AIMatrices Flux](docs/ai-matrices-flux/assets/20250214-ai-matrices-flux.png)
+
+## 文档
+
 
 ## 常见问题
+
 
 ## 获取帮助
 

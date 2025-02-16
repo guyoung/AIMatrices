@@ -7,12 +7,15 @@ AIMatrices Flux 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 
 ## 功能特性
 
 **开箱即用**
+
 使用 Rust 编程语言开发，直接编译成二进制可执行文件，生成的可执行文件大小约为 20MB 左右，无需安装任何外部依赖库，极大地简化了部署过程，无需使用容器即可在多种操作系统（如 Windows、macOS、Linux）上运行。
 
 **广泛硬件平台支持**
+
 通过 Rust 的 FFI 技术调用高性能的 llama.cpp、 stable-diffusion.cpp 库，并以 Vulkan 作为后端进行模型推理，支持NVIDIA、AMD 、Intel等多种主流显卡，能够为模型推理提供显著的GPU加速效果，这种架构设计使得项目能够充分利用现代 GPU 的强大计算能力，同时保持良好的跨平台兼容性。
 
 **完全开源**
+
 AIMatrices Flux 是一个开源项目，开发者可以自由访问其代码，进行定制和扩展。
 
 

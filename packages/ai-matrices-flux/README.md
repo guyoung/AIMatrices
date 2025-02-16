@@ -2,7 +2,7 @@ AIMatrices Flux
 =========================
 AIMatrices Flux 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 使用 Flux 模型开发的开文生图应用程序，支持提示词自动翻译功能。
 
-![AIMatrices Flux](../../docs/ai-matrices-deepseek/assets/20250214-ai-matrices-flux.png)
+![AIMatrices Flux](../../docs/ai-matrices-flux/assets/20250214-ai-matrices-flux.png)
 
 ## 功能特性
 

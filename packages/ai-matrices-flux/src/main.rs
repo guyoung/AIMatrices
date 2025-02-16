@@ -12,7 +12,7 @@ use bootstrap::Bootstrap;
 
 
 #[derive(Parser, Debug)]
-#[command(name = "AIMatrices")]
+#[command(name = "AIMatrices Flux")]
 #[command(author, version)]
 #[command(about = "AIMatrices", long_about = None)]
 pub struct Args {

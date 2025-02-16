@@ -10,7 +10,7 @@ use spin_app::App;
 use bootstrap::Bootstrap;
 
 #[derive(Parser, Debug)]
-#[command(name = "AIMatrices")]
+#[command(name = "AIMatrices DeepSeek")]
 #[command(author, version)]
 #[command(about = "AIMatrices", long_about = None)]
 pub struct Args {

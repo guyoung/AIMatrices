@@ -1,7 +1,7 @@
 AIMatrices DeepSeek
 =========================
 
-AIMatrices DeepSeek 是一款基于 AI 应用快速构建平台 AIMatrices 开发的开源 DeepSeek 轻量级本地化部署工具，支持本地模型、远程 API 灵活切换，旨在为用户提供高效、灵活且低成本的 DeepSeek 大模型部署解决方案。
+AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 开发的开源 DeepSeek 本地化部署工具，支持本地模型、远程 API 灵活切换，旨在为用户提供高效、灵活且低成本的 DeepSeek 大模型部署解决方案。
 
 ![AIMatrices DeepSeek](../../docs/ai-matrices-deepseek/assets/20250215-ai-matrices-deepseek3.png)
 

@@ -1,9 +1,12 @@
+use path_absolutize::*;
 use std::env;
 use std::path::PathBuf;
-use path_absolutize::*;
 
 fn main() {
-    let ncnn_depends_dir = PathBuf::from("./../../depends/ncnn").absolutize().unwrap().to_path_buf();
+    let ncnn_depends_dir = PathBuf::from("./../../depends/ncnn")
+        .absolutize()
+        .unwrap()
+        .to_path_buf();
 
     println!("ncnn_depends_dir: {:?}", &ncnn_depends_dir);
 
@@ -53,17 +56,15 @@ fn main() {
 
     println!("cargo:rustc-link-search={}", ncnn_lib_dir.display());
 
-    println!("cargo:rustc-link-lib={}={}",  "static", "ncnn");
+    println!("cargo:rustc-link-lib={}={}", "static", "ncnn");
     //println!("cargo:rustc-link-lib={}={}",  "static", "GenericCodeGen");
     //println!("cargo:rustc-link-lib={}={}",  "static", "MachineIndependent");
     //println!("cargo:rustc-link-lib={}={}",  "static", "OSDependent");
-    println!("cargo:rustc-link-lib={}={}",  "static", "glslang");
-    println!("cargo:rustc-link-lib={}={}",  "static", "SPIRV");
-    println!("cargo:rustc-link-lib={}={}",  "static", "SPIRV-Tools");
-    println!("cargo:rustc-link-lib={}={}",  "static", "SPIRV-Tools-opt");
+    println!("cargo:rustc-link-lib={}={}", "static", "glslang");
+    println!("cargo:rustc-link-lib={}={}", "static", "SPIRV");
+    println!("cargo:rustc-link-lib={}={}", "static", "SPIRV-Tools");
+    println!("cargo:rustc-link-lib={}={}", "static", "SPIRV-Tools-opt");
     println!("cargo:rustc-link-lib=vulkan-1");
     println!("cargo:rustc-link-lib={}={}", "static", "gomp");
-    println!("cargo:rustc-link-lib={}={}",  "static", "stdc++")
+    println!("cargo:rustc-link-lib={}={}", "static", "stdc++")
 }
-
-

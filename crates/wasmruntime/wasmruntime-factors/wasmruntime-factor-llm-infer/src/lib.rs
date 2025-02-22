@@ -5,7 +5,7 @@ pub mod runtime_config;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
-use tokio::sync::RwLock;
+use tokio::sync::Mutex;
 
 use spin_factors::{
     ConfigureAppContext, Factor, PrepareContext, RuntimeFactors, SelfInstanceBuilder,
@@ -14,7 +14,8 @@ use spin_locked_app::MetadataKey;
 
 use engine::LlmInferEngine;
 
-pub const LOCAL_LLM_MODELS: MetadataKey<HashMap<String, String>> = MetadataKey::new("local_llm_models");
+pub const LOCAL_LLM_MODELS: MetadataKey<HashMap<String, String>> =
+    MetadataKey::new("local_llm_models");
 
 pub struct LlmInferFactor {}
 
@@ -98,14 +99,14 @@ impl Factor for LlmInferFactor {
 
 /// The application state for the LLM infer factor.
 pub struct AppState {
-    engine: Arc<RwLock<dyn LlmInferEngine>>,
+    engine: Arc<Mutex<dyn LlmInferEngine>>,
 
     component_allowed_models: HashMap<String, Arc<HashSet<String>>>,
 }
 
 /// The instance state for the LLM infer factor.
 pub struct InstanceState {
-    engine: Arc<RwLock<dyn LlmInferEngine>>,
+    engine: Arc<Mutex<dyn LlmInferEngine>>,
     pub allowed_models: Arc<HashSet<String>>,
 }
 

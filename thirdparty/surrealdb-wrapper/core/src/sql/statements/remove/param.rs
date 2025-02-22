@@ -13,46 +13,44 @@ use std::fmt::{self, Display, Formatter};
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 #[non_exhaustive]
 pub struct RemoveParamStatement {
-	pub name: Ident,
-	#[revision(start = 2)]
-	pub if_exists: bool,
+    pub name: Ident,
+    #[revision(start = 2)]
+    pub if_exists: bool,
 }
 
 impl RemoveParamStatement {
-	/// Process this type returning a computed simple Value
-	pub(crate) async fn compute(&self, ctx: &Context, opt: &Options) -> Result<Value, Error> {
-		let future = async {
-			// Allowed to run?
-			opt.is_allowed(Action::Edit, ResourceKind::Parameter, &Base::Db)?;
-			// Get the transaction
-			let txn = ctx.tx();
-			// Get the definition
-			let pa = txn.get_db_param(opt.ns()?, opt.db()?, &self.name).await?;
-			// Delete the definition
-			let key = crate::key::database::pa::new(opt.ns()?, opt.db()?, &pa.name);
-			txn.del(key).await?;
-			// Clear the cache
-			txn.clear();
-			// Ok all good
-			Ok(Value::None)
-		}
-		.await;
-		match future {
-			Err(Error::PaNotFound {
-				..
-			}) if self.if_exists => Ok(Value::None),
-			v => v,
-		}
-	}
+    /// Process this type returning a computed simple Value
+    pub(crate) async fn compute(&self, ctx: &Context, opt: &Options) -> Result<Value, Error> {
+        let future = async {
+            // Allowed to run?
+            opt.is_allowed(Action::Edit, ResourceKind::Parameter, &Base::Db)?;
+            // Get the transaction
+            let txn = ctx.tx();
+            // Get the definition
+            let pa = txn.get_db_param(opt.ns()?, opt.db()?, &self.name).await?;
+            // Delete the definition
+            let key = crate::key::database::pa::new(opt.ns()?, opt.db()?, &pa.name);
+            txn.del(key).await?;
+            // Clear the cache
+            txn.clear();
+            // Ok all good
+            Ok(Value::None)
+        }
+        .await;
+        match future {
+            Err(Error::PaNotFound { .. }) if self.if_exists => Ok(Value::None),
+            v => v,
+        }
+    }
 }
 
 impl Display for RemoveParamStatement {
-	fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-		write!(f, "REMOVE PARAM")?;
-		if self.if_exists {
-			write!(f, " IF EXISTS")?
-		}
-		write!(f, " ${}", self.name)?;
-		Ok(())
-	}
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        write!(f, "REMOVE PARAM")?;
+        if self.if_exists {
+            write!(f, " IF EXISTS")?
+        }
+        write!(f, " ${}", self.name)?;
+        Ok(())
+    }
 }

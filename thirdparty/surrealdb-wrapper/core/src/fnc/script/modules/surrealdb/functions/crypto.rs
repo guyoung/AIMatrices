@@ -10,15 +10,15 @@ mod scrypt;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"crypto",
-	"blake3" => run,
-	"md5" => run,
-	"sha1" => run,
-	"sha256" => run,
-	"sha512" => run,
-	"argon2" => (argon2::Package),
-	"bcrypt" => (bcrypt::Package),
-	"pbkdf2" => (pbkdf2::Package),
-	"scrypt" => (scrypt::Package)
+    Package,
+    "crypto",
+    "blake3" => run,
+    "md5" => run,
+    "sha1" => run,
+    "sha256" => run,
+    "sha512" => run,
+    "argon2" => (argon2::Package),
+    "bcrypt" => (bcrypt::Package),
+    "pbkdf2" => (pbkdf2::Package),
+    "scrypt" => (scrypt::Package)
 );

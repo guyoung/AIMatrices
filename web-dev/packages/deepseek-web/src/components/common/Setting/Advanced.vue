@@ -10,11 +10,9 @@ const settingStore = useSettingStore()
 const ms = useMessage()
 
 const systemMessage = ref(settingStore.systemMessage ?? '')
-
-const max_tokens = ref(settingStore.max_tokens ?? 1000)
-
+const multiRoundChat = ref(settingStore.multiRoundChat ?? 1)
+const maxTokens = ref(settingStore.maxTokens ?? 1000)
 const temperature = ref(settingStore.temperature ?? 0.5)
-
 const top_p = ref(settingStore.top_p ?? 1)
 
 function updateSettings(options: Partial<SettingsState>) {
@@ -42,12 +40,22 @@ function handleReset() {
         </NButton>
       </div>
       <div class="flex items-center space-x-4">
-        <span class="flex-shrink-0 w-[120px]">{{ $t('setting.max_tokens') }} </span>
+        <span class="flex-shrink-0 w-[120px]">{{ $t('setting.multiRoundChat') }} </span>
         <div class="flex-1">
-          <NSlider v-model:value="max_tokens" :max="10240" :min="100" :step="1" />
+          <NSlider v-model:value="multiRoundChat" :max="20" :min="1" :step="1" />
         </div>
-        <span>{{ max_tokens }}</span>
-        <NButton size="tiny" text type="primary" @click="updateSettings({ max_tokens })">
+        <span>{{ multiRoundChat }}</span>
+        <NButton size="tiny" text type="primary" @click="updateSettings({ multiRoundChat })">
+          {{ $t('common.save') }}
+        </NButton>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="flex-shrink-0 w-[120px]">{{ $t('setting.maxTokens') }} </span>
+        <div class="flex-1">
+          <NSlider v-model:value="maxTokens" :max="10240" :min="100" :step="1" />
+        </div>
+        <span>{{ maxTokens }}</span>
+        <NButton size="tiny" text type="primary" @click="updateSettings({ maxTokens })">
           {{ $t('common.save') }}
         </NButton>
       </div>

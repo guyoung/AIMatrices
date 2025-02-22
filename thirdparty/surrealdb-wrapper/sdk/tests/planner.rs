@@ -11,160 +11,187 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn select_where_iterate_three_multi_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, &three_multi_index_query("", ""), 12).await?;
-	skip_ok(&mut res, 8)?;
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' }]")?;
-	// OR results
-	check_result(&mut res, &three_multi_index_explain(false))?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, &single_index_ft_explain(false))?;
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, &three_multi_index_query("", ""), 12).await?;
+    skip_ok(&mut res, 8)?;
+    check_result(
+        &mut res,
+        "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' }]",
+    )?;
+    // OR results
+    check_result(&mut res, &three_multi_index_explain(false))?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, &single_index_ft_explain(false))?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_three_multi_index_parallel() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, &three_multi_index_query("", "PARALLEL"), 12).await?;
-	skip_ok(&mut res, 8)?;
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' }]")?;
-	check_result(&mut res, &three_multi_index_explain(true))?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, &single_index_ft_explain(true))?;
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, &three_multi_index_query("", "PARALLEL"), 12).await?;
+    skip_ok(&mut res, 8)?;
+    // OR results
+    check_result(
+        &mut res,
+        "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' }]",
+    )?;
+    check_result(&mut res, &three_multi_index_explain(true))?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, &single_index_ft_explain(true))?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_three_multi_index_with_all_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(
-		&dbs,
-		&three_multi_index_query("WITH INDEX uniq_name,idx_genre,ft_company", ""),
-		12,
-	)
-	.await?;
-	skip_ok(&mut res, 8)?;
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' }]")?;
-	check_result(&mut res, &three_multi_index_explain(false))?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, &single_index_ft_explain(false))?;
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(
+        &dbs,
+        &three_multi_index_query("WITH INDEX uniq_name,idx_genre,ft_company", ""),
+        12,
+    )
+    .await?;
+    skip_ok(&mut res, 8)?;
+    // OR results
+    check_result(
+        &mut res,
+        "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' }]",
+    )?;
+    check_result(&mut res, &three_multi_index_explain(false))?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, &single_index_ft_explain(false))?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_three_multi_index_with_one_ft_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res =
-		execute_test(&dbs, &three_multi_index_query("WITH INDEX ft_company", ""), 12).await?;
-	skip_ok(&mut res, 8)?;
+    let dbs = new_ds().await?;
+    let mut res = execute_test(
+        &dbs,
+        &three_multi_index_query("WITH INDEX ft_company", ""),
+        12,
+    )
+    .await?;
+    skip_ok(&mut res, 8)?;
 
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' } ]")?;
-	check_result(&mut res, &three_table_explain(false))?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, &single_index_ft_explain(false))?;
-	Ok(())
+    // OR results
+    check_result(
+        &mut res,
+        "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' } ]",
+    )?;
+    check_result(&mut res, &three_table_explain(false))?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, &single_index_ft_explain(false))?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_three_multi_index_with_one_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res =
-		execute_test(&dbs, &three_multi_index_query("WITH INDEX uniq_name", ""), 12).await?;
-	skip_ok(&mut res, 8)?;
+    let dbs = new_ds().await?;
+    let mut res = execute_test(
+        &dbs,
+        &three_multi_index_query("WITH INDEX uniq_name", ""),
+        12,
+    )
+    .await?;
+    skip_ok(&mut res, 8)?;
 
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' } ]")?;
-	check_result(&mut res, &three_table_explain(false))?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, &single_index_uniq_explain(false))?;
-	Ok(())
+    // OR results
+    check_result(
+        &mut res,
+        "[{ name: 'Jaime' }, { name: 'Lizzie' }, { name: 'Tobie' } ]",
+    )?;
+    check_result(&mut res, &three_table_explain(false))?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, &single_index_uniq_explain(false))?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_two_multi_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, &two_multi_index_query("", ""), 9).await?;
-	skip_ok(&mut res, 5)?;
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
-	check_result(&mut res, TWO_MULTI_INDEX_EXPLAIN)?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, SINGLE_INDEX_IDX_EXPLAIN)?;
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, &two_multi_index_query("", ""), 9).await?;
+    skip_ok(&mut res, 5)?;
+    // OR results
+    check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
+    check_result(&mut res, TWO_MULTI_INDEX_EXPLAIN)?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, SINGLE_INDEX_IDX_EXPLAIN)?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_two_multi_index_with_one_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, &two_multi_index_query("WITH INDEX idx_genre", ""), 9).await?;
-	skip_ok(&mut res, 5)?;
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
-	check_result(&mut res, &table_explain(2))?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, SINGLE_INDEX_IDX_EXPLAIN)?;
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, &two_multi_index_query("WITH INDEX idx_genre", ""), 9).await?;
+    skip_ok(&mut res, 5)?;
+    // OR results
+    check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
+    check_result(&mut res, &table_explain(2))?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, SINGLE_INDEX_IDX_EXPLAIN)?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_two_multi_index_with_two_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res =
-		execute_test(&dbs, &two_multi_index_query("WITH INDEX idx_genre,uniq_name", ""), 9).await?;
-	skip_ok(&mut res, 5)?;
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
-	check_result(&mut res, TWO_MULTI_INDEX_EXPLAIN)?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, SINGLE_INDEX_IDX_EXPLAIN)?;
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(
+        &dbs,
+        &two_multi_index_query("WITH INDEX idx_genre,uniq_name", ""),
+        9,
+    )
+    .await?;
+    skip_ok(&mut res, 5)?;
+    // OR results
+    check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
+    check_result(&mut res, TWO_MULTI_INDEX_EXPLAIN)?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, SINGLE_INDEX_IDX_EXPLAIN)?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_iterate_two_no_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, &two_multi_index_query("WITH NOINDEX", ""), 9).await?;
-	skip_ok(&mut res, 5)?;
-	// OR results
-	check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
-	check_result(&mut res, &table_explain_no_index(2))?;
-	// AND results
-	check_result(&mut res, "[{name: 'Jaime'}]")?;
-	check_result(&mut res, &table_explain_no_index(1))?;
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, &two_multi_index_query("WITH NOINDEX", ""), 9).await?;
+    skip_ok(&mut res, 5)?;
+    // OR results
+    check_result(&mut res, "[{ name: 'Jaime' }, { name: 'Tobie' }]")?;
+    check_result(&mut res, &table_explain_no_index(2))?;
+    // AND results
+    check_result(&mut res, "[{name: 'Jaime'}]")?;
+    check_result(&mut res, &table_explain_no_index(1))?;
+    Ok(())
 }
 
 async fn execute_test(
-	dbs: &Datastore,
-	sql: &str,
-	expected_result: usize,
+    dbs: &Datastore,
+    sql: &str,
+    expected_result: usize,
 ) -> Result<Vec<Response>, Error> {
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), expected_result);
-	Ok(res)
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), expected_result);
+    Ok(res)
 }
 
 fn check_result(res: &mut Vec<Response>, expected: &str) -> Result<(), Error> {
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(expected);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(expected);
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 fn two_multi_index_query(with: &str, parallel: &str) -> String {
-	format!(
+    format!(
 		"CREATE person:tobie SET name = 'Tobie', genre='m', company='SurrealDB';
 		CREATE person:jaime SET name = 'Jaime', genre='m', company='SurrealDB';
 		CREATE person:lizzie SET name = 'Lizzie', genre='f', company='SurrealDB';
@@ -178,7 +205,7 @@ fn two_multi_index_query(with: &str, parallel: &str) -> String {
 }
 
 fn three_multi_index_query(with: &str, parallel: &str) -> String {
-	format!("
+    format!("
 		CREATE person:tobie SET name = 'Tobie', genre='m', company='SurrealDB';
 		CREATE person:jaime SET name = 'Jaime', genre='m', company='SurrealDB';
 		CREATE person:lizzie SET name = 'Lizzie', genre='f', company='SurrealDB';
@@ -194,8 +221,8 @@ fn three_multi_index_query(with: &str, parallel: &str) -> String {
 }
 
 fn table_explain(fetch_count: usize) -> String {
-	format!(
-		"[
+    format!(
+        "[
 			{{
 				detail: {{
 					table: 'person'
@@ -215,12 +242,12 @@ fn table_explain(fetch_count: usize) -> String {
 				operation: 'Fetch'
 			}}
 		]"
-	)
+    )
 }
 
 fn table_explain_no_index(fetch_count: usize) -> String {
-	format!(
-		"[
+    format!(
+        "[
 			{{
 				detail: {{
 					table: 'person'
@@ -246,17 +273,17 @@ fn table_explain_no_index(fetch_count: usize) -> String {
 				operation: 'Fetch'
 			}}
 		]"
-	)
+    )
 }
 
 fn three_table_explain(parallel: bool) -> String {
-	let collector = if parallel {
-		"AsyncMemoryOrdered"
-	} else {
-		"MemoryOrdered"
-	};
-	format!(
-		"[
+    let collector = if parallel {
+        "AsyncMemoryOrdered"
+    } else {
+        "MemoryOrdered"
+    };
+    format!(
+        "[
 			{{
 				detail: {{
 					table: 'person'
@@ -276,17 +303,17 @@ fn three_table_explain(parallel: bool) -> String {
 				operation: 'Fetch'
 			}}
 		]"
-	)
+    )
 }
 
 fn three_multi_index_explain(parallel: bool) -> String {
-	let collector = if parallel {
-		"AsyncMemoryOrdered"
-	} else {
-		"MemoryOrdered"
-	};
-	format!(
-		"[
+    let collector = if parallel {
+        "AsyncMemoryOrdered"
+    } else {
+        "MemoryOrdered"
+    };
+    format!(
+        "[
 				{{
 					detail: {{
 						plan: {{
@@ -333,17 +360,17 @@ fn three_multi_index_explain(parallel: bool) -> String {
 					operation: 'Fetch'
 				}}
 			]"
-	)
+    )
 }
 
 fn single_index_ft_explain(parallel: bool) -> String {
-	let collector = if parallel {
-		"AsyncMemoryOrdered"
-	} else {
-		"MemoryOrdered"
-	};
-	format!(
-		"[
+    let collector = if parallel {
+        "AsyncMemoryOrdered"
+    } else {
+        "MemoryOrdered"
+    };
+    format!(
+        "[
 				{{
 					detail: {{
 						plan: {{
@@ -368,17 +395,17 @@ fn single_index_ft_explain(parallel: bool) -> String {
 					operation: 'Fetch'
 				}}
 			]"
-	)
+    )
 }
 
 fn single_index_uniq_explain(parallel: bool) -> String {
-	let collector = if parallel {
-		"AsyncMemoryOrdered"
-	} else {
-		"MemoryOrdered"
-	};
-	format!(
-		"[
+    let collector = if parallel {
+        "AsyncMemoryOrdered"
+    } else {
+        "MemoryOrdered"
+    };
+    format!(
+        "[
 				{{
 					detail: {{
 						plan: {{
@@ -403,7 +430,7 @@ fn single_index_uniq_explain(parallel: bool) -> String {
 					operation: 'Fetch'
 				}}
 			]"
-	)
+    )
 }
 
 const SINGLE_INDEX_IDX_EXPLAIN: &str = "[
@@ -471,15 +498,19 @@ const TWO_MULTI_INDEX_EXPLAIN: &str = "[
 
 #[tokio::test]
 async fn select_with_no_index_unary_operator() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let mut res = dbs
-		.execute("SELECT * FROM table WITH NOINDEX WHERE !param.subparam EXPLAIN", &ses, None)
-		.await?;
-	assert_eq!(res.len(), 1);
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let mut res = dbs
+        .execute(
+            "SELECT * FROM table WITH NOINDEX WHERE !param.subparam EXPLAIN",
+            &ses,
+            None,
+        )
+        .await?;
+    assert_eq!(res.len(), 1);
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						table: 'table'
@@ -499,21 +530,26 @@ async fn select_with_no_index_unary_operator() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_unsupported_unary_operator() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let mut res =
-		dbs.execute("SELECT * FROM table WHERE !param.subparam EXPLAIN", &ses, None).await?;
-	assert_eq!(res.len(), 1);
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let mut res = dbs
+        .execute(
+            "SELECT * FROM table WHERE !param.subparam EXPLAIN",
+            &ses,
+            None,
+        )
+        .await?;
+    assert_eq!(res.len(), 1);
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						table: 'table'
@@ -533,24 +569,16 @@ async fn select_unsupported_unary_operator() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 fn range_test(unique: bool, from_incl: bool, to_incl: bool) -> String {
-	let from_op = if from_incl {
-		">="
-	} else {
-		">"
-	};
-	let to_op = if to_incl {
-		"<="
-	} else {
-		"<"
-	};
-	format!(
-		"DEFINE INDEX year ON TABLE test COLUMNS year {};
+    let from_op = if from_incl { ">=" } else { ">" };
+    let to_op = if to_incl { "<=" } else { "<" };
+    format!(
+        "DEFINE INDEX year ON TABLE test COLUMNS year {};
 	CREATE test:0 SET year = 2000;
 	CREATE test:10 SET year = 2010;
 	CREATE test:15 SET year = 2015;
@@ -558,44 +586,36 @@ fn range_test(unique: bool, from_incl: bool, to_incl: bool) -> String {
 	CREATE test:20 SET year = 2020;
 	SELECT id FROM test WHERE year {} 2000 AND year {} 2020 EXPLAIN;
 	SELECT id FROM test WHERE year {} 2000 AND year {} 2020;",
-		if unique {
-			"UNIQUE"
-		} else {
-			""
-		},
-		if unique {
-			"2016"
-		} else {
-			"2015"
-		},
-		from_op,
-		to_op,
-		from_op,
-		to_op,
-	)
+        if unique { "UNIQUE" } else { "" },
+        if unique { "2016" } else { "2015" },
+        from_op,
+        to_op,
+        from_op,
+        to_op,
+    )
 }
 
 async fn select_range(
-	unique: bool,
-	from_incl: bool,
-	to_incl: bool,
-	explain: &str,
-	result: &str,
+    unique: bool,
+    from_incl: bool,
+    to_incl: bool,
+    explain: &str,
+    result: &str,
 ) -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, &range_test(unique, from_incl, to_incl), 8).await?;
-	skip_ok(&mut res, 6)?;
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(explain);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(result);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, &range_test(unique, from_incl, to_incl), 8).await?;
+    skip_ok(&mut res, 6)?;
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(explain);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(result);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    Ok(())
 }
 
 const EXPLAIN_FROM_TO: &str = r"[
@@ -637,12 +657,12 @@ const RESULT_FROM_TO: &str = r"[
 	]";
 #[tokio::test]
 async fn select_index_range_from_to() -> Result<(), Error> {
-	select_range(false, false, false, EXPLAIN_FROM_TO, RESULT_FROM_TO).await
+    select_range(false, false, false, EXPLAIN_FROM_TO, RESULT_FROM_TO).await
 }
 
 #[tokio::test]
 async fn select_unique_range_from_to() -> Result<(), Error> {
-	select_range(true, false, false, EXPLAIN_FROM_TO, RESULT_FROM_TO).await
+    select_range(true, false, false, EXPLAIN_FROM_TO, RESULT_FROM_TO).await
 }
 
 const EXPLAIN_FROM_INCL_TO: &str = r"[
@@ -688,12 +708,19 @@ const RESULT_FROM_INCL_TO: &str = r"[
 
 #[tokio::test]
 async fn select_index_range_from_incl_to() -> Result<(), Error> {
-	select_range(false, true, false, EXPLAIN_FROM_INCL_TO, RESULT_FROM_INCL_TO).await
+    select_range(
+        false,
+        true,
+        false,
+        EXPLAIN_FROM_INCL_TO,
+        RESULT_FROM_INCL_TO,
+    )
+    .await
 }
 
 #[tokio::test]
 async fn select_unique_range_from_incl_to() -> Result<(), Error> {
-	select_range(true, true, false, EXPLAIN_FROM_INCL_TO, RESULT_FROM_INCL_TO).await
+    select_range(true, true, false, EXPLAIN_FROM_INCL_TO, RESULT_FROM_INCL_TO).await
 }
 
 const EXPLAIN_FROM_TO_INCL: &str = r"[
@@ -739,12 +766,19 @@ const RESULT_FROM_TO_INCL: &str = r"[
 
 #[tokio::test]
 async fn select_index_range_from_to_incl() -> Result<(), Error> {
-	select_range(false, false, true, EXPLAIN_FROM_TO_INCL, RESULT_FROM_TO_INCL).await
+    select_range(
+        false,
+        false,
+        true,
+        EXPLAIN_FROM_TO_INCL,
+        RESULT_FROM_TO_INCL,
+    )
+    .await
 }
 
 #[tokio::test]
 async fn select_unique_range_from_to_incl() -> Result<(), Error> {
-	select_range(true, false, true, EXPLAIN_FROM_TO_INCL, RESULT_FROM_TO_INCL).await
+    select_range(true, false, true, EXPLAIN_FROM_TO_INCL, RESULT_FROM_TO_INCL).await
 }
 
 const EXPLAIN_FROM_INCL_TO_INCL: &str = r"[
@@ -793,52 +827,62 @@ const RESULT_FROM_INCL_TO_INCL: &str = r"[
 
 #[tokio::test]
 async fn select_index_range_from_incl_to_incl() -> Result<(), Error> {
-	select_range(false, true, true, EXPLAIN_FROM_INCL_TO_INCL, RESULT_FROM_INCL_TO_INCL).await
+    select_range(
+        false,
+        true,
+        true,
+        EXPLAIN_FROM_INCL_TO_INCL,
+        RESULT_FROM_INCL_TO_INCL,
+    )
+    .await
 }
 
 #[tokio::test]
 async fn select_unique_range_from_incl_to_incl() -> Result<(), Error> {
-	select_range(true, true, true, EXPLAIN_FROM_INCL_TO_INCL, RESULT_FROM_INCL_TO_INCL).await
+    select_range(
+        true,
+        true,
+        true,
+        EXPLAIN_FROM_INCL_TO_INCL,
+        RESULT_FROM_INCL_TO_INCL,
+    )
+    .await
 }
 
 fn single_range_operator_test(unique: bool, op: &str) -> String {
-	format!(
-		"DEFINE INDEX year ON TABLE test COLUMNS year {};
+    format!(
+        "DEFINE INDEX year ON TABLE test COLUMNS year {};
 		CREATE test:10 SET year = 2010;
 		CREATE test:15 SET year = 2015;
 		CREATE test:20 SET year = 2020;
 		SELECT id FROM test WHERE year {} 2015 EXPLAIN;
 		SELECT id FROM test WHERE year {} 2015;",
-		if unique {
-			"UNIQUE"
-		} else {
-			""
-		},
-		op,
-		op,
-	)
+        if unique { "UNIQUE" } else { "" },
+        op,
+        op,
+    )
 }
 
 async fn select_single_range_operator(
-	unique: bool,
-	op: &str,
-	explain: &str,
-	result: &str,
+    unique: bool,
+    op: &str,
+    explain: &str,
+    result: &str,
 ) -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, &single_range_operator_test(unique, op), 6).await?;
-	skip_ok(&mut res, 4)?;
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(explain);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(result);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	Ok(())
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, &single_range_operator_test(unique, op), 6).await?;
+    skip_ok(&mut res, 4)?;
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(explain);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(result);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    Ok(())
 }
 
 const EXPLAIN_LESS: &str = r"[
@@ -874,12 +918,12 @@ const RESULT_LESS: &str = r"[
 	]";
 #[tokio::test]
 async fn select_index_single_range_operator_less() -> Result<(), Error> {
-	select_single_range_operator(false, "<", EXPLAIN_LESS, RESULT_LESS).await
+    select_single_range_operator(false, "<", EXPLAIN_LESS, RESULT_LESS).await
 }
 
 #[tokio::test]
 async fn select_unique_single_range_operator_less() -> Result<(), Error> {
-	select_single_range_operator(true, "<", EXPLAIN_LESS, RESULT_LESS).await
+    select_single_range_operator(true, "<", EXPLAIN_LESS, RESULT_LESS).await
 }
 
 const EXPLAIN_LESS_OR_EQUAL: &str = r"[
@@ -919,12 +963,12 @@ const RESULT_LESS_OR_EQUAL: &str = r"[
 
 #[tokio::test]
 async fn select_index_single_range_operator_less_or_equal() -> Result<(), Error> {
-	select_single_range_operator(false, "<=", EXPLAIN_LESS_OR_EQUAL, RESULT_LESS_OR_EQUAL).await
+    select_single_range_operator(false, "<=", EXPLAIN_LESS_OR_EQUAL, RESULT_LESS_OR_EQUAL).await
 }
 
 #[tokio::test]
 async fn select_unique_single_range_operator_less_or_equal() -> Result<(), Error> {
-	select_single_range_operator(true, "<=", EXPLAIN_LESS_OR_EQUAL, RESULT_LESS_OR_EQUAL).await
+    select_single_range_operator(true, "<=", EXPLAIN_LESS_OR_EQUAL, RESULT_LESS_OR_EQUAL).await
 }
 
 const EXPLAIN_MORE: &str = r"[
@@ -960,12 +1004,12 @@ const RESULT_MORE: &str = r"[
 	]";
 #[tokio::test]
 async fn select_index_single_range_operator_more() -> Result<(), Error> {
-	select_single_range_operator(false, ">", EXPLAIN_MORE, RESULT_MORE).await
+    select_single_range_operator(false, ">", EXPLAIN_MORE, RESULT_MORE).await
 }
 
 #[tokio::test]
 async fn select_unique_single_range_operator_more() -> Result<(), Error> {
-	select_single_range_operator(true, ">", EXPLAIN_MORE, RESULT_MORE).await
+    select_single_range_operator(true, ">", EXPLAIN_MORE, RESULT_MORE).await
 }
 
 const EXPLAIN_MORE_OR_EQUAL: &str = r"[
@@ -1005,32 +1049,32 @@ const RESULT_MORE_OR_EQUAL: &str = r"[
 
 #[tokio::test]
 async fn select_index_single_range_operator_more_or_equal() -> Result<(), Error> {
-	select_single_range_operator(false, ">=", EXPLAIN_MORE_OR_EQUAL, RESULT_MORE_OR_EQUAL).await
+    select_single_range_operator(false, ">=", EXPLAIN_MORE_OR_EQUAL, RESULT_MORE_OR_EQUAL).await
 }
 
 #[tokio::test]
 async fn select_unique_single_range_operator_more_or_equal() -> Result<(), Error> {
-	select_single_range_operator(true, ">=", EXPLAIN_MORE_OR_EQUAL, RESULT_MORE_OR_EQUAL).await
+    select_single_range_operator(true, ">=", EXPLAIN_MORE_OR_EQUAL, RESULT_MORE_OR_EQUAL).await
 }
 
 #[tokio::test]
 async fn select_with_idiom_param_value() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let sql = "
 		CREATE person:tobie SET name = 'Tobie', genre='m', company='SurrealDB';
 		CREATE person:jaime SET name = 'Jaime', genre='m', company='SurrealDB';
 		DEFINE INDEX name ON TABLE person COLUMNS name UNIQUE;
 		LET $name = 'Tobie';
 		LET $nameObj = {{name:'Tobie'}};
 		SELECT name FROM person WHERE name = $nameObj.name EXPLAIN;"
-		.to_owned();
-	let mut res = dbs.execute(&sql, &ses, None).await?;
-	assert_eq!(res.len(), 6);
-	skip_ok(&mut res, 5)?;
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+        .to_owned();
+    let mut res = dbs.execute(&sql, &ses, None).await?;
+    assert_eq!(res.len(), 6);
+    skip_ok(&mut res, 5)?;
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						plan: {
@@ -1049,9 +1093,9 @@ async fn select_with_idiom_param_value() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 const CONTAINS_CONTENT: &str = r#"
@@ -1093,44 +1137,44 @@ const CONTAINS_TABLE_EXPLAIN: &str = r"[
 				]";
 
 async fn test_contains(
-	dbs: &Datastore,
-	sql: &str,
-	index_explain: &str,
-	result: &str,
+    dbs: &Datastore,
+    sql: &str,
+    index_explain: &str,
+    result: &str,
 ) -> Result<(), Error> {
-	let mut res = execute_test(dbs, sql, 5).await?;
+    let mut res = execute_test(dbs, sql, 5).await?;
 
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(CONTAINS_TABLE_EXPLAIN);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(result);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	skip_ok(&mut res, 1)?;
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(index_explain);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	{
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(result);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	Ok(())
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(CONTAINS_TABLE_EXPLAIN);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(result);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    skip_ok(&mut res, 1)?;
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(index_explain);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(result);
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_contains() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, CONTAINS_CONTENT, 3).await?;
-	skip_ok(&mut res, 3)?;
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, CONTAINS_CONTENT, 3).await?;
+    skip_ok(&mut res, 3)?;
 
-	const SQL: &str = r#"
+    const SQL: &str = r#"
 		SELECT id FROM student WHERE marks.*.subject CONTAINS "english" EXPLAIN;
 		SELECT id FROM student WHERE marks.*.subject CONTAINS "english";
 		DEFINE INDEX subject_idx ON student COLUMNS marks.*.subject;
@@ -1138,7 +1182,7 @@ async fn select_contains() -> Result<(), Error> {
 		SELECT id FROM student WHERE marks.*.subject CONTAINS "english";
 	"#;
 
-	const INDEX_EXPLAIN: &str = r"[
+    const INDEX_EXPLAIN: &str = r"[
 				{
 					detail: {
 						plan: {
@@ -1157,7 +1201,7 @@ async fn select_contains() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]";
-	const RESULT: &str = r"[
+    const RESULT: &str = r"[
 		{
 			id: student:1
 		},
@@ -1166,22 +1210,22 @@ async fn select_contains() -> Result<(), Error> {
 		}
 	]";
 
-	test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
+    test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
 }
 
 #[tokio::test]
 async fn select_contains_all() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, CONTAINS_CONTENT, 3).await?;
-	skip_ok(&mut res, 3)?;
-	const SQL: &str = r#"
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, CONTAINS_CONTENT, 3).await?;
+    skip_ok(&mut res, 3)?;
+    const SQL: &str = r#"
 		SELECT id FROM student WHERE marks.*.subject CONTAINSALL ["hindi", "maths"] EXPLAIN;
 		SELECT id FROM student WHERE marks.*.subject CONTAINSALL ["hindi", "maths"];
 		DEFINE INDEX subject_idx ON student COLUMNS marks.*.subject;
 		SELECT id FROM student WHERE marks.*.subject CONTAINSALL ["hindi", "maths"] EXPLAIN;
 		SELECT id FROM student WHERE marks.*.subject CONTAINSALL ["hindi", "maths"];
 	"#;
-	const INDEX_EXPLAIN: &str = r"[
+    const INDEX_EXPLAIN: &str = r"[
 				{
 					detail: {
 						plan: {
@@ -1200,7 +1244,7 @@ async fn select_contains_all() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]";
-	const RESULT: &str = r"[
+    const RESULT: &str = r"[
 		{
 			id: student:2
 		},
@@ -1209,22 +1253,22 @@ async fn select_contains_all() -> Result<(), Error> {
 		}
 	]";
 
-	test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
+    test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
 }
 
 #[tokio::test]
 async fn select_contains_any() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, CONTAINS_CONTENT, 3).await?;
-	skip_ok(&mut res, 3)?;
-	const SQL: &str = r#"
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, CONTAINS_CONTENT, 3).await?;
+    skip_ok(&mut res, 3)?;
+    const SQL: &str = r#"
 		SELECT id FROM student WHERE marks.*.subject CONTAINSANY ["tamil", "french"] EXPLAIN;
 		SELECT id FROM student WHERE marks.*.subject CONTAINSANY ["tamil", "french"];
 		DEFINE INDEX subject_idx ON student COLUMNS marks.*.subject;
 		SELECT id FROM student WHERE marks.*.subject CONTAINSANY ["tamil", "french"] EXPLAIN;
 		SELECT id FROM student WHERE marks.*.subject CONTAINSANY ["tamil", "french"];
 	"#;
-	const INDEX_EXPLAIN: &str = r"[
+    const INDEX_EXPLAIN: &str = r"[
 				{
 					detail: {
 						plan: {
@@ -1243,7 +1287,7 @@ async fn select_contains_any() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]";
-	const RESULT: &str = r"[
+    const RESULT: &str = r"[
 		{
 			id: student:1
 		},
@@ -1252,7 +1296,7 @@ async fn select_contains_any() -> Result<(), Error> {
 		}
 	]";
 
-	test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
+    test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
 }
 
 const CONTAINS_UNIQUE_CONTENT: &str = r#"
@@ -1262,11 +1306,11 @@ const CONTAINS_UNIQUE_CONTENT: &str = r#"
 
 #[tokio::test]
 async fn select_unique_contains() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let mut res = execute_test(&dbs, CONTAINS_UNIQUE_CONTENT, 3).await?;
-	skip_ok(&mut res, 3)?;
+    let dbs = new_ds().await?;
+    let mut res = execute_test(&dbs, CONTAINS_UNIQUE_CONTENT, 3).await?;
+    skip_ok(&mut res, 3)?;
 
-	const SQL: &str = r#"
+    const SQL: &str = r#"
 		SELECT id FROM student WHERE subject CONTAINS "english" EXPLAIN;
 		SELECT id FROM student WHERE subject CONTAINS "english";
 		DEFINE INDEX subject_idx ON student COLUMNS subject UNIQUE;
@@ -1274,7 +1318,7 @@ async fn select_unique_contains() -> Result<(), Error> {
 		SELECT id FROM student WHERE subject CONTAINS "english";
 	"#;
 
-	const INDEX_EXPLAIN: &str = r"[
+    const INDEX_EXPLAIN: &str = r"[
 				{
 					detail: {
 						plan: {
@@ -1293,13 +1337,13 @@ async fn select_unique_contains() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]";
-	const RESULT: &str = r"[
+    const RESULT: &str = r"[
 		{
 			id: student:2
 		}
 	]";
 
-	test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
+    test_contains(&dbs, SQL, INDEX_EXPLAIN, RESULT).await
 }
 
 #[tokio::test]
@@ -1307,10 +1351,10 @@ async fn select_unique_contains() -> Result<(), Error> {
 // 1. Datetime are recognized by the query planner
 // 2. we can take the value store in a variable
 async fn select_with_datetime_value() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
 
-	let sql = "
+    let sql = "
 		DEFINE FIELD created_at ON TABLE test_user TYPE datetime;
 		DEFINE INDEX createdAt ON TABLE test_user COLUMNS created_at;
 		LET $now = d'2023-12-25T17:13:01.940183014Z';
@@ -1319,15 +1363,15 @@ async fn select_with_datetime_value() -> Result<(), Error> {
 		SELECT * FROM test_user WHERE created_at = d'2023-12-25T17:13:01.940183014Z' EXPLAIN;
 		SELECT * FROM test_user WHERE created_at = $now;
 		SELECT * FROM test_user WHERE created_at = d'2023-12-25T17:13:01.940183014Z';";
-	let mut res = dbs.execute(sql, &ses, None).await?;
+    let mut res = dbs.execute(sql, &ses, None).await?;
 
-	assert_eq!(res.len(), 8);
-	skip_ok(&mut res, 4)?;
+    assert_eq!(res.len(), 8);
+    skip_ok(&mut res, 4)?;
 
-	for _ in 0..2 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    for _ in 0..2 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
 					detail: {
 						plan: {
@@ -1346,23 +1390,23 @@ async fn select_with_datetime_value() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
 
-	for _ in 0..2 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    for _ in 0..2 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
         			"created_at": d"2023-12-25T17:13:01.940183014Z",
         			"id": test_user:1
     			}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	Ok(())
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    Ok(())
 }
 
 #[tokio::test]
@@ -1370,10 +1414,10 @@ async fn select_with_datetime_value() -> Result<(), Error> {
 // 1. UUID are recognized by the query planner
 // 2. we can take the value from a object stored as a variable
 async fn select_with_uuid_value() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
 
-	let sql = "
+    let sql = "
 		DEFINE INDEX sessionUid ON sessions FIELDS sessionUid;
 		CREATE sessions:1 CONTENT { sessionUid: u'00ad70db-f435-442e-9012-1cd853102084' };
 		LET $sess = { uuid: u'00ad70db-f435-442e-9012-1cd853102084' };
@@ -1382,15 +1426,15 @@ async fn select_with_uuid_value() -> Result<(), Error> {
 		SELECT * FROM sessions WHERE sessionUid = u'00ad70db-f435-442e-9012-1cd853102084';
 		SELECT * FROM sessions WHERE sessionUid = $sess.uuid;
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
+    let mut res = dbs.execute(sql, &ses, None).await?;
 
-	assert_eq!(res.len(), 7);
-	skip_ok(&mut res, 3)?;
+    assert_eq!(res.len(), 7);
+    skip_ok(&mut res, 3)?;
 
-	for _ in 0..2 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    for _ in 0..2 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
 					detail: {
 						plan: {
@@ -1409,32 +1453,32 @@ async fn select_with_uuid_value() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
 
-	for _ in 0..2 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    for _ in 0..2 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
                		"id": sessions:1,
  					"sessionUid": u"00ad70db-f435-442e-9012-1cd853102084"
     			}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
 
-	Ok(())
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_in_operator() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
 
-	let sql = "
+    let sql = "
 		DEFINE INDEX user_email_idx ON user FIELDS email;
 		CREATE user:1 CONTENT { email: 'a@b' };
 		CREATE user:2 CONTENT { email: 'c@d' };
@@ -1443,15 +1487,15 @@ async fn select_with_in_operator() -> Result<(), Error> {
 		SELECT * FROM user WHERE email IN ['a@b', 'e@f'];
 		SELECT * FROM user WHERE email INSIDE ['a@b', 'e@f'];
 		";
-	let mut res = dbs.execute(sql, &ses, None).await?;
+    let mut res = dbs.execute(sql, &ses, None).await?;
 
-	assert_eq!(res.len(), 7);
-	skip_ok(&mut res, 3)?;
+    assert_eq!(res.len(), 7);
+    skip_ok(&mut res, 3)?;
 
-	for _ in 0..2 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    for _ in 0..2 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
 					detail: {
 						plan: {
@@ -1470,31 +1514,31 @@ async fn select_with_in_operator() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
 
-	for _ in 0..2 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    for _ in 0..2 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
                		'id': user:1,
  					'email': 'a@b'
     			}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	Ok(())
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_in_operator_uniq_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
 
-	let sql = r#"
+    let sql = r#"
 		DEFINE INDEX apprenantUid ON apprenants FIELDS apprenantUid UNIQUE;
 		CREATE apprenants:1 CONTENT { apprenantUid: "00013483-fedd-43e3-a94e-80728d896f6e" };
 		SELECT apprenantUid FROM apprenants WHERE apprenantUid in [];
@@ -1504,30 +1548,30 @@ async fn select_with_in_operator_uniq_index() -> Result<(), Error> {
 		SELECT apprenantUid FROM apprenants WHERE apprenantUid IN ["99999999-aaaa-1111-8888-abcdef012345", "00013483-fedd-43e3-a94e-80728d896f6e", "99999999-aaaa-1111-8888-abcdef012345"];
 		SELECT apprenantUid FROM apprenants WHERE apprenantUid IN ["00013483-fedd-43e3-a94e-80728d896f6e"] EXPLAIN;
 	"#;
-	let mut res = dbs.execute(sql, &ses, None).await?;
+    let mut res = dbs.execute(sql, &ses, None).await?;
 
-	assert_eq!(res.len(), 8);
-	skip_ok(&mut res, 2)?;
+    assert_eq!(res.len(), 8);
+    skip_ok(&mut res, 2)?;
 
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(r#"[]"#);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(r#"[]"#);
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
 
-	for _ in 0..4 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    for _ in 0..4 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 			{
 				apprenantUid: '00013483-fedd-43e3-a94e-80728d896f6e'
 			}
 		]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
 
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				detail: {
 					plan: {
@@ -1548,17 +1592,17 @@ async fn select_with_in_operator_uniq_index() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
 
-	let sql = r#"
+    let sql = r#"
 		DEFINE INDEX index_note_id ON TABLE notes COLUMNS id;
 		DEFINE INDEX index_note_kind ON TABLE notes COLUMNS kind;
 		DEFINE INDEX index_note_pubkey ON TABLE notes COLUMNS pubkey;
@@ -1577,14 +1621,14 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 		SELECT * FROM notes WHERE (kind IN [1,2] AND published < 2022) OR (pubkey IN [123] AND published > 2022) EXPLAIN;
 		SELECT * FROM notes WHERE (kind IN [1,2] AND published < 2022) OR (pubkey IN [123] AND published > 2022);
 	"#;
-	let mut res = dbs.execute(sql, &ses, None).await?;
-	//
-	assert_eq!(res.len(), 17);
-	skip_ok(&mut res, 9)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let mut res = dbs.execute(sql, &ses, None).await?;
+    //
+    assert_eq!(res.len(), 17);
+    skip_ok(&mut res, 9)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						"detail": {
 							"plan": {
@@ -1636,12 +1680,12 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					id: notes:3,
 					kind: 1,
@@ -1661,12 +1705,12 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 					published: 2024
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						"detail": {
 							"plan": {
@@ -1718,12 +1762,12 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				id: notes:3,
 				kind: 1,
@@ -1731,12 +1775,12 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 				published: 2023
 			}
 		]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						"detail": {
 							"plan": {
@@ -1805,12 +1849,12 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					id: notes:1,
 					kind: 1,
@@ -1836,12 +1880,12 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 					published: 2024
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						"detail": {
 							"plan": {
@@ -1910,12 +1954,12 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					id: notes:1,
 					kind: 1,
@@ -1941,17 +1985,17 @@ async fn select_with_in_operator_multiple_indexes() -> Result<(), Error> {
 					published: 2024
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_record_id_link_no_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE FIELD name ON TABLE t TYPE string;
 		DEFINE FIELD t ON TABLE i TYPE record<t>;
 		CREATE t:1 SET name = 'h';
@@ -1961,23 +2005,23 @@ async fn select_with_record_id_link_no_index() -> Result<(), Error> {
 		SELECT * FROM i WHERE t.name = 'h';
 		SELECT * FROM i WHERE t.name = 'h' EXPLAIN;
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
-	//
-	assert_eq!(res.len(), 8);
-	skip_ok(&mut res, 6)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let mut res = dbs.execute(sql, &ses, None).await?;
+    //
+    assert_eq!(res.len(), 8);
+    skip_ok(&mut res, 6)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{ "id": i:A, "t": t:1 },
 				{ "id": i:B, "t": t:2 }
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						table: 'i'
@@ -1991,18 +2035,18 @@ async fn select_with_record_id_link_no_index() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_record_id_link_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE INDEX i_t_id ON TABLE i COLUMNS t;
 		DEFINE INDEX t_name_idx ON TABLE t COLUMNS name;
 		DEFINE FIELD name ON TABLE t TYPE string;
@@ -2014,21 +2058,21 @@ async fn select_with_record_id_link_index() -> Result<(), Error> {
 		SELECT * FROM i WHERE t.name = 'h' EXPLAIN;
 		SELECT * FROM i WHERE t.name = 'h';
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
-	//
-	assert_eq!(res.len(), 10);
-	skip_ok(&mut res, 8)?;
-	//
-	let expected = Value::parse(
-		r#"[
+    let mut res = dbs.execute(sql, &ses, None).await?;
+    //
+    assert_eq!(res.len(), 10);
+    skip_ok(&mut res, 8)?;
+    //
+    let expected = Value::parse(
+        r#"[
 				{ "id": i:A, "t": t:1 },
 				{ "id": i:B, "t": t:2 }
 			]"#,
-	);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						detail: {
 							plan: {
@@ -2053,21 +2097,21 @@ async fn select_with_record_id_link_index() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_record_id_link_unique_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE INDEX i_t_unique_id ON TABLE i COLUMNS t UNIQUE;
 		DEFINE INDEX t_name_idx ON TABLE t COLUMNS name;
 		DEFINE FIELD name ON TABLE t TYPE string;
@@ -2079,21 +2123,21 @@ async fn select_with_record_id_link_unique_index() -> Result<(), Error> {
 		SELECT * FROM i WHERE t.name = 'h' EXPLAIN;
 		SELECT * FROM i WHERE t.name = 'h';
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
-	//
-	assert_eq!(res.len(), 10);
-	skip_ok(&mut res, 8)?;
-	//
-	let expected = Value::parse(
-		r#"[
+    let mut res = dbs.execute(sql, &ses, None).await?;
+    //
+    assert_eq!(res.len(), 10);
+    skip_ok(&mut res, 8)?;
+    //
+    let expected = Value::parse(
+        r#"[
 				{ "id": i:A, "t": t:1 },
 				{ "id": i:B, "t": t:2 }
 			]"#,
-	);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						detail: {
 							plan: {
@@ -2118,20 +2162,20 @@ async fn select_with_record_id_link_unique_index() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
+    //
+    Ok(())
 }
 #[tokio::test]
 async fn select_with_record_id_link_unique_remote_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE INDEX i_t_id ON TABLE i COLUMNS t;
 		DEFINE INDEX t_name_unique_idx ON TABLE t COLUMNS name UNIQUE;
 		DEFINE FIELD name ON TABLE t TYPE string;
@@ -2143,21 +2187,21 @@ async fn select_with_record_id_link_unique_remote_index() -> Result<(), Error> {
 		SELECT * FROM i WHERE t.name IN ['a', 'b'] EXPLAIN;
 		SELECT * FROM i WHERE t.name IN ['a', 'b'];
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
-	//
-	assert_eq!(res.len(), 10);
-	skip_ok(&mut res, 8)?;
-	//
-	let expected = Value::parse(
-		r#"[
+    let mut res = dbs.execute(sql, &ses, None).await?;
+    //
+    assert_eq!(res.len(), 10);
+    skip_ok(&mut res, 8)?;
+    //
+    let expected = Value::parse(
+        r#"[
 				{ "id": i:A, "t": t:1 },
 				{ "id": i:B, "t": t:2 }
 			]"#,
-	);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						detail: {
 							plan: {
@@ -2185,21 +2229,21 @@ async fn select_with_record_id_link_unique_remote_index() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_record_id_link_full_text_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE ANALYZER name TOKENIZERS class FILTERS lowercase,ngram(1,128);
 		DEFINE INDEX t_name_search_idx ON TABLE t COLUMNS name SEARCH ANALYZER name BM25 HIGHLIGHTS;
 		DEFINE INDEX i_t_id ON TABLE i COLUMNS t;
@@ -2210,14 +2254,14 @@ async fn select_with_record_id_link_full_text_index() -> Result<(), Error> {
 		SELECT * FROM i WHERE t.name @@ 'world' EXPLAIN;
 		SELECT * FROM i WHERE t.name @@ 'world';
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
+    let mut res = dbs.execute(sql, &ses, None).await?;
 
-	assert_eq!(res.len(), 9);
-	skip_ok(&mut res, 7)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    assert_eq!(res.len(), 9);
+    skip_ok(&mut res, 7)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						plan: {
@@ -2242,22 +2286,22 @@ async fn select_with_record_id_link_full_text_index() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(r#"[{ "id": i:A, "t": t:1}]"#);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(r#"[{ "id": i:A, "t": t:1}]"#);
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_record_id_link_full_text_no_record_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE ANALYZER name TOKENIZERS class FILTERS lowercase,ngram(1,128);
 		DEFINE INDEX t_name_search_idx ON TABLE t COLUMNS name SEARCH ANALYZER name BM25 HIGHLIGHTS;
 		DEFINE FIELD name ON TABLE t TYPE string;
@@ -2267,14 +2311,14 @@ async fn select_with_record_id_link_full_text_no_record_index() -> Result<(), Er
 		SELECT * FROM i WHERE t.name @@ 'world' EXPLAIN;
 		SELECT * FROM i WHERE t.name @@ 'world';
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
+    let mut res = dbs.execute(sql, &ses, None).await?;
 
-	assert_eq!(res.len(), 8);
-	skip_ok(&mut res, 6)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    assert_eq!(res.len(), 8);
+    skip_ok(&mut res, 6)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 					{
 						detail: {
 							table: 'i'
@@ -2288,22 +2332,22 @@ async fn select_with_record_id_link_full_text_no_record_index() -> Result<(), Er
 						operation: 'Collector'
 					}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(r#"[{ "id": i:A, "t": t:1}]"#);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(r#"[{ "id": i:A, "t": t:1}]"#);
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_record_id_index() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		CREATE t:1 SET links = [a:2, a:1];
 		CREATE t:2 SET links = [a:3, a:4];
 		SELECT * FROM t WHERE links CONTAINS a:2;
@@ -2320,27 +2364,27 @@ async fn select_with_record_id_index() -> Result<(), Error> {
 		SELECT * FROM t WHERE a:2 IN links;
 		SELECT * FROM t WHERE a:2 IN links EXPLAIN;
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
+    let mut res = dbs.execute(sql, &ses, None).await?;
 
-	let expected = Value::parse(
-		r#"[
+    let expected = Value::parse(
+        r#"[
 			{
 				id: t:1,
 				links: [ a:2, a:1 ]
 			}
 		]"#,
-	);
-	//
-	assert_eq!(res.len(), 15);
-	skip_ok(&mut res, 2)?;
-	//
-	for t in ["CONTAINS", "CONTAINSANY", "IN"] {
-		let tmp = res.remove(0).result?;
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", expected), "{t}");
-		//
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    );
+    //
+    assert_eq!(res.len(), 15);
+    skip_ok(&mut res, 2)?;
+    //
+    for t in ["CONTAINS", "CONTAINSANY", "IN"] {
+        let tmp = res.remove(0).result?;
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", expected), "{t}");
+        //
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
 					detail: {
 						table: 't'
@@ -2354,18 +2398,18 @@ async fn select_with_record_id_index() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	}
-	//
-	skip_ok(&mut res, 1)?;
-	// CONTAINS
-	let tmp = res.remove(0).result?;
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
-	// CONTAINS EXPLAIN
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    }
+    //
+    skip_ok(&mut res, 1)?;
+    // CONTAINS
+    let tmp = res.remove(0).result?;
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
+    // CONTAINS EXPLAIN
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						plan: {
@@ -2384,15 +2428,15 @@ async fn select_with_record_id_index() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	// CONTAINSANY
-	let tmp = res.remove(0).result?;
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
-	// CONTAINSANY EXPLAIN
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    // CONTAINSANY
+    let tmp = res.remove(0).result?;
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
+    // CONTAINSANY EXPLAIN
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						plan: {
@@ -2413,15 +2457,15 @@ async fn select_with_record_id_index() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	// IN
-	let tmp = res.remove(0).result?;
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
-	// IN EXPLAIN
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    // IN
+    let tmp = res.remove(0).result?;
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", expected));
+    // IN EXPLAIN
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						plan: {
@@ -2440,17 +2484,17 @@ async fn select_with_record_id_index() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_exact_operator() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE INDEX idx ON TABLE t COLUMNS b;
 		DEFINE INDEX uniq ON TABLE t COLUMNS i;
 		CREATE t:1 set b = true, i = 1;
@@ -2460,26 +2504,26 @@ async fn select_with_exact_operator() -> Result<(), Error> {
 		SELECT * FROM t WHERE i == 2;
 		SELECT * FROM t WHERE i == 2 EXPLAIN;
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
-	//
-	assert_eq!(res.len(), 8);
-	skip_ok(&mut res, 4)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let mut res = dbs.execute(sql, &ses, None).await?;
+    //
+    assert_eq!(res.len(), 8);
+    skip_ok(&mut res, 4)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				b: true,
 				i: 1,
 				id: t:1
 			}
 		]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						plan: {
@@ -2498,25 +2542,25 @@ async fn select_with_exact_operator() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				b: false,
 				i: 2,
 				id: t:2
 			}
 		]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 				{
 					detail: {
 						plan: {
@@ -2535,18 +2579,18 @@ async fn select_with_exact_operator() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]"#,
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_with_non_boolean_expression() -> Result<(), Error> {
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	//
-	let sql = "
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    //
+    let sql = "
 		DEFINE INDEX idx ON t FIELDS v;
 		CREATE t:1 set v = 1;
 		CREATE t:2 set v = 2;
@@ -2563,26 +2607,26 @@ async fn select_with_non_boolean_expression() -> Result<(), Error> {
 		SELECT * FROM t WHERE v > $p3 - ( math::max([0, $p1]) + $p1 );
 		SELECT * FROM t WHERE v > $p3 - ( math::max([0, $p1]) + $p1 ) EXPLAIN;
 	";
-	let mut res = dbs.execute(sql, &ses, None).await?;
-	//
-	assert_eq!(res.len(), 15);
-	skip_ok(&mut res, 5)?;
-	//
-	for i in 0..5 {
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+    let mut res = dbs.execute(sql, &ses, None).await?;
+    //
+    assert_eq!(res.len(), 15);
+    skip_ok(&mut res, 5)?;
+    //
+    for i in 0..5 {
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 				{
 					id: t:2,
 					v: 2
 				}
 			]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val), "{i}");
-		//
-		let tmp = res.remove(0).result?;
-		let val = Value::parse(
-			r#"[
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val), "{i}");
+        //
+        let tmp = res.remove(0).result?;
+        let val = Value::parse(
+            r#"[
 					{
 						detail: {
 							plan: {
@@ -2607,17 +2651,17 @@ async fn select_with_non_boolean_expression() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 				]"#,
-		);
-		assert_eq!(format!("{:#}", tmp), format!("{:#}", val), "{i}");
-	}
-	//
-	Ok(())
+        );
+        assert_eq!(format!("{:#}", tmp), format!("{:#}", val), "{i}");
+    }
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_from_standard_index_ascending() -> Result<(), Error> {
-	//
-	let sql = "
+    //
+    let sql = "
 		DEFINE INDEX time ON TABLE session COLUMNS time;
 		CREATE session:1 SET time = d'2024-07-01T01:00:00Z';
 		CREATE session:2 SET time = d'2024-06-30T23:00:00Z';
@@ -2630,11 +2674,11 @@ async fn select_from_standard_index_ascending() -> Result<(), Error> {
 		SELECT * FROM session ORDER BY time ASC EXPLAIN;
 		SELECT * FROM session ORDER BY time ASC;
 	";
-	let mut t = Test::new(sql).await?;
-	t.skip_ok(7)?;
-	//
-	t.expect_vals(&[
-		"[
+    let mut t = Test::new(sql).await?;
+    t.skip_ok(7)?;
+    //
+    t.expect_vals(&[
+        "[
 			{
 				detail: {
 					plan: {
@@ -2652,7 +2696,7 @@ async fn select_from_standard_index_ascending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:3,
 				other: 'test'
@@ -2670,7 +2714,7 @@ async fn select_from_standard_index_ascending() -> Result<(), Error> {
 				time: d'2024-06-30T23:30:00Z'
 			}
 		]",
-		"[
+        "[
 			{
 				detail: {
 					plan: {
@@ -2688,7 +2732,7 @@ async fn select_from_standard_index_ascending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:3,
 				other: 'test'
@@ -2714,15 +2758,15 @@ async fn select_from_standard_index_ascending() -> Result<(), Error> {
 				time: d'2024-07-01T02:00:00Z'
 			}
 		]",
-	])?;
-	//
-	Ok(())
+    ])?;
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_from_unique_index_ascending() -> Result<(), Error> {
-	//
-	let sql = "
+    //
+    let sql = "
 		DEFINE INDEX time ON TABLE session COLUMNS time UNIQUE;
 		CREATE session:1 SET time = d'2024-07-01T01:00:00Z';
 		CREATE session:2 SET time = d'2024-06-30T23:00:00Z';
@@ -2735,11 +2779,11 @@ async fn select_from_unique_index_ascending() -> Result<(), Error> {
 		SELECT * FROM session ORDER BY time ASC EXPLAIN;
 		SELECT * FROM session ORDER BY time ASC;
 	";
-	let mut t = Test::new(sql).await?;
-	t.skip_ok(7)?;
-	//
-	t.expect_vals(&[
-		"[
+    let mut t = Test::new(sql).await?;
+    t.skip_ok(7)?;
+    //
+    t.expect_vals(&[
+        "[
 			{
 				detail: {
 					plan: {
@@ -2757,7 +2801,7 @@ async fn select_from_unique_index_ascending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:2,
 				time: d'2024-06-30T23:00:00Z'
@@ -2771,7 +2815,7 @@ async fn select_from_unique_index_ascending() -> Result<(), Error> {
 				time: d'2024-07-01T01:00:00Z'
 			}
 		]",
-		"[
+        "[
 			{
 				detail: {
 					plan: {
@@ -2789,7 +2833,7 @@ async fn select_from_unique_index_ascending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:2,
 				time: d'2024-06-30T23:00:00Z'
@@ -2807,15 +2851,15 @@ async fn select_from_unique_index_ascending() -> Result<(), Error> {
 				time: d'2024-07-01T02:00:00Z'
 			}
 		]",
-	])?;
-	//
-	Ok(())
+    ])?;
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_from_standard_index_descending() -> Result<(), Error> {
-	//
-	let sql = "
+    //
+    let sql = "
 		DEFINE INDEX time ON TABLE session COLUMNS time;
 		CREATE session:1 SET time = d'2024-07-01T01:00:00Z';
 		CREATE session:2 SET time = d'2024-06-30T23:00:00Z';
@@ -2828,11 +2872,11 @@ async fn select_from_standard_index_descending() -> Result<(), Error> {
 		SELECT * FROM session ORDER BY time DESC EXPLAIN;
 		SELECT * FROM session ORDER BY time DESC;
 	";
-	let mut t = Test::new(sql).await?;
-	t.skip_ok(7)?;
-	//
-	t.expect_vals(&[
-		"[
+    let mut t = Test::new(sql).await?;
+    t.skip_ok(7)?;
+    //
+    t.expect_vals(&[
+        "[
 			{
 				detail: {
 					table: 'session'
@@ -2846,7 +2890,7 @@ async fn select_from_standard_index_descending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:5,
 				time: d'2024-07-01T02:00:00Z'
@@ -2864,7 +2908,7 @@ async fn select_from_standard_index_descending() -> Result<(), Error> {
 				time: d'2024-06-30T23:00:00Z'
 			}
 		]",
-		"[
+        "[
 			{
 				detail: {
 					table: 'session'
@@ -2878,7 +2922,7 @@ async fn select_from_standard_index_descending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:5,
 				time: d'2024-07-01T02:00:00Z'
@@ -2904,15 +2948,15 @@ async fn select_from_standard_index_descending() -> Result<(), Error> {
 				other: 'test'
 			}
 		]",
-	])?;
-	//
-	Ok(())
+    ])?;
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_from_unique_index_descending() -> Result<(), Error> {
-	//
-	let sql = "
+    //
+    let sql = "
 		DEFINE INDEX time ON TABLE session COLUMNS time UNIQUE;
 		CREATE session:1 SET time = d'2024-07-01T01:00:00Z';
 		CREATE session:2 SET time = d'2024-06-30T23:00:00Z';
@@ -2925,11 +2969,11 @@ async fn select_from_unique_index_descending() -> Result<(), Error> {
 		SELECT * FROM session ORDER BY time DESC EXPLAIN;
 		SELECT * FROM session ORDER BY time DESC;
 	";
-	let mut t = Test::new(sql).await?;
-	t.skip_ok(7)?;
-	//
-	t.expect_vals(&[
-		"[
+    let mut t = Test::new(sql).await?;
+    t.skip_ok(7)?;
+    //
+    t.expect_vals(&[
+        "[
 			{
 				detail: {
 					table: 'session'
@@ -2943,7 +2987,7 @@ async fn select_from_unique_index_descending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:5,
 				time: d'2024-07-01T02:00:00Z'
@@ -2957,7 +3001,7 @@ async fn select_from_unique_index_descending() -> Result<(), Error> {
 				time: d'2024-06-30T23:30:00Z'
 			}
 		]",
-		"[
+        "[
 			{
 				detail: {
 					table: 'session'
@@ -2971,7 +3015,7 @@ async fn select_from_unique_index_descending() -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: session:5,
 				time: d'2024-07-01T02:00:00Z'
@@ -2997,15 +3041,15 @@ async fn select_from_unique_index_descending() -> Result<(), Error> {
 				other: 'test'
 			}
 		]",
-	])?;
-	//
-	Ok(())
+    ])?;
+    //
+    Ok(())
 }
 
 async fn select_composite_index(unique: bool) -> Result<(), Error> {
-	//
-	let sql = format!(
-		"
+    //
+    let sql = format!(
+        "
 		DEFINE INDEX t_idx ON TABLE t COLUMNS on, value {};
 		CREATE t:1 SET on = true, value = 1;
 		CREATE t:2 SET on = false, value = 1;
@@ -3016,19 +3060,15 @@ async fn select_composite_index(unique: bool) -> Result<(), Error> {
 		SELECT * FROM t WHERE on = false AND value = 2 EXPLAIN;
 		SELECT * FROM t WHERE on = false AND value = 2;
 	",
-		if unique {
-			"UNIQUE"
-		} else {
-			""
-		}
-	);
-	let mut t = Test::new(&sql).await?;
-	//
-	t.expect_size(9)?;
-	t.skip_ok(5)?;
-	//
-	t.expect_vals(&[
-		"[
+        if unique { "UNIQUE" } else { "" }
+    );
+    let mut t = Test::new(&sql).await?;
+    //
+    t.expect_size(9)?;
+    t.skip_ok(5)?;
+    //
+    t.expect_vals(&[
+        "[
 			{
 				detail: {
 					plan: {
@@ -3047,7 +3087,7 @@ async fn select_composite_index(unique: bool) -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: t:1,
 				on: true,
@@ -3059,7 +3099,7 @@ async fn select_composite_index(unique: bool) -> Result<(), Error> {
 				value: 2
 			}
 		]",
-		"[
+        "[
 			{
 				detail: {
 					plan: {
@@ -3078,31 +3118,31 @@ async fn select_composite_index(unique: bool) -> Result<(), Error> {
 				operation: 'Collector'
 			}
 		]",
-		"[
+        "[
 			{
 				id: t:4,
 				on: false,
 				value: 2
 			}
 		]",
-	])?;
-	//
-	Ok(())
+    ])?;
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_composite_standard_index() -> Result<(), Error> {
-	select_composite_index(false).await
+    select_composite_index(false).await
 }
 
 #[tokio::test]
 async fn select_composite_unique_index() -> Result<(), Error> {
-	select_composite_index(true).await
+    select_composite_index(true).await
 }
 
 #[tokio::test]
 async fn select_where_index_boolean_behaviour() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		DEFINE INDEX flagIndex ON TABLE test COLUMNS flag;
 		CREATE test:t CONTENT { flag:true };
 		CREATE test:f CONTENT { flag:false };
@@ -3111,12 +3151,12 @@ async fn select_where_index_boolean_behaviour() -> Result<(), Error> {
 		SELECT * FROM test WITH NOINDEX WHERE (true OR flag==true);
 		SELECT * FROM test WHERE (true OR flag=true);
 		SELECT * FROM test WHERE (true OR flag==true);";
-	let mut t = Test::new(sql).await?;
-	t.expect_size(8)?;
-	t.skip_ok(3)?;
-	for i in 0..5 {
-		t.expect_val_info(
-			"[
+    let mut t = Test::new(sql).await?;
+    t.expect_size(8)?;
+    t.skip_ok(3)?;
+    for i in 0..5 {
+        t.expect_val_info(
+            "[
 					{
 						flag: false,
 						id: test:f
@@ -3126,15 +3166,15 @@ async fn select_where_index_boolean_behaviour() -> Result<(), Error> {
 						id: test:t
 					}
 				]",
-			i,
-		)?;
-	}
-	Ok(())
+            i,
+        )?;
+    }
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_memory_ordered_collector() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		CREATE |i:1500| SET v = rand::guid() RETURN NONE;
 		SELECT v FROM i ORDER BY RAND() EXPLAIN;
 		SELECT v FROM i ORDER BY v EXPLAIN;
@@ -3144,12 +3184,12 @@ async fn select_memory_ordered_collector() -> Result<(), Error> {
 		SELECT v FROM i ORDER BY v PARALLEL;
 		SELECT v FROM i ORDER BY RAND();
 		SELECT v FROM i ORDER BY RAND() PARALLEL;";
-	let mut t = Test::new(sql).await?;
-	t.expect_size(9)?;
-	t.skip_ok(1)?;
-	// Check explain plans
-	t.expect_val(
-		"[
+    let mut t = Test::new(sql).await?;
+    t.expect_size(9)?;
+    t.skip_ok(1)?;
+    // Check explain plans
+    t.expect_val(
+        "[
 				{
 					detail: {
 						table: 'i'
@@ -3163,9 +3203,9 @@ async fn select_memory_ordered_collector() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]",
-	)?;
-	t.expect_val(
-		"[
+    )?;
+    t.expect_val(
+        "[
 				{
 					detail: {
 						table: 'i'
@@ -3179,10 +3219,10 @@ async fn select_memory_ordered_collector() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]",
-	)?;
-	for _ in 0..2 {
-		t.expect_val(
-			"[
+    )?;
+    for _ in 0..2 {
+        t.expect_val(
+            "[
 				{
 					detail: {
 						table: 'i'
@@ -3196,51 +3236,57 @@ async fn select_memory_ordered_collector() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]",
-		)?;
-	}
+        )?;
+    }
 
-	// Extract the array from a value
-	let mut get_array = || {
-		let v = t.next_value()?;
-		if let Value::Array(a) = &v {
-			assert_eq!(a.len(), 1500);
-			Ok::<_, Error>(a.to_vec())
-		} else {
-			panic!("Expected a Value::Array but get: {v}");
-		}
-	};
+    // Extract the array from a value
+    let mut get_array = || {
+        let v = t.next_value()?;
+        if let Value::Array(a) = &v {
+            assert_eq!(a.len(), 1500);
+            Ok::<_, Error>(a.to_vec())
+        } else {
+            panic!("Expected a Value::Array but get: {v}");
+        }
+    };
 
-	// Check that the values are sorted `ORDER BY v`
-	for _ in 0..2 {
-		let a = get_array()?;
-		assert!(a.windows(2).all(|w| w[0] <= w[1]), "Values are not sorted: {a:?}");
-	}
+    // Check that the values are sorted `ORDER BY v`
+    for _ in 0..2 {
+        let a = get_array()?;
+        assert!(
+            a.windows(2).all(|w| w[0] <= w[1]),
+            "Values are not sorted: {a:?}"
+        );
+    }
 
-	// Check that the values are not sorted `ORDER BY RAND()`
-	for _ in 0..2 {
-		let a = get_array()?;
-		assert!(a.windows(2).any(|w| w[0] <= w[1]), "Values are not random: {a:?}");
-	}
-	// With an array of 1500, there is a probability of factorial 1500! that `ORDER BY RAND()` returns a sorted array
-	// At a rate of one test per minute, we're SURE that approximately 10^4,104.8 years from now a test WILL fail.
-	// For perspective, this time frame is far longer than the age of the universe,
-	// but well, my apologies if that even happen ¯\_(ツ)_/¯
-	Ok(())
+    // Check that the values are not sorted `ORDER BY RAND()`
+    for _ in 0..2 {
+        let a = get_array()?;
+        assert!(
+            a.windows(2).any(|w| w[0] <= w[1]),
+            "Values are not random: {a:?}"
+        );
+    }
+    // With an array of 1500, there is a probability of factorial 1500! that `ORDER BY RAND()` returns a sorted array
+    // At a rate of one test per minute, we're SURE that approximately 10^4,104.8 years from now a test WILL fail.
+    // For perspective, this time frame is far longer than the age of the universe,
+    // but well, my apologies if that even happen ¯\_(ツ)_/¯
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_limit_start_parallel() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		CREATE |item:1000|;
 		SELECT * FROM item LIMIT 10 START 0 PARALLEL;";
-	let mut t = Test::new(sql).await?;
-	t.expect_size(2)?;
-	t.skip_ok(1)?;
-	let r = t.next()?.result?;
-	if let Value::Array(a) = r {
-		assert_eq!(a.len(), 10);
-	} else {
-		panic!("Unexpected value: {r:#}");
-	}
-	Ok(())
+    let mut t = Test::new(sql).await?;
+    t.expect_size(2)?;
+    t.skip_ok(1)?;
+    let r = t.next()?.result?;
+    if let Value::Array(a) = r {
+        assert_eq!(a.len(), 10);
+    } else {
+        panic!("Unexpected value: {r:#}");
+    }
+    Ok(())
 }

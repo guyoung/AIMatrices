@@ -14,22 +14,22 @@ pub(crate) const TOKEN: &str = "$surrealdb::private::sql::Table";
 pub struct Tables(pub Vec<Table>);
 
 impl From<Table> for Tables {
-	fn from(v: Table) -> Self {
-		Tables(vec![v])
-	}
+    fn from(v: Table) -> Self {
+        Tables(vec![v])
+    }
 }
 
 impl Deref for Tables {
-	type Target = Vec<Table>;
-	fn deref(&self) -> &Self::Target {
-		&self.0
-	}
+    type Target = Vec<Table>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl Display for Tables {
-	fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-		Display::fmt(&Fmt::comma_separated(&self.0), f)
-	}
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Display::fmt(&Fmt::comma_separated(&self.0), f)
+    }
 }
 
 #[revisioned(revision = 1)]
@@ -40,41 +40,41 @@ impl Display for Tables {
 pub struct Table(#[serde(with = "no_nul_bytes")] pub String);
 
 impl From<String> for Table {
-	fn from(v: String) -> Self {
-		Self(v)
-	}
+    fn from(v: String) -> Self {
+        Self(v)
+    }
 }
 
 impl From<&str> for Table {
-	fn from(v: &str) -> Self {
-		Self::from(String::from(v))
-	}
+    fn from(v: &str) -> Self {
+        Self::from(String::from(v))
+    }
 }
 
 impl From<Ident> for Table {
-	fn from(v: Ident) -> Self {
-		Self(v.0)
-	}
+    fn from(v: Ident) -> Self {
+        Self(v.0)
+    }
 }
 
 impl Deref for Table {
-	type Target = String;
-	fn deref(&self) -> &Self::Target {
-		&self.0
-	}
+    type Target = String;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl Table {
-	pub fn generate(&self) -> Thing {
-		Thing {
-			tb: self.0.to_owned(),
-			id: Id::rand(),
-		}
-	}
+    pub fn generate(&self) -> Thing {
+        Thing {
+            tb: self.0.to_owned(),
+            id: Id::rand(),
+        }
+    }
 }
 
 impl Display for Table {
-	fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-		Display::fmt(&escape_ident(&self.0), f)
-	}
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Display::fmt(&escape_ident(&self.0), f)
+    }
 }

@@ -22,55 +22,51 @@ use js::{Ctx, Function, Module, Promise};
 /// # Safety
 /// Caller must ensure that the runtime from which `Ctx` originates cannot outlife 'a.
 pub unsafe fn create_query_data<'a>(
-	context: &'a Context,
-	opt: &'a Options,
-	doc: Option<&'a CursorDoc>,
-	ctx: &Ctx<'_>,
+    context: &'a Context,
+    opt: &'a Options,
+    doc: Option<&'a CursorDoc>,
+    ctx: &Ctx<'_>,
 ) -> Result<(), js::Error> {
-	// remove the restricting lifetime.
-	let ctx = Ctx::from_raw(ctx.as_raw());
+    // remove the restricting lifetime.
+    let ctx = Ctx::from_raw(ctx.as_raw());
 
-	ctx.store_userdata(QueryContext {
-		context,
-		opt,
-		doc,
-	})
-	.expect("userdata shouldn't be in use");
+    ctx.store_userdata(QueryContext { context, opt, doc })
+        .expect("userdata shouldn't be in use");
 
-	Ok(())
+    Ok(())
 }
 
 pub async fn run(
-	context: &Context,
-	opt: &Options,
-	doc: Option<&CursorDoc>,
-	src: &str,
-	arg: Vec<Value>,
+    context: &Context,
+    opt: &Options,
+    doc: Option<&CursorDoc>,
+    src: &str,
+    arg: Vec<Value>,
 ) -> Result<Value, Error> {
-	// Check the context
-	if context.is_done() {
-		return Ok(Value::None);
-	}
-	// Create a JavaScript context
-	let run = js::AsyncRuntime::new().unwrap();
-	// Explicitly set max stack size to 256 KiB
-	run.set_max_stack_size(*SCRIPTING_MAX_STACK_SIZE).await;
-	// Explicitly set max memory size to 2 MB
-	run.set_memory_limit(*SCRIPTING_MAX_MEMORY_LIMIT).await;
-	// Ensure scripts are cancelled with context
-	let cancellation = context.cancellation();
-	let handler = Box::new(move || cancellation.is_done());
-	run.set_interrupt_handler(Some(handler)).await;
-	// Create an execution context
-	let ctx = js::AsyncContext::full(&run).await.unwrap();
-	// Set the module resolver and loader
-	run.set_loader(resolver(), loader()).await;
-	// Create the main function structure
-	let src = format!(
+    // Check the context
+    if context.is_done() {
+        return Ok(Value::None);
+    }
+    // Create a JavaScript context
+    let run = js::AsyncRuntime::new().unwrap();
+    // Explicitly set max stack size to 256 KiB
+    run.set_max_stack_size(*SCRIPTING_MAX_STACK_SIZE).await;
+    // Explicitly set max memory size to 2 MB
+    run.set_memory_limit(*SCRIPTING_MAX_MEMORY_LIMIT).await;
+    // Ensure scripts are cancelled with context
+    let cancellation = context.cancellation();
+    let handler = Box::new(move || cancellation.is_done());
+    run.set_interrupt_handler(Some(handler)).await;
+    // Create an execution context
+    let ctx = js::AsyncContext::full(&run).await.unwrap();
+    // Set the module resolver and loader
+    run.set_loader(resolver(), loader()).await;
+    // Create the main function structure
+    let src = format!(
 		"export default async function() {{ try {{ {src} }} catch(e) {{ return (e instanceof Error) ? e : new Error(e); }} }}"
 	);
-	// Attempt to execute the script
-	async_with!(ctx => |ctx| {
+    // Attempt to execute the script
+    async_with!(ctx => |ctx| {
 		let res = async {
 			// Get the context global object
 			let global = ctx.globals();

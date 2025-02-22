@@ -13,17 +13,17 @@ fn ok(ctx: Ctx, value: Value, message: Opt<Value>) -> Result<()> {
             if value.as_bool().unwrap() {
                 return Ok(());
             }
-        },
+        }
         Type::Float | Type::Int => {
             if value.as_number().unwrap() != 0.0 {
                 return Ok(());
             }
-        },
+        }
         Type::String => {
             if !value.as_string().unwrap().to_string().unwrap().is_empty() {
                 return Ok(());
             }
-        },
+        }
         Type::Array
         | Type::BigInt
         | Type::Constructor
@@ -32,8 +32,8 @@ fn ok(ctx: Ctx, value: Value, message: Opt<Value>) -> Result<()> {
         | Type::Symbol
         | Type::Object => {
             return Ok(());
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     if let Some(obj) = message.0 {
@@ -41,9 +41,9 @@ fn ok(ctx: Ctx, value: Value, message: Opt<Value>) -> Result<()> {
             Type::String => {
                 let msg = obj.as_string().unwrap().to_string().unwrap();
                 return Err(Exception::throw_message(&ctx, &msg));
-            },
+            }
             Type::Exception => return Err(obj.as_exception().cloned().unwrap().throw()),
-            _ => {},
+            _ => {}
         };
     }
 

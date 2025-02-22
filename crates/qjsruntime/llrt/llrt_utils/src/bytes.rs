@@ -83,28 +83,28 @@ impl<'js> ObjectBytes<'js> {
             ObjectBytes::I8Array(array) => array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED),
             ObjectBytes::U16Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::I16Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::U32Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::I32Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::U64Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::I64Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::F32Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::F64Array(array) => {
                 array.as_bytes().expect(ERROR_MSG_ARRAY_BUFFER_DETACHED)
-            },
+            }
             ObjectBytes::DataView(array_buffer) => array_buffer
                 .as_bytes()
                 .expect(ERROR_MSG_ARRAY_BUFFER_DETACHED),
@@ -182,7 +182,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::I8Array(typed_array) => {
                 let byte_length = typed_array.len();
                 (
@@ -190,7 +190,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::U16Array(typed_array) => {
                 let byte_length = typed_array.len() * 2;
                 (
@@ -198,7 +198,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::I16Array(typed_array) => {
                 let byte_length = typed_array.len() * 2;
                 (
@@ -206,7 +206,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::U32Array(typed_array) => {
                 let byte_length = typed_array.len() * 4;
                 (
@@ -214,7 +214,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::I32Array(typed_array) => {
                 let byte_length = typed_array.len() * 4;
                 (
@@ -222,7 +222,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::U64Array(typed_array) => {
                 let byte_length = typed_array.len() * 8;
                 (
@@ -230,7 +230,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::I64Array(typed_array) => {
                 let byte_length = typed_array.len() * 8;
                 (
@@ -238,7 +238,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::F32Array(typed_array) => {
                 let byte_length = typed_array.len() * 4;
                 (
@@ -246,7 +246,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             ObjectBytes::F64Array(typed_array) => {
                 let byte_length = typed_array.len() * 8;
                 (
@@ -254,7 +254,7 @@ impl<'js> ObjectBytes<'js> {
                     byte_length,
                     typed_array.get("byteOffset")?,
                 )
-            },
+            }
             _ => return Ok(None),
         };
 

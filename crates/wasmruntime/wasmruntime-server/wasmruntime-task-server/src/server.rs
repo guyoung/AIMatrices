@@ -66,7 +66,6 @@ impl TaskServer {
                                         println!("Execute job {} error: {}", component, e);
                                     }
                                 }
-
                             }
                         })
                     },
@@ -78,7 +77,7 @@ impl TaskServer {
         scheduler.start().await?;
 
         // Wait while the jobs run
-        tokio::time::sleep(Duration::from_secs(100)).await;
+        tokio::time::sleep(Duration::from_millis(100)).await;
 
         Ok(())
     }

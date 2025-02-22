@@ -10,7 +10,6 @@ use rquickjs::{
 
 use llrt_utils::bytes::{bytes_to_typed_array, ObjectBytes};
 
-
 use crate::{
     module_builder::ModuleInfo, modules::module::export_default, utils::result::ResultExt,
 };

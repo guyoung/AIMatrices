@@ -188,10 +188,7 @@ fn main() {
     config.define("LLAMA_BUILD_EXAMPLES", "OFF");
     config.define("LLAMA_BUILD_SERVER", "OFF");
 
-    config.define(
-        "BUILD_SHARED_LIBS",
-         "OFF",
-    );
+    config.define("BUILD_SHARED_LIBS", "OFF");
 
     if cfg!(target_os = "macos") {
         config.define("GGML_BLAS", "OFF");
@@ -235,12 +232,10 @@ fn main() {
             panic!("Unsupported Android target {target}");
         }
         config.define("GGML_LLAMAFILE", "OFF");
-
     }
 
     if cfg!(feature = "vulkan") {
         config.define("GGML_VULKAN", "ON");
-
     }
 
     config.define("GGML_OPENMP", "OFF");
@@ -262,7 +257,7 @@ fn main() {
     println!("cargo:rustc-link-search={}", build_dir.display());
 
     // Link libraries
-    let llama_libs_kind =  "static";
+    let llama_libs_kind = "static";
     let llama_libs = extract_lib_names(&out_dir);
     assert_ne!(llama_libs.len(), 0);
 
@@ -303,7 +298,6 @@ fn main() {
             println!("cargo:rustc-link-search={}", path);
         }
     }
-
 }
 
 fn add_cpp_link_stdlib() {

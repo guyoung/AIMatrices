@@ -14,44 +14,24 @@ use bootstrap::Bootstrap;
 #[command(author, version)]
 #[command(about = "AIMatrices", long_about = None)]
 pub struct Args {
-    #[arg(
-        short = 'i',
-        long = "ip",
-        default_value = "127.0.0.1"
-    )]
+    #[arg(short = 'i', long = "ip", default_value = "127.0.0.1")]
     pub ip: String,
 
-
-    #[arg(
-        short = 'p',
-        long = "port",
-        default_value_t = 21500
-    )]
+    #[arg(short = 'p', long = "port", default_value_t = 21500)]
     pub port: u16,
 
-    #[arg(
-        long = "appdir",
-        default_value = "./app_data"
-    )]
+    #[arg(long = "appdir", default_value = "./app_data")]
     pub app_dir: String,
 
-    #[arg(
-        long = "appconfig",
-        default_value = "./app_data/app-config.json"
-    )]
+    #[arg(long = "appconfig", default_value = "./app_data/app-config.json")]
     pub app_config: String,
 
-    #[arg(
-        long = "user",
-    )]
+    #[arg(long = "user")]
     pub user: Option<String>,
 
-    #[arg(
-        long = "pass",
-    )]
+    #[arg(long = "pass")]
     pub pass: Option<String>,
 }
-
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

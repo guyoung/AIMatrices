@@ -3,7 +3,6 @@
 use llrt_utils::result::ResultExt;
 use rquickjs::{function::Opt, Ctx, Object, Result};
 
-
 pub fn rmdir_sync<'js>(ctx: Ctx<'js>, path: String, options: Opt<Object<'js>>) -> Result<()> {
     let recursive = get_params_rm_dir(options);
 
@@ -16,8 +15,6 @@ pub fn rmdir_sync<'js>(ctx: Ctx<'js>, path: String, options: Opt<Object<'js>>) -
 
     Ok(())
 }
-
-
 
 pub fn rmfile_sync(path: String, options: Opt<Object<'_>>) -> Result<()> {
     let (recursive, force) = get_params_rm(options);

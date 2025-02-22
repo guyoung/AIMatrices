@@ -1,4 +1,3 @@
-
 mod blob;
 mod file;
 
@@ -11,15 +10,13 @@ pub mod convert;
 
 mod fetch;
 
-
-use rquickjs::{function::Func, module::{Declarations, Exports, ModuleDef}, Class, Ctx, Result};
-
-
-use llrt_utils::{
-    module::{export_default, ModuleInfo},
+use rquickjs::{
+    function::Func,
+    module::{Declarations, Exports, ModuleDef},
+    Class, Ctx, Result,
 };
 
-
+use llrt_utils::module::{export_default, ModuleInfo};
 
 pub struct HttpModule;
 

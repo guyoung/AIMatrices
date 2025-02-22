@@ -6,7 +6,6 @@ use rquickjs::{
 use llrt_utils::{
     bytes::ObjectBytes,
     module::{export_default, ModuleInfo},
-
 };
 
 use wasmruntime_comp_sdk::key_value;

@@ -6,12 +6,11 @@ use std::{
 };
 
 use anyhow::Result;
-use rusqlite::{named_params, Connection};
 use async_trait::async_trait;
+use rusqlite::{named_params, Connection};
 use tokio::task;
 
 use spin_factor_key_value::{log_cas_error, log_error, Cas, Error, Store, StoreManager, SwapError};
-
 
 #[derive(Clone, Debug)]
 pub enum DatabaseLocation {

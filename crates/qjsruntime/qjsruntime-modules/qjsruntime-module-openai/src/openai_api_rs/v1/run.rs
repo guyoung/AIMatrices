@@ -3,11 +3,10 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-
 use crate::impl_builder_methods;
 
-use super::types;
 use super::thread::CreateThreadRequest;
+use super::types;
 
 #[derive(Debug, Serialize, Clone)]
 pub struct CreateRunRequest {

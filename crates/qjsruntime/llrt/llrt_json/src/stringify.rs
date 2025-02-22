@@ -99,11 +99,11 @@ pub fn json_stringify_replacer_space<'js>(
     match write_primitive(&mut context, false)? {
         PrimitiveStatus::Written => {
             return Ok(Some(result));
-        },
+        }
         PrimitiveStatus::Ignored => {
             return Ok(None);
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     context.depth += 1;
@@ -259,7 +259,7 @@ fn write_primitive(context: &mut StringifyContext, add_comma: bool) -> Result<Pr
             context
                 .result
                 .push_str(BOOL_STRINGS[unsafe { value.as_bool().unwrap_unchecked() } as usize]);
-        },
+        }
         Type::Int => context.result.push_str(
             context
                 .itoa_buffer
@@ -284,7 +284,7 @@ fn write_primitive(context: &mut StringifyContext, add_comma: bool) -> Result<Pr
                     unsafe { context.result.as_mut_vec().set_len(len - 2) }
                 }
             }
-        },
+        }
         Type::String => write_string(
             context.result,
             &unsafe { value.as_string().unwrap_unchecked() }.to_string()?,
@@ -320,8 +320,6 @@ fn detect_circular_reference(
     ancestors: &mut Vec<(usize, Rc<str>)>,
     itoa_buffer: &mut itoa::Buffer,
 ) -> Result<()> {
-
-
     /*** qjsruntime ***/
     /***
         let parent_ptr = unsafe { parent.unwrap().as_raw().u.ptr as usize };
@@ -331,12 +329,12 @@ fn detect_circular_reference(
     #[cfg(target_arch = "wasm32")]
     let parent_ptr = parent.unwrap().as_raw() as usize;
     #[cfg(target_arch = "wasm32")]
-    let current_ptr = value.as_raw() as usize ;
+    let current_ptr = value.as_raw() as usize;
 
     #[cfg(not(target_arch = "wasm32"))]
     let parent_ptr = unsafe { parent.unwrap().as_raw().u.ptr as usize };
     #[cfg(not(target_arch = "wasm32"))]
-    let current_ptr = unsafe { value.as_raw().u.ptr as usize};
+    let current_ptr = unsafe { value.as_raw().u.ptr as usize };
 
     while !ancestors.is_empty()
         && match ancestors.last() {
@@ -393,7 +391,7 @@ fn append_value(context: &mut StringifyContext<'_, '_>, add_comma: bool) -> Resu
             context.depth += 1;
             iterate(context)?;
             Ok(true)
-        },
+        }
     }
 }
 
@@ -494,7 +492,7 @@ fn iterate(context: &mut StringifyContext<'_, '_>) -> Result<()> {
                 write_indentation(context.result, indentation, depth);
             }
             context.result.push('}');
-        },
+        }
         Type::Array => {
             context.result.push('[');
             add_comma = false;
@@ -538,8 +536,8 @@ fn iterate(context: &mut StringifyContext<'_, '_>) -> Result<()> {
                 write_indentation(context.result, indentation, depth);
             }
             context.result.push(']');
-        },
-        _ => {},
+        }
+        _ => {}
     }
     Ok(())
 }

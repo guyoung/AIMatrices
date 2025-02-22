@@ -21,50 +21,50 @@ use url::Url;
 pub struct Test;
 
 impl IntoEndpoint<Test> for () {
-	type Client = Client;
+    type Client = Client;
 
-	fn into_endpoint(self) -> Result<Endpoint> {
-		Ok(Endpoint::new(Url::parse("test://")?))
-	}
+    fn into_endpoint(self) -> Result<Endpoint> {
+        Ok(Endpoint::new(Url::parse("test://")?))
+    }
 }
 
 #[derive(Debug, Clone)]
 pub struct Client(());
 
 impl Surreal<Client> {
-	pub fn connect<P>(
-		&self,
-		address: impl IntoEndpoint<P, Client = Client>,
-	) -> Connect<Client, ()> {
-		Connect {
-			router: self.router.clone(),
-			engine: PhantomData,
-			address: address.into_endpoint(),
-			capacity: 0,
-			waiter: self.waiter.clone(),
-			response_type: PhantomData,
-		}
-	}
+    pub fn connect<P>(
+        &self,
+        address: impl IntoEndpoint<P, Client = Client>,
+    ) -> Connect<Client, ()> {
+        Connect {
+            router: self.router.clone(),
+            engine: PhantomData,
+            address: address.into_endpoint(),
+            capacity: 0,
+            waiter: self.waiter.clone(),
+            response_type: PhantomData,
+        }
+    }
 }
 
 impl crate::api::Connection for Client {}
 
 impl Connection for Client {
-	fn connect(_address: Endpoint, capacity: usize) -> BoxFuture<'static, Result<Surreal<Self>>> {
-		Box::pin(async move {
-			let (route_tx, route_rx) = channel::bounded(capacity);
-			let mut features = HashSet::new();
-			features.insert(ExtraFeatures::Backup);
-			let router = Router {
-				features,
-				sender: route_tx,
-				last_id: AtomicI64::new(0),
-			};
-			server::mock(route_rx);
-			Ok(Surreal::new_from_router_waiter(
-				Arc::new(OnceLock::with_value(router)),
-				Arc::new(watch::channel(None)),
-			))
-		})
-	}
+    fn connect(_address: Endpoint, capacity: usize) -> BoxFuture<'static, Result<Surreal<Self>>> {
+        Box::pin(async move {
+            let (route_tx, route_rx) = channel::bounded(capacity);
+            let mut features = HashSet::new();
+            features.insert(ExtraFeatures::Backup);
+            let router = Router {
+                features,
+                sender: route_tx,
+                last_id: AtomicI64::new(0),
+            };
+            server::mock(route_rx);
+            Ok(Surreal::new_from_router_waiter(
+                Arc::new(OnceLock::with_value(router)),
+                Arc::new(watch::channel(None)),
+            ))
+        })
+    }
 }

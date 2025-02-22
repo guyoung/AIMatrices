@@ -42,7 +42,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "../../target/wasm32-wasip1/release/ai_matrices_flux_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_flux_handler_component.wasm"
       }
     },
     {
@@ -52,7 +52,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "../../target/wasm32-wasip1/release/ai_matrices_static_file_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_static_file_handler_component.wasm"
       }
     }
   ]

@@ -1,0 +1,28 @@
+[package]
+name = "http-general-js-handler-component"
+description = "AIMatrices http javascript handler"
+version = "0.2.0"
+authors = ["guyoung"]
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/guyoung/AIMatrices"
+
+[lib]
+crate-type = ["cdylib"]
+
+[package.metadata.component]
+package = "components:http-general-js-handler-component"
+
+[package.metadata.component.dependencies]
+
+[dependencies]
+wasmruntime-comp-sdk = { path = "../../crates/wasmruntime-comp-sdk", features = ["dbs"] }
+
+qjsruntime-core = { path = "../../crates/qjsruntime/qjsruntime-core"}
+
+wit-bindgen-rt = {workspace = true}
+
+anyhow = { workspace = true }
+bytes = { workspace = true }
+
+http =  { workspace = true }

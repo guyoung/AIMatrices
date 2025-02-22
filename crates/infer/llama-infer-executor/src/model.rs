@@ -24,7 +24,7 @@ pub struct ModelInstanceConfig {
     pub kv_overrides: Vec<(String, ParamOverrideValue)>,
 }
 
-impl Default for  ModelInstanceConfig {
+impl Default for ModelInstanceConfig {
     fn default() -> Self {
         Self {
             disable_gpu: false,
@@ -52,7 +52,6 @@ impl ModelInstance {
             backend.void_logs();
         }
 
-
         let model_params = {
             if !config.disable_gpu {
                 LlamaModelParams::default()
@@ -75,4 +74,6 @@ impl ModelInstance {
 
         Ok(Self { model, backend })
     }
+
+
 }

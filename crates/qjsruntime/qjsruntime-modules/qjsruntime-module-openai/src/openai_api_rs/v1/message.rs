@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
-
 use crate::impl_builder_methods;
 
 #[derive(Debug, Serialize, Clone)]

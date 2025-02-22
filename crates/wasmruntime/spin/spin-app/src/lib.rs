@@ -106,8 +106,6 @@ impl App {
             .map(|locked| AppTrigger { app: self, locked })
     }
 
-
-
     /// Returns an iterator of [`AppTrigger`]s defined for this app with
     /// the given `trigger_type`.
     pub fn triggers_with_type<'a>(

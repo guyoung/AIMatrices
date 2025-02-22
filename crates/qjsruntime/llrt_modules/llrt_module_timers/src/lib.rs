@@ -4,12 +4,9 @@ use std::{
     pin::Pin,
     ptr::NonNull,
     rc::Rc,
-    sync::{
-        Mutex, MutexGuard,
-    },
+    sync::{Mutex, MutexGuard},
     time::Duration,
 };
-
 
 use llrt_utils::module::{export_default, ModuleInfo};
 use once_cell::sync::Lazy;
@@ -22,7 +19,6 @@ use tokio::{
     sync::Notify,
     time::{Instant, Sleep},
 };
-
 
 static RT_TIMER_STATE: Lazy<Mutex<Vec<RuntimeTimerState>>> = Lazy::new(|| Mutex::new(Vec::new()));
 
@@ -75,8 +71,6 @@ fn set_immediate(cb: Function) -> Result<()> {
     cb.defer::<()>(())?;
     Ok(())
 }
-
-
 
 fn get_timer_state<'a>(
     state_ref: &'a mut MutexGuard<Vec<RuntimeTimerState>>,
@@ -158,7 +152,6 @@ pub fn init(ctx: &Ctx<'_>) -> Result<()> {
 
     let globals = ctx.globals();
 
-
     globals.set("clearTimeout", Func::from(clear_timeout_interval))?;
 
     globals.set("clearInterval", Func::from(clear_timeout_interval))?;
@@ -167,8 +160,6 @@ pub fn init(ctx: &Ctx<'_>) -> Result<()> {
 
     Ok(())
 }
-
-
 
 pub struct ExecutingTimer(NonNull<qjs::JSContext>, Persistent<Function<'static>>);
 
@@ -250,4 +241,3 @@ pub fn poll_timers(
     }
     Ok(true)
 }
-

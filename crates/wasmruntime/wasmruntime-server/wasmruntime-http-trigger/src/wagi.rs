@@ -20,7 +20,7 @@ pub struct WagiHttpExecutor {
 }
 
 impl HttpExecutor for WagiHttpExecutor {
-     async fn execute<F: RuntimeFactors>(
+    async fn execute<F: RuntimeFactors>(
         &self,
         mut instance_builder: TriggerInstanceBuilder<'_, F>,
         route_match: &RouteMatch,

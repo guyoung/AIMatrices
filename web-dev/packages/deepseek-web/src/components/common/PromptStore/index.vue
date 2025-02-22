@@ -31,7 +31,10 @@ const message = useMessage()
 
 const show = computed({
   get: () => props.visible,
-  set: (visible: boolean) => emit('update:visible', visible),
+  set: (visible: boolean) => {
+    console.log("aaaaaaa ", visible)
+    emit('update:visible', visible)
+  }
 })
 
 const showModal = ref(false)

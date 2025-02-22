@@ -7,10 +7,10 @@ use js::prelude::Async;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"record",
-	"exists" => fut Async,
-	"id" => run,
-	"table" => run,
-	"tb" => run
+    Package,
+    "record",
+    "exists" => fut Async,
+    "id" => run,
+    "table" => run,
+    "tb" => run
 );

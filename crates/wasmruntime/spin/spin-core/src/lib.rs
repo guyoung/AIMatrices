@@ -15,8 +15,8 @@ use std::{path::PathBuf, time::Duration};
 
 use anyhow::Result;
 
-use wasmtime::{InstanceAllocationStrategy, PoolingAllocationConfig};
 use wasmtime::Engine as WasmtimeEngine;
+use wasmtime::{InstanceAllocationStrategy, PoolingAllocationConfig};
 
 use wasmtime::component::{Component, InstancePre, Linker};
 

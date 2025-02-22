@@ -8,8 +8,8 @@ use surrealdb::dbs::Session;
 //use surrealdb::engine::any::Any;
 use surrealdb::kvs::Datastore;
 
-use surrealdb::sql::Value;
 use surrealdb::sql;
+use surrealdb::sql::Value;
 
 /// The characters which are supported in server record IDs.
 pub const ID_CHARS: [char; 36] = [
@@ -46,24 +46,31 @@ impl SurrealDbEngine {
             .with_ns(namespace.as_str())
             .with_db(database.as_str());
 
-        let data = surrealdb::sql::value(data.to_string().as_str())?;
+        let data = surrealdb::sql::value(data.to_string().as_str());
 
-        let sql = "CREATE type::thing($table, $uid) CONTENT $data";
+        match data {
+            Ok(Value::Object(mut data)) => {
+                data.insert("created_at".to_string(), surrealdb::sql::Datetime::default().into());
+                data.insert("updated_at".to_string(), surrealdb::sql::Datetime::default().into());
+                data.remove("id");
 
-        let mut vars: BTreeMap<String, Value> = BTreeMap::new();
-        vars.insert("table".to_string(), Value::from(table));
-        vars.insert("uid".to_string(), Value::from(uid));
-        vars.insert("data".to_string(), data);
+                let sql = "CREATE type::thing($table, $uid) CONTENT $data";
 
-        let res = self.datastore.execute(sql, &seesion, Some(vars)).await?;
+                let mut vars: BTreeMap<String, Value> = BTreeMap::new();
+                vars.insert("table".to_string(), Value::from(table));
+                vars.insert("uid".to_string(), Value::from(uid));
+                vars.insert("data".to_string(), data.into());
 
-        let res = sql::to_value(res)?;
+                let res = self.datastore.execute(sql, &seesion, Some(vars)).await?;
 
-        Ok(res.into())
+                let res = sql::to_value(res)?;
 
-
+                Ok(res.into())
+            }
+            // The provided value was not an object
+            _ => Err(anyhow::anyhow!("data is not an object")),
+        }
     }
-
 
     pub async fn update(
         &self,
@@ -72,26 +79,34 @@ impl SurrealDbEngine {
         table: String,
         uid: String,
         data: serde_json::Value,
-    ) -> anyhow::Result<serde_json::Value>
-    {
+    ) -> anyhow::Result<serde_json::Value> {
         let seesion = Session::owner()
             .with_ns(namespace.as_str())
             .with_db(database.as_str());
 
-        let data = surrealdb::sql::value(data.to_string().as_str())?;
+        let data = surrealdb::sql::value(data.to_string().as_str());
 
-        let sql = "UPDATE type::thing($table, $uid) CONTENT $data";
+        match data {
+            Ok(Value::Object(mut data)) => {
+                data.insert("updated_at".to_string(), surrealdb::sql::Datetime::default().into());
+                data.remove("id");
 
-        let mut vars: BTreeMap<String, Value> = BTreeMap::new();
-        vars.insert("table".to_string(), Value::from(table));
-        vars.insert("uid".to_string(), Value::from(uid));
-        vars.insert("data".to_string(), data);
+                let sql = "UPDATE type::thing($table, $uid) CONTENT $data";
 
-        let res = self.datastore.execute(sql, &seesion, Some(vars)).await?;
+                let mut vars: BTreeMap<String, Value> = BTreeMap::new();
+                vars.insert("table".to_string(), Value::from(table));
+                vars.insert("uid".to_string(), Value::from(uid));
+                vars.insert("data".to_string(), data.into());
 
-        let res = sql::to_value(res)?;
+                let res = self.datastore.execute(sql, &seesion, Some(vars)).await?;
 
-        Ok(res.into())
+                let res = sql::to_value(res)?;
+
+                Ok(res.into())
+            }
+            // The provided value was not an object
+            _ => Err(anyhow::anyhow!("data is not an object")),
+        }
     }
 
     pub async fn delete(
@@ -100,9 +115,7 @@ impl SurrealDbEngine {
         database: String,
         table: String,
         uid: String,
-    ) -> anyhow::Result<serde_json::Value>
-
-    {
+    ) -> anyhow::Result<serde_json::Value> {
         let seesion = Session::owner()
             .with_ns(namespace.as_str())
             .with_db(database.as_str());
@@ -120,18 +133,15 @@ impl SurrealDbEngine {
         Ok(res.into())
     }
 
-
     pub async fn select_all(
         &self,
         namespace: String,
         database: String,
         table: String,
-    ) -> anyhow::Result<serde_json::Value>
-    {
+    ) -> anyhow::Result<serde_json::Value> {
         let seesion = Session::owner()
             .with_ns(namespace.as_str())
             .with_db(database.as_str());
-
 
         let sql = "SELECT * FROM type::table($table)";
 
@@ -145,19 +155,16 @@ impl SurrealDbEngine {
         Ok(res.into())
     }
 
-
     pub async fn select(
         &self,
         namespace: String,
         database: String,
         table: String,
         uid: String,
-    ) -> anyhow::Result<serde_json::Value>
-    {
+    ) -> anyhow::Result<serde_json::Value> {
         let seesion = Session::owner()
             .with_ns(namespace.as_str())
             .with_db(database.as_str());
-
 
         let sql = "SELECT * FROM type::thing($table, $uid)";
 
@@ -177,8 +184,7 @@ impl SurrealDbEngine {
         namespace: String,
         database: String,
         sql: String,
-    ) -> anyhow::Result<serde_json::Value>
-    {
+    ) -> anyhow::Result<serde_json::Value> {
         let seesion = Session::owner()
             .with_ns(namespace.as_str())
             .with_db(database.as_str());
@@ -189,47 +195,45 @@ impl SurrealDbEngine {
 
         Ok(res.into())
     }
-
 
     /***
-    pub async fn query_with<T>(
+        pub async fn query_with<T>(
+            &self,
+            namespace: String,
+            database: String,
+            sql: String,
+            params: String,
+        ) -> anyhow::Result<Vec<T>>
+
+        {
+
+            let params =
+                surrealdb::sql::json(&params).or_else(|_| Err(anyhow::anyhow!("Invalid params")))?;
+
+            let params = match params {
+                Value::Object(v) => v,
+                _ => return Err(anyhow::anyhow!("Invalid params")),
+            };
+
+            let seesion = Session::owner()
+                .with_ns(namespace.as_str())
+                .with_db(database.as_str());
+
+
+            let res = self.datastore.execute(sql.as_str(), &seesion, None).await?;
+
+            let res = sql::to_value(res)?;
+
+            Ok(res.into())
+        }
+    ***/
+
+    pub async fn execute(
         &self,
         namespace: String,
         database: String,
         sql: String,
-        params: String,
-    ) -> anyhow::Result<Vec<T>>
-
-    {
-
-        let params =
-            surrealdb::sql::json(&params).or_else(|_| Err(anyhow::anyhow!("Invalid params")))?;
-
-        let params = match params {
-            Value::Object(v) => v,
-            _ => return Err(anyhow::anyhow!("Invalid params")),
-        };
-
-        let seesion = Session::owner()
-            .with_ns(namespace.as_str())
-            .with_db(database.as_str());
-
-
-        let res = self.datastore.execute(sql.as_str(), &seesion, None).await?;
-
-        let res = sql::to_value(res)?;
-
-        Ok(res.into())
-    }
-***/
-
-    pub async fn execute<>(
-        &self,
-        namespace: String,
-        database: String,
-        sql: String,
-    ) -> anyhow::Result<()>
-    {
+    ) -> anyhow::Result<()> {
         let seesion = Session::owner()
             .with_ns(namespace.as_str())
             .with_db(database.as_str());
@@ -239,9 +243,7 @@ impl SurrealDbEngine {
         Ok(())
     }
 
-    pub fn generate_id(&self) ->String {
+    pub fn generate_id(&self) -> String {
         nanoid!(20, &ID_CHARS)
     }
-
-
 }

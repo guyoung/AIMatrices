@@ -51,7 +51,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "../../target/wasm32-wasip1/release/ai_matrices_llm_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_general_js_handler_component.wasm"
       }
     },
     {
@@ -64,7 +64,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "../../target/wasm32-wasip1/release/ai_matrices_llm_local_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_llm_local_handler_component.wasm"
       }
     },
     {
@@ -74,7 +74,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "../../target/wasm32-wasip1/release/ai_matrices_static_file_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_static_file_handler_component.wasm"
       }
     }
   ]

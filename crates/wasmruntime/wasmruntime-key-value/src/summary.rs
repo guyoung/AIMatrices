@@ -4,7 +4,6 @@ use spin_factor_key_value::KeyValueFactor;
 use spin_factors::RuntimeFactors;
 use spin_factors_executor::ExecutorHooks;
 
-
 /// An [`ExecutorHooks`] that prints information about the default KV store.
 pub struct KeyValueDefaultStoreSummaryHook;
 
@@ -27,4 +26,3 @@ impl<F: RuntimeFactors, U> ExecutorHooks<F, U> for KeyValueDefaultStoreSummaryHo
         Ok(())
     }
 }
-

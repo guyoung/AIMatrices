@@ -50,6 +50,10 @@ export default {
       clearHistoryConfirm: 'チャット履歴をクリアしてもよろしいですか？',
       preview: 'プレビュー',
       showRawText: '生のテキストとして表示',
+
+      newChat: '新しいチャット',
+      thinking: '考え...',
+      downlaod: 'ダウンロード'
     },
     setting: {
       setting: '設定',
@@ -73,8 +77,10 @@ export default {
       httpsProxy: 'HTTPSプロキシ',
       balance: 'API残高',
       monthlyUsage: '月間使用量',
+
       about: 'について',
-      max_tokens: "Max tokens"
+      maxTokens: "Max tokens",   
+      multiRoundChat: "Multiラウンドチャット"
     },
     store: {
       siderButton: 'プロンプトストア',

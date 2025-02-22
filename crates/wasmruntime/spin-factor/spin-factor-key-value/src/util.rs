@@ -5,20 +5,15 @@ use std::{
     sync::Arc,
 };
 
-use tracing::Instrument;
+use async_trait::async_trait;
 use lru::LruCache;
-use async_trait ::async_trait;
 use tokio::{
     sync::Mutex as AsyncMutex,
     task::{self, JoinHandle},
 };
+use tracing::Instrument;
 
 use crate::{Cas, Error, Store, StoreManager, SwapError};
-
-
-
-
-
 
 /// A [`StoreManager`] which delegates to other `StoreManager`s based on the store label.
 pub struct DelegatingStoreManager {

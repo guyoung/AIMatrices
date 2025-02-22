@@ -34,7 +34,7 @@ pub struct TriggerFactors {
     /*** ***/
     #[cfg(feature = "dbs")]
     pub dbs: DbsFactor,
-   #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
     pub llm_infer: LlmInferFactor,
     #[cfg(feature = "sd-infer")]
     pub sd_infer: SdInferFactor,
@@ -59,7 +59,7 @@ impl TriggerFactors {
             /*** ***/
             #[cfg(feature = "dbs")]
             dbs: DbsFactor::new(),
-           #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
             llm_infer: LlmInferFactor::new(),
             #[cfg(feature = "sd-infer")]
             sd_infer: SdInferFactor::new(),
@@ -122,7 +122,7 @@ impl RuntimeFactors for TriggerFactors {
                     <DbsFactor as Factor>::AppState,
                 )>(),
             ),
-           #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
             (
                 stringify!(LlmInferFactor),
                 TypeId::of::<(
@@ -227,9 +227,9 @@ impl RuntimeFactors for TriggerFactors {
                 },
             ),
         )
-            .map_err(Error::factor_init_error::<DbsFactor>)?;
+        .map_err(Error::factor_init_error::<DbsFactor>)?;
 
-       #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
         Factor::init::<T>(
             &mut self.llm_infer,
             InitContext::<T, LlmInferFactor>::new(
@@ -273,7 +273,7 @@ impl RuntimeFactors for TriggerFactors {
             /*** ***/
             #[cfg(feature = "dbs")]
             dbs: None,
-           #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
             llm_infer: None,
             #[cfg(feature = "sd-infer")]
             sd_infer: None,
@@ -345,15 +345,12 @@ impl RuntimeFactors for TriggerFactors {
             .map_err(Error::factor_configure_app_error::<OutboundHttpFactor>)?,
         );
 
-
-
         /*** ***/
         #[cfg(feature = "dbs")]
         {
-            let dbs_runtime_config =
-                crate::rumtime_config::get_context(&self.working_dir, &app)
-                    .dbs_runtime_config
-                    .clone();
+            let dbs_runtime_config = crate::rumtime_config::get_context(&self.working_dir, &app)
+                .dbs_runtime_config
+                .clone();
 
             app_state.dbs = Some(
                 Factor::configure_app(
@@ -361,14 +358,14 @@ impl RuntimeFactors for TriggerFactors {
                     spin_factors::ConfigureAppContext::<Self, DbsFactor>::new(
                         &app,
                         &app_state,
-                       dbs_runtime_config,
+                        dbs_runtime_config,
                     )?,
                 )
-                    .map_err(Error::factor_configure_app_error::<DbsFactor>)?,
+                .map_err(Error::factor_configure_app_error::<DbsFactor>)?,
             );
         }
 
-       #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
         {
             let llm_infer_runtime_config =
                 crate::rumtime_config::get_context(&self.working_dir, &app)
@@ -430,7 +427,7 @@ impl RuntimeFactors for TriggerFactors {
             /*** ***/
             #[cfg(feature = "dbs")]
             dbs: None,
-           #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
             llm_infer: None,
             #[cfg(feature = "sd-infer")]
             sd_infer: None,
@@ -511,11 +508,11 @@ impl RuntimeFactors for TriggerFactors {
                         &mut builders,
                     ),
                 )
-                    .map_err(Error::factor_prepare_error::<DbsFactor>)?,
+                .map_err(Error::factor_prepare_error::<DbsFactor>)?,
             );
         }
 
-       #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
         {
             builders.llm_infer = Some(
                 Factor::prepare::<Self>(
@@ -577,7 +574,7 @@ impl RuntimeFactors for TriggerFactors {
             dbs: FactorInstanceBuilder::build(builders.dbs.unwrap())
                 .map_err(Error::factor_build_error::<DbsFactor>)?,
 
-           #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
             llm_infer: FactorInstanceBuilder::build(builders.llm_infer.unwrap())
                 .map_err(Error::factor_build_error::<LlmInferFactor>)?,
 
@@ -626,7 +623,7 @@ impl RuntimeFactors for TriggerFactors {
             }
         }
 
-       #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
         if let Some(state) = &app_state.llm_infer {
             if let Some(state) = <dyn Any>::downcast_ref(state) {
                 return Some(state);
@@ -722,9 +719,9 @@ impl RuntimeFactors for TriggerFactors {
         #[cfg(feature = "dbs")]
         if type_id
             == TypeId::of::<(
-            <DbsFactor as Factor>::InstanceBuilder,
-            <DbsFactor as Factor>::AppState,
-        )>()
+                <DbsFactor as Factor>::InstanceBuilder,
+                <DbsFactor as Factor>::AppState,
+            )>()
         {
             return Some(
                 builders
@@ -734,7 +731,7 @@ impl RuntimeFactors for TriggerFactors {
             );
         }
 
-       #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
         if type_id
             == TypeId::of::<(
                 <LlmInferFactor as Factor>::InstanceBuilder,

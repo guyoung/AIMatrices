@@ -10,7 +10,7 @@ use std::fmt;
 pub struct BeginStatement;
 
 impl fmt::Display for BeginStatement {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("BEGIN TRANSACTION")
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("BEGIN TRANSACTION")
+    }
 }

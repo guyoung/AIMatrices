@@ -50,6 +50,10 @@ export default {
     clearHistoryConfirm: '채팅 기록을 삭제하시겠습니까?',
     preview: '미리보기',
     showRawText: '원본 텍스트로 보기',
+
+    newChat: '새로 운 대화',
+    thinking: '생각...',
+    downlaod: '다운로드'
   },
   setting: {
     setting: '설정',
@@ -75,7 +79,8 @@ export default {
     monthlyUsage: '월 사용량',
 
     about: '에 대해',
-    max_tokens: "Max tokens"
+    maxTokens: "Max tokens",
+    multiRoundChat: "다중 채팅"
   },
   store: {
     siderButton: '프롬프트 저장소',

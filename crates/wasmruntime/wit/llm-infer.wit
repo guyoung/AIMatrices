@@ -49,6 +49,10 @@ interface llm-infer {
 	/// Perform inferencing using the provided model and prompt with the given optional params
 	infer: func(model-id: string, prompt: string, params: option<inferencing-params>) -> result<inferencing-result, error>;
 
+	infer-chat: func(model-id: string, messages: list<tuple<string, string>>, params: option<inferencing-params>) -> result<inferencing-result, error>;
+
+
+
 	/// Generate embeddings for the supplied list of text
 	generate-embeddings: func(model-id: string, text: list<string>) -> result<embeddings-result, error>;
 

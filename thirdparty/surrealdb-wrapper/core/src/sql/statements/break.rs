@@ -15,23 +15,23 @@ use std::fmt;
 pub struct BreakStatement;
 
 impl BreakStatement {
-	/// Check if we require a writeable transaction
-	pub(crate) fn writeable(&self) -> bool {
-		false
-	}
-	/// Process this type returning a computed simple Value
-	pub(crate) async fn compute(
-		&self,
-		_ctx: &Context,
-		_opt: &Options,
-		_doc: Option<&CursorDoc>,
-	) -> Result<Value, Error> {
-		Err(Error::Break)
-	}
+    /// Check if we require a writeable transaction
+    pub(crate) fn writeable(&self) -> bool {
+        false
+    }
+    /// Process this type returning a computed simple Value
+    pub(crate) async fn compute(
+        &self,
+        _ctx: &Context,
+        _opt: &Options,
+        _doc: Option<&CursorDoc>,
+    ) -> Result<Value, Error> {
+        Err(Error::Break)
+    }
 }
 
 impl fmt::Display for BreakStatement {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("BREAK")
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("BREAK")
+    }
 }

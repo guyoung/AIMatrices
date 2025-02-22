@@ -16,36 +16,36 @@ use std::fmt;
 pub struct Start(pub Value);
 
 impl Start {
-	pub(crate) async fn process(
-		&self,
-		stk: &mut Stk,
-		ctx: &Context,
-		opt: &Options,
-		doc: Option<&CursorDoc>,
-	) -> Result<u32, Error> {
-		match self.0.compute(stk, ctx, opt, doc).await {
-			// This is a valid starting number
-			Ok(Value::Number(Number::Int(v))) if v >= 0 => {
-				if v > u32::MAX as i64 {
-					Err(Error::InvalidStart {
-						value: v.to_string(),
-					})
-				} else {
-					Ok(v as u32)
-				}
-			}
-			// An invalid value was specified
-			Ok(v) => Err(Error::InvalidStart {
-				value: v.as_string(),
-			}),
-			// A different error occurred
-			Err(e) => Err(e),
-		}
-	}
+    pub(crate) async fn process(
+        &self,
+        stk: &mut Stk,
+        ctx: &Context,
+        opt: &Options,
+        doc: Option<&CursorDoc>,
+    ) -> Result<u32, Error> {
+        match self.0.compute(stk, ctx, opt, doc).await {
+            // This is a valid starting number
+            Ok(Value::Number(Number::Int(v))) if v >= 0 => {
+                if v > u32::MAX as i64 {
+                    Err(Error::InvalidStart {
+                        value: v.to_string(),
+                    })
+                } else {
+                    Ok(v as u32)
+                }
+            }
+            // An invalid value was specified
+            Ok(v) => Err(Error::InvalidStart {
+                value: v.as_string(),
+            }),
+            // A different error occurred
+            Err(e) => Err(e),
+        }
+    }
 }
 
 impl fmt::Display for Start {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "START {}", self.0)
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "START {}", self.0)
+    }
 }

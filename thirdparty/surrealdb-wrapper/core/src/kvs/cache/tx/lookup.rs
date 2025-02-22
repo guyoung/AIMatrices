@@ -5,101 +5,101 @@ use uuid::Uuid;
 
 #[derive(Hash, Eq, PartialEq)]
 pub(crate) enum Lookup<'a> {
-	/// A cache key for nodes
-	Nds,
-	/// A cache key for root users
-	Rus,
-	/// A cache key for root accesses
-	Ras,
-	/// A cache key for root access grants
-	Rgs(&'a str),
-	/// A cache key for namespaces
-	Nss,
-	/// A cache key for namespace users
-	Nus(&'a str),
-	/// A cache key for namespace accesses
-	Nas(&'a str),
-	/// A cache key for namespace access grants
-	Ngs(&'a str, &'a str),
-	/// A cache key for databases
-	Dbs(&'a str),
-	/// A cache key for database users
-	Dus(&'a str, &'a str),
-	/// A cache key for database accesses
-	Das(&'a str, &'a str),
-	/// A cache key for database access grants
-	Dgs(&'a str, &'a str, &'a str),
-	/// A cache key for analyzers (on a database)
-	Azs(&'a str, &'a str),
-	/// A cache key for functions (on a database)
-	Fcs(&'a str, &'a str),
-	/// A cache key for models (on a database)
-	Mls(&'a str, &'a str),
-	/// A cache key for configs (on a database)
-	Cgs(&'a str, &'a str),
-	/// A cache key for parameters (on a database)
-	Pas(&'a str, &'a str),
-	/// A cache key for tables
-	Tbs(&'a str, &'a str),
-	/// A cache key for events (on a table)
-	Evs(&'a str, &'a str, &'a str),
-	/// A cache key for fields (on a table)
-	Fds(&'a str, &'a str, &'a str),
-	/// A cache key for views (on a table)
-	Fts(&'a str, &'a str, &'a str),
-	/// A cache key for indexes (on a table)
-	Ixs(&'a str, &'a str, &'a str),
-	/// A cache key for live queries (on a table)
-	Lvs(&'a str, &'a str, &'a str),
-	/// A cache key for a node
-	Nd(Uuid),
-	/// A cache key for a root user
-	Ru(&'a str),
-	/// A cache key for a root access
-	Ra(&'a str),
-	/// A cache key for a root access grant
-	Rg(&'a str, &'a str),
-	/// A cache key for a namespace
-	Ns(&'a str),
-	/// A cache key for a namespace user
-	Nu(&'a str, &'a str),
-	/// A cache key for a namespace access
-	Na(&'a str, &'a str),
-	/// A cache key for a namespace access grant
-	Ng(&'a str, &'a str, &'a str),
-	/// A cache key for a database
-	Db(&'a str, &'a str),
-	/// A cache key for a database user
-	Du(&'a str, &'a str, &'a str),
-	/// A cache key for a database access
-	Da(&'a str, &'a str, &'a str),
-	/// A cache key for a database access grant
-	Dg(&'a str, &'a str, &'a str, &'a str),
-	/// A cache key for an analyzer (on a database)
-	Az(&'a str, &'a str, &'a str),
-	/// A cache key for a function (on a database)
-	Fc(&'a str, &'a str, &'a str),
-	/// A cache key for a model (on a database)
-	Ml(&'a str, &'a str, &'a str, &'a str),
-	/// A cache key for a config (on a database)
-	Cg(&'a str, &'a str, &'a str),
-	/// A cache key for a parameter (on a database)
-	Pa(&'a str, &'a str, &'a str),
-	/// A cache key for a table
-	Tb(&'a str, &'a str, &'a str),
-	/// A cache key for an event (on a table)
-	Ev(&'a str, &'a str, &'a str, &'a str),
-	/// A cache key for a field (on a table)
-	Fd(&'a str, &'a str, &'a str, &'a str),
-	/// A cache key for an index (on a table)
-	Ix(&'a str, &'a str, &'a str, &'a str),
-	/// A cache key for a record
-	Record(&'a str, &'a str, &'a str, &'a Id),
+    /// A cache key for nodes
+    Nds,
+    /// A cache key for root users
+    Rus,
+    /// A cache key for root accesses
+    Ras,
+    /// A cache key for root access grants
+    Rgs(&'a str),
+    /// A cache key for namespaces
+    Nss,
+    /// A cache key for namespace users
+    Nus(&'a str),
+    /// A cache key for namespace accesses
+    Nas(&'a str),
+    /// A cache key for namespace access grants
+    Ngs(&'a str, &'a str),
+    /// A cache key for databases
+    Dbs(&'a str),
+    /// A cache key for database users
+    Dus(&'a str, &'a str),
+    /// A cache key for database accesses
+    Das(&'a str, &'a str),
+    /// A cache key for database access grants
+    Dgs(&'a str, &'a str, &'a str),
+    /// A cache key for analyzers (on a database)
+    Azs(&'a str, &'a str),
+    /// A cache key for functions (on a database)
+    Fcs(&'a str, &'a str),
+    /// A cache key for models (on a database)
+    Mls(&'a str, &'a str),
+    /// A cache key for configs (on a database)
+    Cgs(&'a str, &'a str),
+    /// A cache key for parameters (on a database)
+    Pas(&'a str, &'a str),
+    /// A cache key for tables
+    Tbs(&'a str, &'a str),
+    /// A cache key for events (on a table)
+    Evs(&'a str, &'a str, &'a str),
+    /// A cache key for fields (on a table)
+    Fds(&'a str, &'a str, &'a str),
+    /// A cache key for views (on a table)
+    Fts(&'a str, &'a str, &'a str),
+    /// A cache key for indexes (on a table)
+    Ixs(&'a str, &'a str, &'a str),
+    /// A cache key for live queries (on a table)
+    Lvs(&'a str, &'a str, &'a str),
+    /// A cache key for a node
+    Nd(Uuid),
+    /// A cache key for a root user
+    Ru(&'a str),
+    /// A cache key for a root access
+    Ra(&'a str),
+    /// A cache key for a root access grant
+    Rg(&'a str, &'a str),
+    /// A cache key for a namespace
+    Ns(&'a str),
+    /// A cache key for a namespace user
+    Nu(&'a str, &'a str),
+    /// A cache key for a namespace access
+    Na(&'a str, &'a str),
+    /// A cache key for a namespace access grant
+    Ng(&'a str, &'a str, &'a str),
+    /// A cache key for a database
+    Db(&'a str, &'a str),
+    /// A cache key for a database user
+    Du(&'a str, &'a str, &'a str),
+    /// A cache key for a database access
+    Da(&'a str, &'a str, &'a str),
+    /// A cache key for a database access grant
+    Dg(&'a str, &'a str, &'a str, &'a str),
+    /// A cache key for an analyzer (on a database)
+    Az(&'a str, &'a str, &'a str),
+    /// A cache key for a function (on a database)
+    Fc(&'a str, &'a str, &'a str),
+    /// A cache key for a model (on a database)
+    Ml(&'a str, &'a str, &'a str, &'a str),
+    /// A cache key for a config (on a database)
+    Cg(&'a str, &'a str, &'a str),
+    /// A cache key for a parameter (on a database)
+    Pa(&'a str, &'a str, &'a str),
+    /// A cache key for a table
+    Tb(&'a str, &'a str, &'a str),
+    /// A cache key for an event (on a table)
+    Ev(&'a str, &'a str, &'a str, &'a str),
+    /// A cache key for a field (on a table)
+    Fd(&'a str, &'a str, &'a str, &'a str),
+    /// A cache key for an index (on a table)
+    Ix(&'a str, &'a str, &'a str, &'a str),
+    /// A cache key for a record
+    Record(&'a str, &'a str, &'a str, &'a Id),
 }
 
 impl Equivalent<Key> for Lookup<'_> {
-	#[rustfmt::skip]
-	fn equivalent(&self, key: &Key) -> bool {
+    #[rustfmt::skip]
+    fn equivalent(&self, key: &Key) -> bool {
 		match (self, key) {
 			//
 			(Self::Nds, Key::Nds) => true,

@@ -26,8 +26,8 @@ macro_rules! test_case(
 
 #[test]
 fn operators() {
-	test_case! {
-		r#"- + / * ! **
+    test_case! {
+        r#"- + / * ! **
            < > <= >= <- <-> ->
            = == -= += != +?=
            ? ?? ?: ?~ ?=
@@ -38,94 +38,94 @@ fn operators() {
 
            ^
     "# => [
-			t!("-"), t!(" "), t!("+"),t!(" "),  t!("/"),t!(" "),  t!("*"),t!(" "),  t!("!"),t!(" "),  t!("**"), t!(" "),
+            t!("-"), t!(" "), t!("+"),t!(" "),  t!("/"),t!(" "),  t!("*"),t!(" "),  t!("!"),t!(" "),  t!("**"), t!(" "),
 
-			t!("<"), t!(" "), t!(">"), t!(" "), t!("<="), t!(" "), t!(">="), t!(" "), t!("<"), t!("-"), t!(" "), t!("<"), t!("->"), t!(" "), t!("->"), t!(" "),
+            t!("<"), t!(" "), t!(">"), t!(" "), t!("<="), t!(" "), t!(">="), t!(" "), t!("<"), t!("-"), t!(" "), t!("<"), t!("->"), t!(" "), t!("->"), t!(" "),
 
-			t!("="), t!(" "), t!("=="), t!(" "), t!("-="), t!(" "), t!("+="), t!(" "), t!("!="), t!(" "), t!("+?="), t!(" "),
+            t!("="), t!(" "), t!("=="), t!(" "), t!("-="), t!(" "), t!("+="), t!(" "), t!("!="), t!(" "), t!("+?="), t!(" "),
 
-			t!("?"), t!(" "), t!("??"), t!(" "), t!("?:"), t!(" "), t!("?~"), t!(" "), t!("?="), t!(" "),
+            t!("?"), t!(" "), t!("??"), t!(" "), t!("?:"), t!(" "), t!("?~"), t!(" "), t!("?="), t!(" "),
 
-			t!("{"), t!(" "), t!("}"), t!(" "), t!("["), t!(" "), t!("]"), t!(" "), t!("("), t!(" "), t!(")"), t!(" "),
+            t!("{"), t!(" "), t!("}"), t!(" "), t!("["), t!(" "), t!("]"), t!(" "), t!("("), t!(" "), t!(")"), t!(" "),
 
-			t!(";"), t!(" "), t!(","), t!(" "), t!("|"), t!(" "), t!("||"), t!(" "), TokenKind::Invalid, t!(" "), t!("&&"), t!(" "),
+            t!(";"), t!(" "), t!(","), t!(" "), t!("|"), t!(" "), t!("||"), t!(" "), TokenKind::Invalid, t!(" "), t!("&&"), t!(" "),
 
-			t!("$"), t!(" "),
+            t!("$"), t!(" "),
 
-			t!("."), t!(" "), t!(".."), t!(" "), t!("..."), t!(" "),
+            t!("."), t!(" "), t!(".."), t!(" "), t!("..."), t!(" "),
 
-			TokenKind::Invalid, t!(" ")
-		]
-	}
+            TokenKind::Invalid, t!(" ")
+        ]
+    }
 }
 
 #[test]
 fn comments() {
-	test_case! {
-		r"
+    test_case! {
+        r"
 			+ /* some comment */
 			- // another comment
 			+ -- a third comment
 			-
 		" => [
-			t!(" "), t!("+"), t!(" "), t!(" "), t!(" "),
-			t!("-"), t!(" "), t!(" "), t!(" "),
-			t!("+"), t!(" "), t!(" "), t!(" "),
-			t!("-"), t!(" ")
-		]
-	}
+            t!(" "), t!("+"), t!(" "), t!(" "), t!(" "),
+            t!("-"), t!(" "), t!(" "), t!(" "),
+            t!("+"), t!(" "), t!(" "), t!(" "),
+            t!("-"), t!(" ")
+        ]
+    }
 }
 
 #[test]
 fn whitespace() {
-	test_case! {
-		"+= \t\n\r -=" => [
-			t!("+="), t!(" "),
-			t!("-="),
-		]
-	}
+    test_case! {
+        "+= \t\n\r -=" => [
+            t!("+="), t!(" "),
+            t!("-="),
+        ]
+    }
 }
 
 #[test]
 fn identifiers() {
-	test_case! {
-		r#"
+    test_case! {
+        r#"
 			123123adwad+akdwkj+akdwkj1231312313123+_a_k_d_wkj1231312313123+____wdw____+
 		"#
-			=> [
-			t!(" "),
-			TokenKind::Digits, // 123123
-			TokenKind::Identifier, // adwad
-			t!("+"),
-			TokenKind::Identifier, // akdwkj
-			t!("+"),
-			TokenKind::Identifier, // akdwkj1231312313123
-			t!("+"),
-			TokenKind::Identifier, // _a_k_d_wkj1231312313123
-			t!("+"),
-			TokenKind::Identifier, // ____wdw____
-			t!("+"),
-			t!(" "),
-		]
-	}
+            => [
+            t!(" "),
+            TokenKind::Digits, // 123123
+            TokenKind::Identifier, // adwad
+            t!("+"),
+            TokenKind::Identifier, // akdwkj
+            t!("+"),
+            TokenKind::Identifier, // akdwkj1231312313123
+            t!("+"),
+            TokenKind::Identifier, // _a_k_d_wkj1231312313123
+            t!("+"),
+            TokenKind::Identifier, // ____wdw____
+            t!("+"),
+            t!(" "),
+        ]
+    }
 }
 
 #[test]
 fn keyword() {
-	test_case! {
-		r#"select SELECT sElEcT"# => [
-			t!("SELECT"),t!(" "),
-			t!("SELECT"),t!(" "),
-			t!("SELECT"),
-		]
-	}
+    test_case! {
+        r#"select SELECT sElEcT"# => [
+            t!("SELECT"),t!(" "),
+            t!("SELECT"),t!(" "),
+            t!("SELECT"),
+        ]
+    }
 }
 
 #[test]
 fn ident_angle_with_escape_char() {
-	test_case! {
-		r#"⟨⟨something\⟩⟩"# => [
-			TokenKind::Identifier,
-		]
-	}
+    test_case! {
+        r#"⟨⟨something\⟩⟩"# => [
+            TokenKind::Identifier,
+        ]
+    }
 }

@@ -3,8 +3,8 @@ use std::sync::Arc;
 
 use spin_app::App;
 
-use wasmruntime_core::FactorsConfig;
 use wasmruntime_core::stdio::FollowComponents;
+use wasmruntime_core::FactorsConfig;
 
 #[derive(Debug, Default)]
 pub struct Bootstrap {
@@ -35,9 +35,8 @@ impl Bootstrap {
         ip: String,
         port: u16,
         user: Option<String>,
-        pass: Option<String>
+        pass: Option<String>,
     ) -> anyhow::Result<()> {
-
         let working_dir = PathBuf::from(working_dir);
         let state_dir = working_dir.join("states");
         let log_dir = working_dir.join("logs");
@@ -52,13 +51,32 @@ impl Bootstrap {
             log_dir,
         };
 
-        let http_app = wasmruntime_http_server::crate_http_trigger_app(app, &common_options, self.disable_cache, &self.cache, self.disable_pooling).await?;
+        let http_app = wasmruntime_http_server::crate_http_trigger_app(
+            app,
+            &common_options,
+            self.disable_cache,
+            &self.cache,
+            self.disable_pooling,
+        )
+        .await?;
 
-        let task_app = wasmruntime_task_server::crate_task_trigger_app(app, &common_options, self.disable_cache, &self.cache, self.disable_pooling).await?;
+        let task_app = wasmruntime_task_server::crate_task_trigger_app(
+            app,
+            &common_options,
+            self.disable_cache,
+            &self.cache,
+            self.disable_pooling,
+        )
+        .await?;
 
         let task_handle = tokio::spawn(wasmruntime_task_server::start(Arc::new(task_app)));
 
-        let run_http_server_fut = wasmruntime_http_server::start(format!("{ip}:{port}").parse()?, Arc::new(http_app), user, pass);
+        let run_http_server_fut = wasmruntime_http_server::start(
+            format!("{ip}:{port}").parse()?,
+            Arc::new(http_app),
+            user,
+            pass,
+        );
 
         let (abortable, abort_handle) = futures::future::abortable(run_http_server_fut);
 
@@ -94,7 +112,3 @@ impl Bootstrap {
         }
     }
 }
-
-
-
-

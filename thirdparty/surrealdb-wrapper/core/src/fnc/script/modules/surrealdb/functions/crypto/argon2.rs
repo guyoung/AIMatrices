@@ -6,8 +6,8 @@ use js::prelude::Async;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"crypto::argon2",
-	"compare" => fut Async,
-	"generate" => fut Async
+    Package,
+    "crypto::argon2",
+    "compare" => fut Async,
+    "generate" => fut Async
 );

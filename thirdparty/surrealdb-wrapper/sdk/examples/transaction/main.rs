@@ -4,17 +4,17 @@ use surrealdb::Surreal;
 
 #[tokio::main]
 async fn main() -> surrealdb::Result<()> {
-	let db = Surreal::new::<Ws>("localhost:8000").await?;
+    let db = Surreal::new::<Ws>("localhost:8000").await?;
 
-	db.signin(Root {
-		username: "root",
-		password: "root",
-	})
-	.await?;
+    db.signin(Root {
+        username: "root",
+        password: "root",
+    })
+    .await?;
 
-	db.use_ns("namespace").use_db("database").await?;
+    db.use_ns("namespace").use_db("database").await?;
 
-	#[rustfmt::skip]
+    #[rustfmt::skip]
     let response = db
 
         // Start transaction
@@ -36,8 +36,8 @@ async fn main() -> surrealdb::Result<()> {
         .query("COMMIT")
         .await?;
 
-	// See if any errors were returned
-	response.check()?;
+    // See if any errors were returned
+    response.check()?;
 
-	Ok(())
+    Ok(())
 }

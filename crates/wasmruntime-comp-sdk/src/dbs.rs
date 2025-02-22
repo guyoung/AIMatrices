@@ -1,1 +1,1 @@
-pub use crate::wit::comp::dbs::{self, Error, Connection};
+pub use crate::wit::comp::dbs::{self, Connection, Error};

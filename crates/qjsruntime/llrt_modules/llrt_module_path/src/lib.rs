@@ -100,7 +100,7 @@ pub fn dirname<'a, P: Into<Cow<'a, str>>>(path: P) -> String {
             } else {
                 parent
             }
-        },
+        }
         None => ".",
     }
     .to_string()
@@ -438,17 +438,17 @@ where
                     if let Some(last_index) = index_stack.pop() {
                         result.truncate(last_index);
                     }
-                },
+                }
                 "" | "." => {
                     //ignore
-                },
+                }
                 sub_part => {
                     let len = result.len();
                     result.push_str(sub_part);
                     result.push(sep);
                     empty = false;
                     index_stack.push(len);
-                },
+                }
             }
             start = end + 1;
         }
@@ -552,4 +552,3 @@ impl From<PathModule> for ModuleInfo<PathModule> {
         }
     }
 }
-

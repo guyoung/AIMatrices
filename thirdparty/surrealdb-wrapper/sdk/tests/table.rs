@@ -9,7 +9,7 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn define_foreign_table() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		DEFINE TABLE person SCHEMALESS;
 		DEFINE TABLE person_by_age AS
 			SELECT
@@ -32,19 +32,19 @@ async fn define_foreign_table() -> Result<(), Error> {
 		UPSERT person:two SET age = 39, score = 'test';
 		SELECT * FROM person_by_age;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 11);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 11);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
 		"{
 			events: {},
 			fields: {},
@@ -53,23 +53,23 @@ async fn define_foreign_table() -> Result<(), Error> {
 			lives: {},
 		}",
 	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 39,
 				id: person:one,
 				score: 72,
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 39,
 				average: 72,
@@ -80,24 +80,24 @@ async fn define_foreign_table() -> Result<(), Error> {
 				total: 39
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 39,
 				id: person:two,
 				score: 83,
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 39,
 				average: 77.5,
@@ -108,24 +108,24 @@ async fn define_foreign_table() -> Result<(), Error> {
 				total: 78
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 39,
 				id: person:two,
 				score: 91,
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 39,
 				average: 81.5,
@@ -136,15 +136,15 @@ async fn define_foreign_table() -> Result<(), Error> {
 				total: 78
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result.unwrap_err();
-	assert!(matches!(tmp, Error::InvalidAggregation { .. }));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result.unwrap_err();
+    assert!(matches!(tmp, Error::InvalidAggregation { .. }));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 39,
 				average: 81.5,
@@ -155,16 +155,16 @@ async fn define_foreign_table() -> Result<(), Error> {
 				total: 78
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn define_foreign_table_no_doubles() -> Result<(), Error> {
-	// From: https://github.com/surrealdb/surrealdb/issues/3556
-	let sql = "
+    // From: https://github.com/surrealdb/surrealdb/issues/3556
+    let sql = "
 		CREATE happy:1 SET year=2024, month=1, day=1;
 		CREATE happy:2 SET year=2024, month=1, day=1;
 		CREATE happy:3 SET year=2024, month=1, day=1;
@@ -173,16 +173,16 @@ async fn define_foreign_table_no_doubles() -> Result<(), Error> {
 		SELECT * FROM monthly;
 		SELECT * FROM daily;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 7);
-	//
-	skip_ok(res, 5)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 7);
+    //
+    skip_ok(res, 5)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: monthly:[2024, 1],
 				activeRounds: 3,
@@ -190,12 +190,12 @@ async fn define_foreign_table_no_doubles() -> Result<(), Error> {
 				month: 1,
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: daily:[2024, 1, 1],
 				activeRounds: 3,
@@ -204,20 +204,16 @@ async fn define_foreign_table_no_doubles() -> Result<(), Error> {
 				day: 1,
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 async fn define_foreign_table_group(cond: bool, agr: &str) -> Result<(), Error> {
-	let cond = if cond {
-		"WHERE value >= 5"
-	} else {
-		""
-	};
-	let sql = format!(
-		"
+    let cond = if cond { "WHERE value >= 5" } else { "" };
+    let sql = format!(
+        "
 		UPSERT wallet:1 CONTENT {{ value: 20.0dec, day: 1 }} RETURN NONE;
 		UPSERT wallet:2 CONTENT {{ value: 5.0dec, day: 1 }} RETURN NONE;
 		// 0
@@ -257,74 +253,74 @@ async fn define_foreign_table_group(cond: bool, agr: &str) -> Result<(), Error> 
 		SELECT {agr} as agr, day FROM wallet {cond} GROUP BY day;
 		SELECT agr, day FROM wallet_agr;
 	"
-	);
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(&sql, &ses, None).await?;
-	assert_eq!(res.len(), 29);
-	//
-	skip_ok(res, 2)?;
-	//
-	for i in 0..9 {
-		// Skip the UPDATE or DELETE statement
-		skip_ok(res, 1)?;
-		// Get the computed result
-		let comp = res.remove(0).result?;
-		// Get the projected result
-		let proj = res.remove(0).result?;
-		// Check they are similar
-		assert_eq!(format!("{proj:#}"), format!("{comp:#}"), "#{i}");
-	}
-	//
-	Ok(())
+    );
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(&sql, &ses, None).await?;
+    assert_eq!(res.len(), 29);
+    //
+    skip_ok(res, 2)?;
+    //
+    for i in 0..9 {
+        // Skip the UPDATE or DELETE statement
+        skip_ok(res, 1)?;
+        // Get the computed result
+        let comp = res.remove(0).result?;
+        // Get the projected result
+        let proj = res.remove(0).result?;
+        // Check they are similar
+        assert_eq!(format!("{proj:#}"), format!("{comp:#}"), "#{i}");
+    }
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_cond_group_mean() -> Result<(), Error> {
-	define_foreign_table_group(true, "math::mean(value)").await
+    define_foreign_table_group(true, "math::mean(value)").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_with_cond_group_count() -> Result<(), Error> {
-	define_foreign_table_group(true, "count()").await
+    define_foreign_table_group(true, "count()").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_cond_group_min() -> Result<(), Error> {
-	define_foreign_table_group(true, "math::min(value)").await
+    define_foreign_table_group(true, "math::min(value)").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_cond_group_max() -> Result<(), Error> {
-	define_foreign_table_group(true, "math::max(value)").await
+    define_foreign_table_group(true, "math::max(value)").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_cond_group_sum() -> Result<(), Error> {
-	define_foreign_table_group(true, "math::sum(value)").await
+    define_foreign_table_group(true, "math::sum(value)").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_no_cond_and_group_mean() -> Result<(), Error> {
-	define_foreign_table_group(false, "math::mean(value)").await
+    define_foreign_table_group(false, "math::mean(value)").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_no_cond_and_group_count() -> Result<(), Error> {
-	define_foreign_table_group(false, "count()").await
+    define_foreign_table_group(false, "count()").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_no_cond_and_group_min() -> Result<(), Error> {
-	define_foreign_table_group(false, "math::min(value)").await
+    define_foreign_table_group(false, "math::min(value)").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_no_cond_and_group_max() -> Result<(), Error> {
-	define_foreign_table_group(false, "math::max(value)").await
+    define_foreign_table_group(false, "math::max(value)").await
 }
 
 #[tokio::test]
 async fn define_foreign_table_with_no_cond_and_group_sum() -> Result<(), Error> {
-	define_foreign_table_group(false, "math::sum(value)").await
+    define_foreign_table_group(false, "math::sum(value)").await
 }

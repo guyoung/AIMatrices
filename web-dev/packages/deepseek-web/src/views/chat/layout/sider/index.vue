@@ -19,10 +19,19 @@ const show = ref(false)
 
 const collapsed = computed(() => appStore.siderCollapsed)
 
-function handleAdd() {
-  chatStore.addHistory({ title: 'New Chat', uuid: Date.now(), isEdit: false })
-  if (isMobile.value)
-    appStore.setSiderCollapsed(true)
+async function handleAdd() {
+
+  let conversation = await chatStore.addConversation({ title: t('chat.newChat'), isEdit: false, seq_num: new Date().getTime() })
+
+  if (conversation) {
+    chatStore.setActiveConversation(conversation.id)
+
+    if (isMobile.value) {
+      appStore.setSiderCollapsed(true)
+    }
+  }
+
+ 
 }
 
 function handleUpdateCollapsed() {
@@ -35,8 +44,11 @@ function handleClearAll() {
     content: t('chat.clearHistoryConfirm'),
     positiveText: t('common.yes'),
     negativeText: t('common.no'),
-    onPositiveClick: () => {
-      chatStore.clearHistory()
+    onPositiveClick: async () => {
+     
+      await chatStore.deleteConversations()
+  
+     
       if (isMobile.value)
         appStore.setSiderCollapsed(true)
     },
@@ -102,9 +114,11 @@ watch(
               {{ $t('store.siderButton') }}
             </NButton>
           </div>
+          <!--
           <NButton @click="handleClearAll">
             <SvgIcon icon="ri:close-circle-line" />
           </NButton>
+          -->
         </div>
       </main>
       <Footer />

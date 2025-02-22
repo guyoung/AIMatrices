@@ -1,6 +1,6 @@
 mod build;
-mod trigger_factors;
 mod rumtime_config;
+mod trigger_factors;
 
 use std::any::{Any, TypeId};
 
@@ -8,9 +8,7 @@ use wasmtime::component::ResourceTable;
 
 use spin_factor_wasi::WasiFactor;
 use spin_factors::{
-    AsInstanceState, Factor, FactorInstanceState,
-    HasInstanceBuilder,
-    RuntimeFactorsInstanceState,
+    AsInstanceState, Factor, FactorInstanceState, HasInstanceBuilder, RuntimeFactorsInstanceState,
 };
 
 use spin_factor_key_value::KeyValueFactor;
@@ -26,9 +24,8 @@ use wasmruntime_factor_llm_infer::LlmInferFactor;
 #[cfg(feature = "sd-infer")]
 use wasmruntime_factor_sd_infer::SdInferFactor;
 
-pub use trigger_factors::TriggerFactors;
 pub use build::FactorsBuilder;
-
+pub use trigger_factors::TriggerFactors;
 
 /// Options for building a TriggerFactors.
 
@@ -50,7 +47,6 @@ impl Default for TriggerAppArgs {
     }
 }
 
-
 pub struct TriggerFactorsAppState {
     pub wasi: Option<<WasiFactor as Factor>::AppState>,
     pub variables: Option<<VariablesFactor as Factor>::AppState>,
@@ -60,7 +56,7 @@ pub struct TriggerFactorsAppState {
     /*** ***/
     #[cfg(feature = "dbs")]
     pub dbs: Option<<DbsFactor as Factor>::AppState>,
-   #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
     pub llm_infer: Option<<LlmInferFactor as Factor>::AppState>,
     #[cfg(feature = "sd-infer")]
     pub sd_infer: Option<<SdInferFactor as Factor>::AppState>,
@@ -75,7 +71,7 @@ pub struct TriggerFactorsInstanceBuilders {
     /*** ***/
     #[cfg(feature = "dbs")]
     dbs: Option<<DbsFactor as Factor>::InstanceBuilder>,
-   #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
     llm_infer: Option<<LlmInferFactor as Factor>::InstanceBuilder>,
     #[cfg(feature = "sd-infer")]
     sd_infer: Option<<SdInferFactor as Factor>::InstanceBuilder>,
@@ -111,7 +107,7 @@ impl TriggerFactorsInstanceBuilders {
     pub fn dbs(&mut self) -> &mut <DbsFactor as Factor>::InstanceBuilder {
         self.dbs.as_mut().unwrap()
     }
-   #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
     pub fn llm_infer(&mut self) -> &mut <LlmInferFactor as Factor>::InstanceBuilder {
         self.llm_infer.as_mut().unwrap()
     }
@@ -161,7 +157,7 @@ impl HasInstanceBuilder for TriggerFactorsInstanceBuilders {
             }
         }
 
-       #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
         {
             if type_id == TypeId::of::<<LlmInferFactor as Factor>::InstanceBuilder>() {
                 let builder = self.llm_infer.as_mut().unwrap();
@@ -192,7 +188,7 @@ pub struct TriggerFactorsInstanceState {
     /*** ***/
     #[cfg(feature = "dbs")]
     pub dbs: FactorInstanceState<DbsFactor>,
-   #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
     pub llm_infer: FactorInstanceState<LlmInferFactor>,
     #[cfg(feature = "sd-infer")]
     pub sd_infer: FactorInstanceState<SdInferFactor>,
@@ -232,7 +228,7 @@ impl RuntimeFactorsInstanceState for TriggerFactorsInstanceState {
             }
         }
 
-       #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
         {
             if let Some(state) = (&mut self.llm_infer as &mut (dyn Any + Send)).downcast_mut() {
                 return Some((state, &mut self.__table));

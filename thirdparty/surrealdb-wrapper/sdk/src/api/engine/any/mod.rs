@@ -148,64 +148,65 @@ use url::Url;
 
 /// A trait for converting inputs to a server address object
 pub trait IntoEndpoint {
-	/// Converts an input into a server address object
-	fn into_endpoint(self) -> Result<Endpoint>;
+    /// Converts an input into a server address object
+    fn into_endpoint(self) -> Result<Endpoint>;
 }
 
 fn split_url(url: &str) -> (&str, &str) {
-	match url.split_once("://") {
-		Some(parts) => parts,
-		None => match url.split_once(':') {
-			Some(parts) => parts,
-			None => (url, ""),
-		},
-	}
+    match url.split_once("://") {
+        Some(parts) => parts,
+        None => match url.split_once(':') {
+            Some(parts) => parts,
+            None => (url, ""),
+        },
+    }
 }
 
 impl IntoEndpoint for &str {
-	fn into_endpoint(self) -> Result<Endpoint> {
-		let (url, path) = match self {
-			"memory" | "mem://" => (Url::parse("mem://").unwrap(), "memory".to_owned()),
-			url if url.starts_with("ws") | url.starts_with("http") | url.starts_with("tikv") => {
-				(Url::parse(url).map_err(|_| Error::InvalidUrl(self.to_owned()))?, String::new())
-			}
+    fn into_endpoint(self) -> Result<Endpoint> {
+        let (url, path) = match self {
+            "memory" | "mem://" => (Url::parse("mem://").unwrap(), "memory".to_owned()),
+            url if url.starts_with("ws") | url.starts_with("http") | url.starts_with("tikv") => (
+                Url::parse(url).map_err(|_| Error::InvalidUrl(self.to_owned()))?,
+                String::new(),
+            ),
 
-			_ => {
-				let (scheme, path) = split_url(self);
-				let protocol = format!("{scheme}://");
-				(
-					Url::parse(&protocol).map_err(|_| Error::InvalidUrl(self.to_owned()))?,
-					path_to_string(&protocol, path),
-				)
-			}
-		};
-		let mut endpoint = Endpoint::new(url);
-		endpoint.path = path;
-		Ok(endpoint)
-	}
+            _ => {
+                let (scheme, path) = split_url(self);
+                let protocol = format!("{scheme}://");
+                (
+                    Url::parse(&protocol).map_err(|_| Error::InvalidUrl(self.to_owned()))?,
+                    path_to_string(&protocol, path),
+                )
+            }
+        };
+        let mut endpoint = Endpoint::new(url);
+        endpoint.path = path;
+        Ok(endpoint)
+    }
 }
 
 impl IntoEndpoint for &String {
-	fn into_endpoint(self) -> Result<Endpoint> {
-		self.as_str().into_endpoint()
-	}
+    fn into_endpoint(self) -> Result<Endpoint> {
+        self.as_str().into_endpoint()
+    }
 }
 
 impl IntoEndpoint for String {
-	fn into_endpoint(self) -> Result<Endpoint> {
-		self.as_str().into_endpoint()
-	}
+    fn into_endpoint(self) -> Result<Endpoint> {
+        self.as_str().into_endpoint()
+    }
 }
 
 impl<T> IntoEndpoint for (T, Config)
 where
-	T: Into<String>,
+    T: Into<String>,
 {
-	fn into_endpoint(self) -> Result<Endpoint> {
-		let mut endpoint = IntoEndpoint::into_endpoint(self.0.into())?;
-		endpoint.config = self.1;
-		Ok(endpoint)
-	}
+    fn into_endpoint(self) -> Result<Endpoint> {
+        let mut endpoint = IntoEndpoint::into_endpoint(self.0.into())?;
+        endpoint.config = self.1;
+        Ok(endpoint)
+    }
 }
 
 /// A dynamic connection that supports any engine and allows you to pick at runtime
@@ -213,33 +214,33 @@ where
 pub struct Any(());
 
 impl Surreal<Any> {
-	/// Connects to a specific database endpoint, saving the connection on the static client
-	///
-	/// # Examples
-	///
-	/// ```no_run
-	/// use std::sync::LazyLock;
-	/// use surrealdb::Surreal;
-	/// use surrealdb::engine::any::Any;
-	///
-	/// static DB: LazyLock<Surreal<Any>> = LazyLock::new(Surreal::init);
-	///
-	/// # #[tokio::main]
-	/// # async fn main() -> surrealdb::Result<()> {
-	/// DB.connect("ws://localhost:8000").await?;
-	/// # Ok(())
-	/// # }
-	/// ```
-	pub fn connect(&self, address: impl IntoEndpoint) -> Connect<Any, ()> {
-		Connect {
-			router: self.router.clone(),
-			engine: PhantomData,
-			address: address.into_endpoint(),
-			capacity: 0,
-			waiter: self.waiter.clone(),
-			response_type: PhantomData,
-		}
-	}
+    /// Connects to a specific database endpoint, saving the connection on the static client
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use std::sync::LazyLock;
+    /// use surrealdb::Surreal;
+    /// use surrealdb::engine::any::Any;
+    ///
+    /// static DB: LazyLock<Surreal<Any>> = LazyLock::new(Surreal::init);
+    ///
+    /// # #[tokio::main]
+    /// # async fn main() -> surrealdb::Result<()> {
+    /// DB.connect("ws://localhost:8000").await?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn connect(&self, address: impl IntoEndpoint) -> Connect<Any, ()> {
+        Connect {
+            router: self.router.clone(),
+            engine: PhantomData,
+            address: address.into_endpoint(),
+            capacity: 0,
+            waiter: self.waiter.clone(),
+            response_type: PhantomData,
+        }
+    }
 }
 
 /// Connects to a local, remote or embedded database
@@ -287,97 +288,103 @@ impl Surreal<Any> {
 /// # }
 /// ```
 pub fn connect(address: impl IntoEndpoint) -> Connect<Any, Surreal<Any>> {
-	Connect {
-		router: Arc::new(OnceLock::new()),
-		engine: PhantomData,
-		address: address.into_endpoint(),
-		capacity: 0,
-		waiter: Arc::new(watch::channel(None)),
-		response_type: PhantomData,
-	}
+    Connect {
+        router: Arc::new(OnceLock::new()),
+        engine: PhantomData,
+        address: address.into_endpoint(),
+        capacity: 0,
+        waiter: Arc::new(watch::channel(None)),
+        response_type: PhantomData,
+    }
 }
 
 #[cfg(all(test, feature = "kv-mem"))]
 mod tests {
 
-	use surrealdb_core::sql::Object;
+    use surrealdb_core::sql::Object;
 
-	use super::*;
-	use crate::opt::auth::Root;
-	use crate::opt::capabilities::Capabilities;
-	use crate::Value;
+    use super::*;
+    use crate::opt::auth::Root;
+    use crate::opt::capabilities::Capabilities;
+    use crate::Value;
 
-	#[tokio::test]
-	async fn local_engine_without_auth() {
-		// Instantiate an in-memory instance without root credentials
-		let db = connect("memory").await.unwrap();
-		db.use_ns("N").use_db("D").await.unwrap();
-		// The client has access to everything
-		assert!(
-			db.query("INFO FOR ROOT").await.unwrap().check().is_ok(),
-			"client should have access to ROOT"
-		);
-		assert!(
-			db.query("INFO FOR NS").await.unwrap().check().is_ok(),
-			"client should have access to NS"
-		);
-		assert!(
-			db.query("INFO FOR DB").await.unwrap().check().is_ok(),
-			"client should have access to DB"
-		);
+    #[tokio::test]
+    async fn local_engine_without_auth() {
+        // Instantiate an in-memory instance without root credentials
+        let db = connect("memory").await.unwrap();
+        db.use_ns("N").use_db("D").await.unwrap();
+        // The client has access to everything
+        assert!(
+            db.query("INFO FOR ROOT").await.unwrap().check().is_ok(),
+            "client should have access to ROOT"
+        );
+        assert!(
+            db.query("INFO FOR NS").await.unwrap().check().is_ok(),
+            "client should have access to NS"
+        );
+        assert!(
+            db.query("INFO FOR DB").await.unwrap().check().is_ok(),
+            "client should have access to DB"
+        );
 
-		// There are no users in the datastore
-		let mut res = db.query("INFO FOR ROOT").await.unwrap();
-		let users: Value = res.take("users").unwrap();
+        // There are no users in the datastore
+        let mut res = db.query("INFO FOR ROOT").await.unwrap();
+        let users: Value = res.take("users").unwrap();
 
-		assert_eq!(
-			users.into_inner(),
-			Object::default().into(),
-			"there should be no users in the system"
-		);
-	}
+        assert_eq!(
+            users.into_inner(),
+            Object::default().into(),
+            "there should be no users in the system"
+        );
+    }
 
-	#[tokio::test]
-	async fn local_engine_with_auth() {
-		// Instantiate an in-memory instance with root credentials
-		let creds = Root {
-			username: "root",
-			password: "root",
-		};
-		let db = connect(("memory", Config::new().user(creds).capabilities(Capabilities::all())))
-			.await
-			.unwrap();
-		db.use_ns("N").use_db("D").await.unwrap();
+    #[tokio::test]
+    async fn local_engine_with_auth() {
+        // Instantiate an in-memory instance with root credentials
+        let creds = Root {
+            username: "root",
+            password: "root",
+        };
+        let db = connect((
+            "memory",
+            Config::new().user(creds).capabilities(Capabilities::all()),
+        ))
+        .await
+        .unwrap();
+        db.use_ns("N").use_db("D").await.unwrap();
 
-		// The client needs to sign in before it can access anything
-		assert!(
-			db.query("INFO FOR ROOT").await.unwrap().check().is_err(),
-			"client should not have access to KV"
-		);
-		assert!(
-			db.query("INFO FOR NS").await.unwrap().check().is_err(),
-			"client should not have access to NS"
-		);
-		assert!(
-			db.query("INFO FOR DB").await.unwrap().check().is_err(),
-			"client should not have access to DB"
-		);
+        // The client needs to sign in before it can access anything
+        assert!(
+            db.query("INFO FOR ROOT").await.unwrap().check().is_err(),
+            "client should not have access to KV"
+        );
+        assert!(
+            db.query("INFO FOR NS").await.unwrap().check().is_err(),
+            "client should not have access to NS"
+        );
+        assert!(
+            db.query("INFO FOR DB").await.unwrap().check().is_err(),
+            "client should not have access to DB"
+        );
 
-		// It can sign in
-		assert!(db.signin(creds).await.is_ok(), "client should be able to sign in");
+        // It can sign in
+        assert!(
+            db.signin(creds).await.is_ok(),
+            "client should be able to sign in"
+        );
 
-		// After the sign in, the client has access to everything
-		assert!(
-			db.query("INFO FOR ROOT").await.unwrap().check().is_ok(),
-			"client should have access to KV"
-		);
-		assert!(
-			db.query("INFO FOR NS").await.unwrap().check().is_ok(),
-			"client should have access to NS"
-		);
-		assert!(
-			db.query("INFO FOR DB").await.unwrap().check().is_ok(),
-			"client should have access to DB"
-		);
-	}
+        // After the sign in, the client has access to everything
+        assert!(
+            db.query("INFO FOR ROOT").await.unwrap().check().is_ok(),
+            "client should have access to KV"
+        );
+        assert!(
+            db.query("INFO FOR NS").await.unwrap().check().is_ok(),
+            "client should have access to NS"
+        );
+        assert!(
+            db.query("INFO FOR DB").await.unwrap().check().is_ok(),
+            "client should have access to DB"
+        );
+    }
 }

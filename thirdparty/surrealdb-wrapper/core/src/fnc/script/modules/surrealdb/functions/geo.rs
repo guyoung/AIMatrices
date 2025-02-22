@@ -8,12 +8,12 @@ mod is;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"geo",
-	"area" => run,
-	"bearing" => run,
-	"centroid" => run,
-	"distance" => run,
-	"hash" => (hash::Package),
-	"is" => (is::Package)
+    Package,
+    "geo",
+    "area" => run,
+    "bearing" => run,
+    "centroid" => run,
+    "distance" => run,
+    "hash" => (hash::Package),
+    "is" => (is::Package)
 );

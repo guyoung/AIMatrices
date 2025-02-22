@@ -33,25 +33,19 @@ impl FilesMounter for SpinFilesMounter {
 
         let component_id = app_component.locked.id.to_string();
 
-
-        let codes_path = working_dir
-            .join("codes")
-            .join(component_id.as_str());
+        let codes_path = working_dir.join("codes").join(component_id.as_str());
 
         if codes_path.exists() {
             ctx.preopened_dir(codes_path, "/codes", self.allow_transient_writes)?;
         }
 
-        let shared_path = working_dir
-            .join("files")
-            .join("__shared__");
+        let shared_path = working_dir.join("files").join("__shared__");
 
         if !shared_path.exists() {
             std::fs::create_dir_all(&shared_path)?;
         }
 
         ctx.preopened_dir(shared_path, "/__shared__", self.allow_transient_writes)?;
-
 
         for content_dir in app_component.files() {
             let path = content_dir
@@ -60,9 +54,7 @@ impl FilesMounter for SpinFilesMounter {
                 .as_deref()
                 .with_context(|| format!("Missing 'source' on files mount {content_dir:?}"))?;
 
-            let base_dir = working_dir
-                .join("files")
-                .join(component_id.as_str());
+            let base_dir = working_dir.join("files").join(component_id.as_str());
 
             let source_path = sanitize_path(&Path::new(path), &base_dir);
 
@@ -88,16 +80,15 @@ impl FilesMounter for SpinFilesMounter {
     }
 }
 
-
 fn sanitize_path(path: &Path, base_dir: &Path) -> PathBuf {
     let mut sanitized_path = PathBuf::from(base_dir);
 
     for component in path.components() {
         match component {
             std::path::Component::Normal(name) => sanitized_path.push(name),
-            std::path::Component::RootDir | std::path::Component::CurDir => {  }
-            std::path::Component::ParentDir => { }
-            std::path::Component::Prefix(_) => { }
+            std::path::Component::RootDir | std::path::Component::CurDir => {}
+            std::path::Component::ParentDir => {}
+            std::path::Component::Prefix(_) => {}
         }
     }
 

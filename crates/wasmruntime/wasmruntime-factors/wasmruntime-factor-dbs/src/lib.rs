@@ -1,7 +1,6 @@
+pub mod engine;
 mod host;
 pub mod runtime_config;
-pub mod engine;
-
 
 use std::sync::Arc;
 
@@ -9,16 +8,11 @@ use spin_factors::{
     ConfigureAppContext, Factor, PrepareContext, RuntimeFactors, SelfInstanceBuilder,
 };
 
-
-pub struct DbsFactor {
-
-}
+pub struct DbsFactor {}
 
 impl DbsFactor {
     pub fn new() -> Self {
-        Self {
-
-        }
+        Self {}
     }
 }
 
@@ -39,9 +33,7 @@ impl Factor for DbsFactor {
         &self,
         mut ctx: ConfigureAppContext<T, Self>,
     ) -> anyhow::Result<Self::AppState> {
-        let engine = ctx
-            .take_runtime_config()
-            .map(|c| c.engine.clone());
+        let engine = ctx.take_runtime_config().map(|c| c.engine.clone());
 
         if engine.is_none() {
             return Err(anyhow::Error::msg("No dbs engine specified."));
@@ -66,9 +58,6 @@ impl Factor for DbsFactor {
     }
 }
 
-
-
-
 pub struct AppState {
     engine: Arc<engine::SurrealDbEngine>,
 }
@@ -79,8 +68,4 @@ pub struct InstanceState {
     connections: spin_resource_table::Table<(String, String)>,
 }
 
-
-
 impl SelfInstanceBuilder for InstanceState {}
-
-

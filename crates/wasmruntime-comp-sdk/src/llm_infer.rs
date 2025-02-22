@@ -1,10 +1,7 @@
-
 pub use crate::wit::comp::llm_infer::{
     self, EmbeddingsResult, EmbeddingsUsage, Error, InferencingParams, InferencingResult,
     InferencingUsage,
 };
-
-
 
 impl Default for InferencingParams {
     fn default() -> Self {
@@ -17,8 +14,6 @@ impl Default for InferencingParams {
             penalty_last_n: 64,
             penalty_freq: 0.0,
             penalty_present: 0.0,
-
-
         }
     }
 }
@@ -26,6 +21,10 @@ impl Default for InferencingParams {
 /// Perform inferencing using the provided model and prompt
 pub fn infer(model_id: &str, prompt: &str) -> Result<InferencingResult, Error> {
     llm_infer::infer(model_id, prompt, None)
+}
+
+pub fn infer_chat(model_id: &str, messages: &[(String, String)]) -> Result<InferencingResult, Error> {
+    llm_infer::infer_chat(model_id, messages, None)
 }
 
 /// Perform inferencing using the provided model, prompt, and options
@@ -37,6 +36,13 @@ pub fn infer_with_options(
     llm_infer::infer(model_id, prompt, Some(options))
 }
 
+pub fn infer_chat_with_options(
+    model_id: &str,
+    messages: &[(String, String)],
+    options: InferencingParams,
+) -> Result<InferencingResult, Error> {
+    llm_infer::infer_chat(model_id, messages, Some(options))
+}
 
 /// Generate embeddings using the provided model and collection of text
 pub fn generate_embeddings(

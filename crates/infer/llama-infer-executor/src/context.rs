@@ -1,20 +1,19 @@
-
 use std::num::NonZeroU32;
 use std::time::Duration;
 
-use anyhow::{bail, Context};
+use anyhow::Context;
 
 use crate::llama_cpp_2;
 use crate::llama_cpp_2::context::params::LlamaContextParams;
 use crate::llama_cpp_2::ggml_time_us;
 use crate::llama_cpp_2::llama_batch::LlamaBatch;
-use crate::llama_cpp_2::model::AddBos;
 use crate::llama_cpp_2::token::LlamaToken;
 
-use crate::{EmbeddingsResult, InferencingParams, InferencingResult};
-use crate::ModelInstance;
 use crate::sampler::generate_sampler;
+use crate::token::{generate_embeddings_tokens, generate_infer_tokens, generate_infer_tokens_chat};
 use crate::InferBatch;
+use crate::ModelInstance;
+use crate::{EmbeddingsResult, InferencingParams, InferencingResult};
 
 #[derive(Debug, Clone, Default)]
 pub struct LlamaContextConfig {
@@ -27,7 +26,6 @@ pub struct LlamaContextConfig {
     /// number of threads to use during batch and prompt processing (default: use all available threads)
     pub threads_batch: Option<i32>,
 }
-
 
 pub struct LlamaContext<'a>(llama_cpp_2::context::LlamaContext<'a>);
 
@@ -68,7 +66,8 @@ impl<'a> LlamaContext<'a> {
             ctx_params
         };
 
-        let context = model_instance.model
+        let context = model_instance
+            .model
             .new_context(&model_instance.backend, ctx_params)
             .with_context(|| "unable to create the llama_context")?;
 
@@ -80,14 +79,17 @@ impl<'a> LlamaContext<'a> {
         tokens_list: Vec<LlamaToken>,
         params: &InferencingParams,
     ) -> anyhow::Result<InferBatch<'a>> {
-
-
         let last_index: i32 = (tokens_list.len() - 1) as i32;
 
         // create a llama_batch with size 512
         // we use this object to submit token data for decoding
+
+
+        /***
         let mut batch = LlamaBatch::new(512, 1);
 
+         ***/
+        let mut batch = LlamaBatch::new(self.0.n_batch() as usize, 1);
 
         /***
         for (i, token) in (0_i32..).zip(tokens_list.into_iter()) {
@@ -107,7 +109,6 @@ impl<'a> LlamaContext<'a> {
             .decode(&mut batch)
             .with_context(|| "Failed to decode batch")?;
 
-
         let sampler = generate_sampler(
             &params,
             self.0.model.n_vocab(),
@@ -117,23 +118,49 @@ impl<'a> LlamaContext<'a> {
 
         let decoder = encoding_rs::UTF_8.new_decoder();
 
-        Ok(InferBatch{
+        Ok(InferBatch {
             ctx: self.0,
             n_cur: batch.n_tokens(),
             max_token: params.max_tokens,
             batch,
             sampler,
-            decoder
+            decoder,
         })
-
     }
 
-    pub fn infer(
+    pub fn infer_simple(
         self,
         prompt: &str,
-        params: InferencingParams,
+        params: &InferencingParams,
     ) -> anyhow::Result<InferencingResult> {
-        let tokens_list = self.generate_infer_tokens(prompt, &params)?;
+        let tokens_list = generate_infer_tokens(
+            self.0.model,
+            prompt,
+            params
+        )?;
+
+        self.infer_inner(tokens_list,params)
+    }
+
+    pub fn infer_chat(
+        self,
+        messages: Vec<(String, String)>,
+        params: &InferencingParams,
+    ) -> anyhow::Result<InferencingResult> {
+        let tokens_list = generate_infer_tokens_chat(
+            self.0.model,
+            messages,
+            params
+        )?;
+
+        self.infer_inner(tokens_list,params)
+    }
+
+    fn infer_inner(
+        self,
+        tokens_list: Vec<LlamaToken>,
+        params: &InferencingParams,
+    ) -> anyhow::Result<InferencingResult> {
         let prompt_token_count = tokens_list.len();
 
         let mut infer_batch = self.crate_infer_batch(tokens_list, &params)?;
@@ -148,10 +175,10 @@ impl<'a> LlamaContext<'a> {
 
             match str {
                 Some(str) => text.push(str),
-                None => break
+                None => break,
             }
 
-            n_decode+=1;
+            n_decode += 1;
         }
 
         let t_main_end = ggml_time_us();
@@ -174,61 +201,9 @@ impl<'a> LlamaContext<'a> {
             secs: duration.as_secs_f32(),
             speed: n_decode as f32 / duration.as_secs_f32(),
         })
-
     }
 
-    pub fn generate_infer_tokens(
-        &self,
-        prompt: &str,
-        params: &InferencingParams,
-    ) -> anyhow::Result<Vec<LlamaToken>> {
-        //println!("generate_infer_tokens");
-
-        let tokens_list = self
-            .0
-            .model
-            .str_to_token(&prompt, AddBos::Always)
-            .with_context(|| format!("Failed to tokenize {prompt}"))?;
-
-        //println!("tokens_list: {:?}", tokens_list);
-
-        /***
-        let n_cxt = self.0.n_ctx() as i32;
-        let n_kv_req = tokens_list.len() as i32 + (n_len - tokens_list.len() as i32);
-
-        // println!("n_len = {n_len}, n_ctx = {n_cxt}, k_kv_req = {n_kv_req}");
-
-        // make sure the KV cache is big enough to hold all the prompt and generated tokens
-        if n_kv_req > n_cxt {
-            bail!(
-                "n_kv_req > n_ctx, the required kv cache size is not big enough
-either reduce n_len or increase n_ctx"
-            )
-        }
-
-        if tokens_list.len() >= usize::try_from(n_len)? {
-            bail!("the prompt is too long, it has more tokens than n_len")
-        }
-
-        // print the prompt token-by-token
-        //println!();
-
-        //for token in &tokens_list {
-        //   print!("{}", model.token_to_str(*token, Special::Tokenize)?);
-        //}
-         ***/
-
-        if tokens_list.len() >= params.max_tokens as usize {
-            bail!("Maximum token length is smaller than the prompt...");
-        }
-
-        Ok(tokens_list)
-    }
-
-    pub fn generate_embeddings(
-        mut self,
-        text: Vec<String>,
-    ) -> anyhow::Result<EmbeddingsResult> {
+    pub fn generate_embeddings(mut self, text: Vec<String>) -> anyhow::Result<EmbeddingsResult> {
         // Whether to normalise the produced embeddings
         let normalise: bool = false;
 
@@ -239,7 +214,8 @@ either reduce n_len or increase n_ctx"
         let mut batch = LlamaBatch::new(n_ctx, 1);
         let mut max_seq_id_batch = 0;
 
-        let tokens_lines_list = self.generate_embeddings_tokens(text)?;
+        let tokens_lines_list =
+            generate_embeddings_tokens(self.0.model, self.0.n_ctx() as usize, text)?;
         let prompt_token_count = tokens_lines_list.len();
 
         let mut output = Vec::with_capacity(tokens_lines_list.len());
@@ -297,49 +273,6 @@ either reduce n_len or increase n_ctx"
             secs: duration.as_secs_f32(),
             speed: total_tokens as f32 / duration.as_secs_f32(),
         })
-    }
-
-
-
-    fn generate_embeddings_tokens(
-        &self,
-        text: Vec<String>,
-    ) -> anyhow::Result<Vec<Vec<LlamaToken>>> {
-        // tokenize the prompt
-        let tokens_lines_list = text
-            .into_iter()
-            .map(|line| self.0.model.str_to_token(line.as_str(), AddBos::Always))
-            .collect::<Result<Vec<_>, _>>()
-            .with_context(|| "failed to tokenize")?;
-
-        let n_ctx = self.0.n_ctx() as usize;
-        let _n_ctx_train = self.0.model.n_ctx_train();
-
-        // println!("n_ctx = {n_ctx}, n_ctx_train = {n_ctx_train}");
-
-        if tokens_lines_list.iter().any(|tok| n_ctx < tok.len()) {
-            bail!("One of the provided prompts exceeds the size of the context window");
-        }
-
-        // print the prompt token-by-token
-        // println!();
-
-        // for (i, token_line) in tokens_lines_list.iter().enumerate() {
-        //     println!("Prompt {i}");
-        //     for token in token_line {
-        //         // Attempt to convert token to string and print it; if it fails, print the token instead
-        //         match self.0.model.token_to_str(*token, Special::Tokenize) {
-        //             Ok(token_str) => println!("{token} --> {token_str}"),
-        //             Err(e) => {
-        //                 println!("Failed to convert token to string, error: {e}");
-        //                 println!("Token value: {token}");
-        //             }
-        //         }
-        //     }
-        //     println!();
-        // }
-
-        Ok(tokens_lines_list)
     }
 }
 

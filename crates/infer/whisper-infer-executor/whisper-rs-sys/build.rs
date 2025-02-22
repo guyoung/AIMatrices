@@ -3,18 +3,14 @@ use std::path::PathBuf;
 
 use cmake::Config;
 
-
 fn main() {
     let target = env::var("TARGET").unwrap();
 
-
-  
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
     let whisper_root = out.join("whisper.cpp/");
 
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=wrapper.h");
-
 
     if !whisper_root.exists() {
         std::fs::create_dir_all(&whisper_root).unwrap();
@@ -32,8 +28,6 @@ fn main() {
             .expect("Failed to copy bindings.rs");
     } else {
         let bindings = bindgen::Builder::default().header("wrapper.h");
-
-
 
         let bindings = bindings
             .clang_arg("-I./whisper.cpp/")
@@ -75,14 +69,13 @@ fn main() {
         .very_verbose(true)
         .pic(true);
 
-
     if cfg!(feature = "vulkan") {
         config.define("GGML_VULKAN", "ON");
 
-        if cfg!(windows) {          
+        if cfg!(windows) {
             println!("cargo:rustc-link-lib=vulkan-1");
             /***
-            println!("cargo:rerun-if-env-changed=VULKAN_SDK"); 
+            println!("cargo:rerun-if-env-changed=VULKAN_SDK");
             let vulkan_path = match env::var("VULKAN_SDK") {
                 Ok(path) => PathBuf::from(path),
                 Err(_) => panic!(
@@ -95,7 +88,7 @@ fn main() {
         } else if cfg!(target_os = "macos") {
             println!("cargo:rustc-link-lib=vulkan");
             /***
-            println!("cargo:rerun-if-env-changed=VULKAN_SDK");           
+            println!("cargo:rerun-if-env-changed=VULKAN_SDK");
             let vulkan_path = match env::var("VULKAN_SDK") {
                 Ok(path) => PathBuf::from(path),
                 Err(_) => panic!(
@@ -117,14 +110,10 @@ fn main() {
 
     let destination = config.build();
 
-       // Search paths
-       println!("cargo:rustc-link-search={}", out.join("lib").display());
-       println!(
-           "cargo:rustc-link-search={}",
-           out.join("lib64").display()
-       );
-       println!("cargo:rustc-link-search={}", destination.display());
-
+    // Search paths
+    println!("cargo:rustc-link-search={}", out.join("lib").display());
+    println!("cargo:rustc-link-search={}", out.join("lib64").display());
+    println!("cargo:rustc-link-search={}", destination.display());
 
     println!("cargo:rustc-link-lib=static=whisper");
     println!("cargo:rustc-link-lib=static=ggml");
@@ -135,13 +124,12 @@ fn main() {
         println!("cargo:rustc-link-lib=static=ggml-vulkan");
     }
 
-     // Link macOS Accelerate framework for matrix calculations
-     if target.contains("apple") {
-        println!("cargo:rustc-link-lib=framework=Accelerate");       
+    // Link macOS Accelerate framework for matrix calculations
+    if target.contains("apple") {
+        println!("cargo:rustc-link-lib=framework=Accelerate");
         println!("cargo:rustc-link-lib=framework=Foundation");
         println!("cargo:rustc-link-lib=framework=Metal");
         println!("cargo:rustc-link-lib=framework=MetalKit");
-      
     }
 
     add_cpp_link_stdlib();
@@ -150,17 +138,13 @@ fn main() {
     _ = std::fs::remove_file("bindings/javascript/package.json");
 }
 
-
 fn add_cpp_link_stdlib() {
-    let target = env::var("TARGET").unwrap();   
+    let target = env::var("TARGET").unwrap();
 
-    if cfg!(target_os = "windows") && cfg!(target_env = "msvc")  {
-       
-    }
-    else if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
+    if cfg!(target_os = "windows") && cfg!(target_env = "msvc") {
+    } else if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
         println!("cargo:rustc-link-lib={}={}", "static", "stdc++");
-    }
-    else if target.contains("apple") || target.contains("freebsd") || target.contains("openbsd") {
+    } else if target.contains("apple") || target.contains("freebsd") || target.contains("openbsd") {
         println!("cargo:rustc-link-lib={}={}", "static", "c++");
     } else if target.contains("android") {
         println!("cargo:rustc-link-lib={}={}", "static", "c++_shared");
@@ -168,5 +152,3 @@ fn add_cpp_link_stdlib() {
         println!("cargo:rustc-link-lib={}={}", "static", "stdc++");
     }
 }
-
-

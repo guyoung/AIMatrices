@@ -84,26 +84,23 @@ impl HttpExecutor for WasiHttpExecutor {
             HandlerType::Wagi => unreachable!("should have used WagiExecutor instead"),
         };
 
+        let handle = task::spawn(async move {
+            let result = match handler {
+                Handler::Latest(handler) => {
+                    handler
+                        .wasi_http_incoming_handler()
+                        .call_handle(&mut store, request, response)
+                        .await
+                }
+            };
 
-        let handle = task::spawn(
-            async move {
-                let result = match handler {
-                    Handler::Latest(handler) => {
-                        handler
-                            .wasi_http_incoming_handler()
-                            .call_handle(&mut store, request, response)
-                            .await
-                    }
-                };
+            tracing::trace!(
+                "wasi-http memory consumed: {}",
+                store.data().core_state().memory_consumed()
+            );
 
-                tracing::trace!(
-                    "wasi-http memory consumed: {}",
-                    store.data().core_state().memory_consumed()
-                );
-
-                result
-            },
-        );
+            result
+        });
 
         match response_rx.await {
             Ok(response) => {

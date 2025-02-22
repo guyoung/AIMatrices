@@ -1,16 +1,9 @@
-
 use rquickjs::{loader::Loader, Ctx, Function, Module, Object, Result, Value};
-use std::{
-    fs::File,
-    io::Read,
-};
+use std::{fs::File, io::Read};
 use tracing::trace;
 
-use crate::module_loader::CJS_LOADER_PREFIX;
 use super::CJS_IMPORT_PREFIX;
-
-
-
+use crate::module_loader::CJS_LOADER_PREFIX;
 
 #[derive(Debug, Default)]
 pub struct CustomLoader;
@@ -124,5 +117,3 @@ impl Loader for CustomLoader {
         Ok(module)
     }
 }
-
-

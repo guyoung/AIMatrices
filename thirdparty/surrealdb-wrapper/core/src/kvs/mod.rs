@@ -41,10 +41,10 @@ pub(crate) mod cache;
 #[cfg(not(target_arch = "wasm32"))]
 mod index;
 #[cfg(any(
-	feature = "kv-tikv",
-	feature = "kv-fdb",
-	feature = "kv-indxdb",
-	feature = "kv-surrealcs",
+    feature = "kv-tikv",
+    feature = "kv-fdb",
+    feature = "kv-indxdb",
+    feature = "kv-surrealcs",
 ))]
 mod savepoint;
 #[cfg(test)]

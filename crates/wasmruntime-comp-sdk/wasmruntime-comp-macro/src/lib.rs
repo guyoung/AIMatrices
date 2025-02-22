@@ -34,7 +34,6 @@ pub fn redis_component(_attr: TokenStream, item: TokenStream) -> TokenStream {
         .into()
 }
 
-
 #[proc_macro_attribute]
 pub fn http_component(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let func = syn::parse_macro_input!(item as syn::ItemFn);

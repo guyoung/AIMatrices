@@ -7,8 +7,8 @@ mod url;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"parse",
-	"email" => (email::Package),
-	"url" => (url::Package)
+    Package,
+    "parse",
+    "email" => (email::Package),
+    "url" => (url::Package)
 );

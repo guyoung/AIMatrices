@@ -57,7 +57,6 @@ fn random_chars(len: usize) -> String {
         .collect::<String>()
 }
 
-
 pub fn mkdtemp_sync(ctx: Ctx<'_>, prefix: String) -> Result<String> {
     let path = [prefix.as_str(), random_chars(6).as_str()].join(",");
     std::fs::create_dir_all(&path)

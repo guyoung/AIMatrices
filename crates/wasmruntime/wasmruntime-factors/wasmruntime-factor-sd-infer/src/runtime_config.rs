@@ -1,7 +1,7 @@
-use std::sync::Arc;
-use tokio::sync::RwLock;
 use crate::SdInferEngine;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 pub struct RuntimeConfig {
-    pub engine: Arc<RwLock<dyn SdInferEngine>>,
+    pub engine: Arc<Mutex<dyn SdInferEngine>>,
 }

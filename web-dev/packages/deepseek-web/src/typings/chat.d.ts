@@ -1,8 +1,10 @@
 declare namespace Chat {
 
+	/***
 	interface Chat {
 		dateTime: string
-		text: string
+		text: string,
+		role: String,
 		inversion?: boolean
 		error?: boolean
 		loading?: boolean
@@ -16,19 +18,62 @@ declare namespace Chat {
 		uuid: number
 	}
 
+
 	interface ChatState {
 		active: number | null
 		usingContext: boolean;
 		history: History[]
 		chat: { uuid: number; data: Chat[] }[]
 	}
-
+		
 	interface ConversationRequest {
 		conversationId?: string
 		parentMessageId?: string
 	}
 
-	interface ConversationResponse {
+	***/
+
+
+
+	interface ChatState {		
+		usingContext: boolean,
+		conversations: ChatConversation[],  
+		active: string | null,		
+		messages: ChatMessage[]	
+	}
+
+
+	interface ChatConversation {
+		id: string | null,	
+		title: string,
+		isEdit: boolean,
+		seq_num: number,
+		created_at:  Date | null,	
+		updated_at:  Date | null,	
+		user_id: string | null,	
+	}
+
+	interface ChatMessage {
+		id: string | null,	
+		content: string,
+		role: String,
+		status: number,
+		seq_num: number,
+		created_at:  Date | null,	
+		updated_at:  Date | null,	
+		conversation_id: string,
+		user_id: string | null,	
+		parent_id: string | null,	
+		request_id: string | null,	
+		metadata: any,
+		
+		inversion?: boolean,
+		error?: boolean,
+		loading?: boolean,
+	}
+
+
+	interface ChatResponse {
 		conversationId: string
 		detail: {
 			choices: { finish_reason: string; index: number; logprobs: any; text: string }[]

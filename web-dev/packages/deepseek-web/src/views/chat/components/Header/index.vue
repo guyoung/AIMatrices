@@ -2,13 +2,13 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { HoverButton, SvgIcon } from '@/components/common'
 import { NSelect } from 'naive-ui'
-import { useAppStore, useChatStore } from '@/store'
+import { useAppStore } from '@/store'
 import { fetchModels } from '@/api'
-
+import { useBasicLayout } from '@/hooks/useBasicLayout'
 
 
 interface Props {
-  usingContext: boolean
+ 
 }
 
 interface Emit {
@@ -21,10 +21,11 @@ defineProps<Props>()
 const emit = defineEmits<Emit>()
 
 const appStore = useAppStore()
-const chatStore = useChatStore()
+
+const { isMobile } = useBasicLayout()
+
 
 const collapsed = computed(() => appStore.siderCollapsed)
-const currentChatHistory = computed(() => chatStore.getChatHistoryByCurrentActive)
 
 function handleUpdateCollapsed() {
   appStore.setSiderCollapsed(!collapsed.value)
@@ -92,18 +93,18 @@ const model = computed({
       </h1>
       <div class="flex items-center space-x-2">                 
           <NSelect
-            style="width: 240px"
+            style="width: 240px; margin-right: 5px"
             :value="model"
             :options="modelOptions"
             @update-value="value => appStore.setModel(value)"
           />
       
-        <HoverButton @click="handleExport">
+        <HoverButton @click="handleExport"  v-if="isMobile">
           <span class="text-xl text-[#4f555e] dark:text-white">
             <SvgIcon icon="ri:download-2-line" />
           </span>
         </HoverButton>
-        <HoverButton @click="handleClear">
+        <HoverButton @click="handleClear"  v-if="isMobile">
           <span class="text-xl text-[#4f555e] dark:text-white">
             <SvgIcon icon="ri:delete-bin-line" />
           </span>

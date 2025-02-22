@@ -4,7 +4,7 @@ use anyhow::Context;
 
 use async_trait::async_trait;
 
-use wasmtime::component::{ Component, Instance };
+use wasmtime::component::{Component, Instance};
 use wasmtime::Engine as WasmtimeEngine;
 
 use spin_app::{App, AppComponent};
@@ -79,7 +79,6 @@ impl<T: RuntimeFactors, U: Send + 'static> FactorsExecutor<T, U> {
 
                 component_instance_pres.insert(app_component.id().to_string(), instance_pre);
             }
-
         }
 
         Ok(FactorsExecutorApp {
@@ -119,7 +118,8 @@ pub trait ComponentLoader {
     ) -> anyhow::Result<Component>;
 }
 
-type InstancePre<T, U> = wasmtime::component::InstancePre<InstanceState<<T as RuntimeFactors>::InstanceState, U>>;
+type InstancePre<T, U> =
+    wasmtime::component::InstancePre<InstanceState<<T as RuntimeFactors>::InstanceState, U>>;
 
 /// A FactorsExecutorApp represents a loaded Spin app, ready for instantiation.
 ///

@@ -11,57 +11,57 @@ use std::fmt::Display;
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 #[non_exhaustive]
 pub enum TableType {
-	#[default]
-	Any,
-	Normal,
-	Relation(Relation),
+    #[default]
+    Any,
+    Normal,
+    Relation(Relation),
 }
 
 impl Display for TableType {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match self {
-			TableType::Normal => {
-				f.write_str(" NORMAL")?;
-			}
-			TableType::Relation(rel) => {
-				f.write_str(" RELATION")?;
-				if let Some(kind) = &rel.from {
-					write!(f, " IN {kind}")?;
-				}
-				if let Some(kind) = &rel.to {
-					write!(f, " OUT {kind}")?;
-				}
-				if rel.enforced {
-					write!(f, " ENFORCED")?;
-				}
-			}
-			TableType::Any => {
-				f.write_str(" ANY")?;
-			}
-		}
-		Ok(())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            TableType::Normal => {
+                f.write_str(" NORMAL")?;
+            }
+            TableType::Relation(rel) => {
+                f.write_str(" RELATION")?;
+                if let Some(kind) = &rel.from {
+                    write!(f, " IN {kind}")?;
+                }
+                if let Some(kind) = &rel.to {
+                    write!(f, " OUT {kind}")?;
+                }
+                if rel.enforced {
+                    write!(f, " ENFORCED")?;
+                }
+            }
+            TableType::Any => {
+                f.write_str(" ANY")?;
+            }
+        }
+        Ok(())
+    }
 }
 
 impl InfoStructure for TableType {
-	fn structure(self) -> Value {
-		match self {
-			TableType::Any => Value::from(map! {
-				"kind".to_string() => "ANY".into(),
-			}),
-			TableType::Normal => Value::from(map! {
-				"kind".to_string() => "NORMAL".into(),
-			}),
-			TableType::Relation(rel) => Value::from(map! {
-				"kind".to_string() => "RELATION".into(),
-				"in".to_string(), if let Some(Kind::Record(tables)) = rel.from =>
-					tables.into_iter().map(|t| t.0).collect::<Vec<_>>().into(),
-				"out".to_string(), if let Some(Kind::Record(tables)) = rel.to =>
-					tables.into_iter().map(|t| t.0).collect::<Vec<_>>().into(),
-				"enforced".to_string() => rel.enforced.into()
-			}),
-		}
-	}
+    fn structure(self) -> Value {
+        match self {
+            TableType::Any => Value::from(map! {
+                "kind".to_string() => "ANY".into(),
+            }),
+            TableType::Normal => Value::from(map! {
+                "kind".to_string() => "NORMAL".into(),
+            }),
+            TableType::Relation(rel) => Value::from(map! {
+                "kind".to_string() => "RELATION".into(),
+                "in".to_string(), if let Some(Kind::Record(tables)) = rel.from =>
+                    tables.into_iter().map(|t| t.0).collect::<Vec<_>>().into(),
+                "out".to_string(), if let Some(Kind::Record(tables)) = rel.to =>
+                    tables.into_iter().map(|t| t.0).collect::<Vec<_>>().into(),
+                "enforced".to_string() => rel.enforced.into()
+            }),
+        }
+    }
 }
 
 #[revisioned(revision = 2)]
@@ -69,8 +69,8 @@ impl InfoStructure for TableType {
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 #[non_exhaustive]
 pub struct Relation {
-	pub from: Option<Kind>,
-	pub to: Option<Kind>,
-	#[revision(start = 2)]
-	pub enforced: bool,
+    pub from: Option<Kind>,
+    pub to: Option<Kind>,
+    #[revision(start = 2)]
+    pub enforced: bool,
 }

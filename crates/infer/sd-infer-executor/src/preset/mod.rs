@@ -1,12 +1,12 @@
-mod preset_builder;
 mod modifier;
+mod preset_builder;
 
-use std::path::{Path, PathBuf};
 use derive_builder::Builder;
+use std::path::{Path, PathBuf};
 
 use crate::WeightType;
 
-use crate::config::{ ContextConfig, ContextConfigBuilder, ContextConfigBuilderError };
+use crate::config::{ContextConfig, ContextConfigBuilder, ContextConfigBuilderError};
 
 use preset_builder::{
     flux_1_dev, flux_1_mini, flux_1_schnell, juggernaut_xl_11, sd_turbo, sdxl_base_1_0,
@@ -104,9 +104,9 @@ impl PresetBuilder {
 
     pub fn build(&mut self) -> Result<ContextConfig, ContextConfigBuilderError> {
         let preset = self.internal_build()?;
-        let config: ContextConfigBuilder = preset
-            .try_into()
-            .map_err(|err: anyhow::Error| ContextConfigBuilderError::ValidationError(err.to_string()))?;
+        let config: ContextConfigBuilder = preset.try_into().map_err(|err: anyhow::Error| {
+            ContextConfigBuilderError::ValidationError(err.to_string())
+        })?;
         config.build()
     }
 }

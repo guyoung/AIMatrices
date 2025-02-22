@@ -10,21 +10,21 @@ use crate::sql::escape::escape_ident;
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 #[non_exhaustive]
 pub struct UseStatement {
-	pub ns: Option<String>,
-	pub db: Option<String>,
+    pub ns: Option<String>,
+    pub db: Option<String>,
 }
 
 impl fmt::Display for UseStatement {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("USE")?;
-		if let Some(ref ns) = self.ns {
-			let ns = escape_ident(ns);
-			write!(f, " NS {ns}")?;
-		}
-		if let Some(ref db) = self.db {
-			let db = escape_ident(db);
-			write!(f, " DB {db}")?;
-		}
-		Ok(())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("USE")?;
+        if let Some(ref ns) = self.ns {
+            let ns = escape_ident(ns);
+            write!(f, " NS {ns}")?;
+        }
+        if let Some(ref db) = self.db {
+            let db = escape_ident(db);
+            write!(f, " DB {db}")?;
+        }
+        Ok(())
+    }
 }

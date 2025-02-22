@@ -7,58 +7,58 @@ use crate::sql::Kind;
 
 #[derive(Error, Debug)]
 pub enum GqlError {
-	#[error("Database error: {0}")]
-	DbError(crate::err::Error),
-	#[error("Error generating schema: {0}")]
-	SchemaError(String),
-	#[error("Error resolving request: {0}")]
-	ResolverError(String),
-	#[error("No Namespace specified")]
-	UnspecifiedNamespace,
-	#[error("No Database specified")]
-	UnspecifiedDatabase,
-	#[error("GraphQL has not been configured for this database")]
-	NotConfigured,
-	#[error("Internal Error: {0}")]
-	InternalError(String),
-	#[error("Error converting value: {val} to type: {target}")]
-	TypeError {
-		target: Kind,
-		val: async_graphql::Value,
-	},
+    #[error("Database error: {0}")]
+    DbError(crate::err::Error),
+    #[error("Error generating schema: {0}")]
+    SchemaError(String),
+    #[error("Error resolving request: {0}")]
+    ResolverError(String),
+    #[error("No Namespace specified")]
+    UnspecifiedNamespace,
+    #[error("No Database specified")]
+    UnspecifiedDatabase,
+    #[error("GraphQL has not been configured for this database")]
+    NotConfigured,
+    #[error("Internal Error: {0}")]
+    InternalError(String),
+    #[error("Error converting value: {val} to type: {target}")]
+    TypeError {
+        target: Kind,
+        val: async_graphql::Value,
+    },
 }
 
 pub fn schema_error(msg: impl Into<String>) -> GqlError {
-	GqlError::SchemaError(msg.into())
+    GqlError::SchemaError(msg.into())
 }
 
 pub fn resolver_error(msg: impl Into<String>) -> GqlError {
-	GqlError::ResolverError(msg.into())
+    GqlError::ResolverError(msg.into())
 }
 pub fn internal_error(msg: impl Into<String>) -> GqlError {
-	let msg = msg.into();
-	error!("{}", msg);
-	GqlError::InternalError(msg)
+    let msg = msg.into();
+    error!("{}", msg);
+    GqlError::InternalError(msg)
 }
 
 pub fn type_error(kind: Kind, val: &async_graphql::Value) -> GqlError {
-	GqlError::TypeError {
-		target: kind,
-		val: val.to_owned(),
-	}
+    GqlError::TypeError {
+        target: kind,
+        val: val.to_owned(),
+    }
 }
 
 impl From<crate::err::Error> for GqlError {
-	fn from(value: crate::err::Error) -> Self {
-		GqlError::DbError(value)
-	}
+    fn from(value: crate::err::Error) -> Self {
+        GqlError::DbError(value)
+    }
 }
 
 impl<T> From<InputValueError<T>> for GqlError
 where
-	T: InputType + Debug,
+    T: InputType + Debug,
 {
-	fn from(value: InputValueError<T>) -> Self {
-		GqlError::ResolverError(format!("{value:?}"))
-	}
+    fn from(value: InputValueError<T>) -> Self {
+        GqlError::ResolverError(format!("{value:?}"))
+    }
 }

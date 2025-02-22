@@ -119,7 +119,6 @@ impl OpenAIClient {
 
         request_bulder.header("Content-Type", "application/json");
 
-
         for (key, value) in self.headers.clone() {
             request_bulder.header(key, value);
         }
@@ -140,16 +139,25 @@ impl OpenAIClient {
         path: &str,
         body: &impl serde::ser::Serialize,
     ) -> Result<T, APIError> {
+
         let body = serde_json::to_vec(body).map_err(|e| APIError::CustomError {
             message: format!("{:?}", e),
         })?;
 
+
+
         let request = self.build_request(Method::Post, path, Some(body));
 
+
+
         let response: Response =
-            wasmruntime_comp_sdk::http::send_sync(request).map_err(|e| APIError::CustomError {
-                message: format!("{:?}", e),
+            wasmruntime_comp_sdk::http::send_sync(request).map_err(|e| {
+                println!("error: {:?}", e);
+                APIError::CustomError {
+                    message: format!("{:?}", e),
+                }
             })?;
+
 
         self.handle_response(response)
     }
@@ -178,7 +186,7 @@ impl OpenAIClient {
         Ok(body.to_vec())
     }
 
-   fn delete<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, APIError> {
+    fn delete<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, APIError> {
         let request = self.build_request(Method::Delete, path, None);
 
         let response: Response =
@@ -744,7 +752,6 @@ impl OpenAIClient {
             })
         }
     }
-
 
     /***
      fn create_form<T>(req: &T, file_field: &str) -> Result<Form, APIError>

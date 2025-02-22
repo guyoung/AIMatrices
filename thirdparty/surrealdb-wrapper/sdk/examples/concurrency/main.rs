@@ -10,29 +10,35 @@ const NUM: usize = 100_000;
 
 #[tokio::main]
 async fn main() -> surrealdb::Result<()> {
-	DB.connect::<Ws>("localhost:8000").with_capacity(NUM).await?;
+    DB.connect::<Ws>("localhost:8000")
+        .with_capacity(NUM)
+        .await?;
 
-	DB.use_ns("namespace").use_db("database").await?;
+    DB.use_ns("namespace").use_db("database").await?;
 
-	let (tx, mut rx) = mpsc::channel::<()>(1);
+    let (tx, mut rx) = mpsc::channel::<()>(1);
 
-	for idx in 0..NUM {
-		let sender = tx.clone();
-		tokio::spawn(async move {
-			let mut result = DB.query("SELECT * FROM $idx").bind(("idx", idx)).await.unwrap();
+    for idx in 0..NUM {
+        let sender = tx.clone();
+        tokio::spawn(async move {
+            let mut result = DB
+                .query("SELECT * FROM $idx")
+                .bind(("idx", idx))
+                .await
+                .unwrap();
 
-			let db_idx: Option<usize> = result.take(0).unwrap();
-			if let Some(db_idx) = db_idx {
-				println!("{idx}: {db_idx}");
-			}
+            let db_idx: Option<usize> = result.take(0).unwrap();
+            if let Some(db_idx) = db_idx {
+                println!("{idx}: {db_idx}");
+            }
 
-			drop(sender);
-		});
-	}
+            drop(sender);
+        });
+    }
 
-	drop(tx);
+    drop(tx);
 
-	rx.recv().await;
+    rx.recv().await;
 
-	Ok(())
+    Ok(())
 }

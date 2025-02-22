@@ -15,12 +15,10 @@ use rquickjs::{
     Class, Coerced, Ctx, Exception, Result, Value,
 };
 
-
 use llrt_utils::{
     module::{export_default, ModuleInfo},
     result::ResultExt,
 };
-
 
 use self::url_class::{url_to_http_options, URL};
 use self::url_search_params::URLSearchParams;

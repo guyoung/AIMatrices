@@ -10,7 +10,7 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn rebuild_index_statement() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		CREATE book:1 SET title = 'Rust Web Programming', isbn = '978-1803234694', author = 'Maxwell Flitton';
 		DEFINE INDEX uniq_isbn ON book FIELDS isbn UNIQUE;
 		REBUILD INDEX IF EXISTS uniq_isbn ON book;
@@ -26,18 +26,18 @@ async fn rebuild_index_statement() -> Result<(), Error> {
 		INFO FOR TABLE book;
         SELECT * FROM book WHERE title @@ 'Rust';
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 14);
-	for _ in 0..3 {
-		let tmp = res.remove(0).result;
-		assert!(tmp.is_ok());
-	}
-	// Check infos output
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"{
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 14);
+    for _ in 0..3 {
+        let tmp = res.remove(0).result;
+        assert!(tmp.is_ok());
+    }
+    // Check infos output
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "{
 				events: {},
 				fields: {},
 				indexes: {
@@ -46,15 +46,15 @@ async fn rebuild_index_statement() -> Result<(), Error> {
 				lives: {},
 				tables: {}
 			}",
-	);
-	assert_eq!(format!("{tmp:#}"), format!("{val:#}"));
-	for _ in 0..8 {
-		let tmp = res.remove(0).result;
-		assert!(tmp.is_ok());
-	}
-	// Check infos output
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
+    );
+    assert_eq!(format!("{tmp:#}"), format!("{val:#}"));
+    for _ in 0..8 {
+        let tmp = res.remove(0).result;
+        assert!(tmp.is_ok());
+    }
+    // Check infos output
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
 		"{
 				events: {},
 				fields: {},
@@ -67,11 +67,11 @@ async fn rebuild_index_statement() -> Result<(), Error> {
 				tables: {}
 			}",
 	);
-	assert_eq!(format!("{tmp:#}"), format!("{val:#}"));
-	// Check record is found
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    assert_eq!(format!("{tmp:#}"), format!("{val:#}"));
+    // Check record is found
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 				{
 					author: 'Maxwell Flitton',
 					id: book:1,
@@ -79,7 +79,7 @@ async fn rebuild_index_statement() -> Result<(), Error> {
 					title: 'Rust Web Programming'
 				}
 			]",
-	);
-	assert_eq!(format!("{tmp:#}"), format!("{val:#}"));
-	Ok(())
+    );
+    assert_eq!(format!("{tmp:#}"), format!("{val:#}"));
+    Ok(())
 }

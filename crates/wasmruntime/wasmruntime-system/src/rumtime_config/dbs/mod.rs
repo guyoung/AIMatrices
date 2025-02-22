@@ -4,12 +4,10 @@ use std::sync::Arc;
 //use surrealdb::engine::any::connect;
 use surrealdb::kvs::Datastore;
 
-
-use wasmruntime_factor_dbs::engine::{ SurrealDbEngine };
+use wasmruntime_factor_dbs::engine::SurrealDbEngine;
 use wasmruntime_factor_dbs::runtime_config::RuntimeConfig;
 
 pub fn config(working_dir: &PathBuf, _app: &spin_app::App) -> anyhow::Result<RuntimeConfig> {
-
     let app_db_path = format!("file://{}", working_dir.join("dbs/app__db").display());
 
     let datastore = futures::executor::block_on(async {
@@ -21,8 +19,5 @@ pub fn config(working_dir: &PathBuf, _app: &spin_app::App) -> anyhow::Result<Run
 
     let engine = Arc::new(engine);
 
-    Ok(RuntimeConfig {
-        engine,
-    })
+    Ok(RuntimeConfig { engine })
 }
-

@@ -10,14 +10,13 @@ use anyhow::Context;
 use wasmtime_wasi_http::bindings::http::types::ErrorCode;
 
 use spin_app::App;
-use spin_http::config::HttpTriggerConfig;
 use spin_factors_executor::FactorsExecutor;
+use spin_http::config::HttpTriggerConfig;
 
-use wasmruntime_core::{ FactorsConfig, Trigger, RuntimeFactorsBuilder};
 use wasmruntime_core::loader::ComponentLoader as ComponentLoaderImpl;
-use wasmruntime_system::{FactorsBuilder, TriggerFactors};
+use wasmruntime_core::{FactorsConfig, RuntimeFactorsBuilder, Trigger};
 use wasmruntime_http_trigger::http_trigger::{HttpTrigger, TriggerApp};
-
+use wasmruntime_system::{FactorsBuilder, TriggerFactors};
 
 pub type HttpTriggerApp = TriggerApp<TriggerFactors>;
 
@@ -61,28 +60,18 @@ pub fn dns_error(rcode: String, info_code: u16) -> ErrorCode {
     })
 }
 
-
-
 pub async fn start(
     listen_addr: SocketAddr,
     trigger_app: Arc<HttpTriggerApp>,
     user: Option<String>,
-    pass: Option<String>
+    pass: Option<String>,
 ) -> anyhow::Result<()> {
-    let server = server2::HttpServer::new(
-        listen_addr,
-        trigger_app,
-        user,
-        pass
-    )?;
-
-
+    let server = server2::HttpServer::new(listen_addr, trigger_app, user, pass)?;
 
     server.serve().await?;
 
     Ok(())
 }
-
 
 pub async fn crate_http_trigger_app(
     app: &App,
@@ -91,7 +80,6 @@ pub async fn crate_http_trigger_app(
     cache: &Option<PathBuf>,
     disable_pooling: bool,
 ) -> anyhow::Result<crate::HttpTriggerApp> {
-
     let mut http_trigger = HttpTrigger::new(&app)?;
 
     let mut engine_config = spin_core::Config::default();
@@ -104,7 +92,6 @@ pub async fn crate_http_trigger_app(
     if disable_pooling {
         engine_config.disable_pooling();
     }
-
 
     let mut core_engine_builder = {
         <HttpTrigger as Trigger<TriggerFactors>>::update_core_config(
@@ -129,19 +116,14 @@ pub async fn crate_http_trigger_app(
     let executor = Arc::new(executor);
 
     let components = Vec::from_iter(
-        app
-            .trigger_configs::<HttpTriggerConfig>("http")?
+        app.trigger_configs::<HttpTriggerConfig>("http")?
             .into_iter()
             .map(|(_, config)| config.component),
     );
 
     let http_app = {
         executor
-            .load_app(
-                app.clone(),
-                components,
-                &ComponentLoaderImpl::new(),
-            )
+            .load_app(app.clone(), components, &ComponentLoaderImpl::new())
             .await?
     };
 

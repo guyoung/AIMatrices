@@ -38,7 +38,6 @@ pub fn config(_working_dir: &PathBuf, _app: &spin_app::App) -> anyhow::Result<Ru
     Ok(RuntimeConfig { providers })
 }
 
-
 /// A runtime configuration used in the Spin CLI for one type of variable provider.
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case", tag = "type")]

@@ -1,10 +1,9 @@
-use std::path::PathBuf;
 use derive_builder::Builder;
+use std::path::PathBuf;
 
 use crate::SampleMethod;
 
 use crate::clib::{CLibPath, ClipSkip};
-
 
 #[derive(Builder, Debug, Clone)]
 #[builder(setter(into, strip_option), build_fn(validate = "Self::validate"))]
@@ -84,7 +83,6 @@ pub struct Txt2imgConfig {
     #[builder(default = "0.2")]
     pub skip_layer_end: f32,
 
-
     /// -------------------------------------------------------------------------------------------
     /// Path to write result image to (default: ./output.png)
     #[builder(default = "PathBuf::from(\"./output.png\")")]
@@ -93,7 +91,6 @@ pub struct Txt2imgConfig {
     /// Run the ESRGAN upscaler this many times (default 1)
     #[builder(default = "0")]
     pub upscale_repeats: i32,
-
 }
 
 impl Txt2imgConfigBuilder {
@@ -101,7 +98,6 @@ impl Txt2imgConfigBuilder {
         self.validate_output_dir()?;
 
         Ok(())
-
     }
 
     fn validate_output_dir(&self) -> Result<(), Txt2imgConfigBuilderError> {
@@ -115,5 +111,4 @@ impl Txt2imgConfigBuilder {
             ))
         }
     }
-
 }

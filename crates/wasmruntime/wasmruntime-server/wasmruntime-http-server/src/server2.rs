@@ -7,8 +7,8 @@ use anyhow::{anyhow, bail, Context};
 use http::uri::{Authority, Scheme};
 use http::Uri;
 use http_body_util::BodyExt;
+use serde::{Deserialize, Serialize};
 use tokio::net::TcpListener;
-use serde::{ Deserialize, Serialize };
 
 use axum::body::Bytes;
 use axum::extract::ConnectInfo;
@@ -16,19 +16,19 @@ use axum::extract::DefaultBodyLimit;
 use axum::extract::Request;
 use axum::extract::State;
 use axum::http::StatusCode;
-use axum::response::{Response, IntoResponse};
+use axum::response::{IntoResponse, Response};
 use axum::routing::any;
 use axum::Router;
 
 use axum_auth::AuthBasic;
 
 use spin_app::APP_NAME_KEY;
+use spin_factor_outbound_http::{OutboundHttpFactor, SelfRequestOrigin};
 use spin_factor_outbound_networking::is_service_chaining_host;
 use spin_http::app_info::AppInfo;
 use spin_http::config::{HttpExecutorType, HttpTriggerConfig};
 use spin_http::routes::RouteMatch;
 use spin_http::trigger::HandlerType;
-use spin_factor_outbound_http::{OutboundHttpFactor, SelfRequestOrigin};
 
 use wasmruntime_http_trigger::wagi::WagiHttpExecutor;
 use wasmruntime_http_trigger::wasi::WasiHttpExecutor;
@@ -44,7 +44,7 @@ struct AppState {
     component_trigger_configs: Arc<HashMap<String, HttpTriggerConfig>>,
     component_handler_types: Arc<HashMap<String, HandlerType>>,
     user: Option<String>,
-    pass: Option<String>
+    pass: Option<String>,
 }
 
 pub struct HttpServer {
@@ -59,7 +59,7 @@ pub struct HttpServer {
     // Component ID -> handler type
     component_handler_types: HashMap<String, HandlerType>,
     user: Option<String>,
-    pass: Option<String>
+    pass: Option<String>,
 }
 
 impl HttpServer {
@@ -67,7 +67,7 @@ impl HttpServer {
         listen_addr: SocketAddr,
         trigger_app: Arc<crate::HttpTriggerApp>,
         user: Option<String>,
-        pass: Option<String>
+        pass: Option<String>,
     ) -> anyhow::Result<Self> {
         // This needs to be a vec before building the router to handle duplicate routes
         let component_trigger_configs = Vec::from_iter(
@@ -131,7 +131,7 @@ impl HttpServer {
             component_trigger_configs,
             component_handler_types,
             user,
-            pass
+            pass,
         })
     }
 
@@ -152,7 +152,7 @@ impl HttpServer {
             component_trigger_configs: Arc::new(self.component_trigger_configs.clone()),
             component_handler_types: Arc::new(self.component_handler_types.clone()),
             user: self.user.clone(),
-            pass: self.pass.clone()
+            pass: self.pass.clone(),
         };
 
         let app = Router::new();
@@ -224,7 +224,6 @@ async fn handle(
         }
     }
 
-
     let mut request = request;
 
     let _method = request.method().clone();
@@ -241,7 +240,7 @@ async fn handle(
 
     //println!("Processing request on path '{path}'");
 
-   const WELL_KNOWN_PREFIX: &str = "/.well-known/server/";
+    const WELL_KNOWN_PREFIX: &str = "/.well-known/server/";
 
     if let Some(well_known) = path.strip_prefix(WELL_KNOWN_PREFIX) {
         return match well_known {
@@ -277,7 +276,7 @@ async fn handle(
     }
 }
 
-fn unauth() ->  http::Response<spin_http::Body> {
+fn unauth() -> http::Response<spin_http::Body> {
     Response::builder()
         .status(StatusCode::UNAUTHORIZED)
         .header("WWW-Authenticate", "Basic")
@@ -285,8 +284,6 @@ fn unauth() ->  http::Response<spin_http::Body> {
         .unwrap()
         .into()
 }
-
-
 
 /// Handles a successful route match.
 async fn handle_trigger_route(
@@ -336,7 +333,6 @@ async fn handle_trigger_route(
     outbound_http.set_self_request_origin(origin);
 
     //outbound_http.set_request_interceptor(OutboundHttpInterceptor::new(self.clone()))?;
-
 
     // Prepare HTTP executor
     let trigger_config = component_trigger_configs.get(component_id).unwrap();
@@ -463,13 +459,11 @@ fn set_req_uri(req: &mut Request<spin_http::Body>, scheme: Scheme) -> anyhow::Re
     Ok(())
 }
 
-
-#[derive(Deserialize,Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 struct BasicAuthFromRequest {
     pub user: Option<String>,
     pub pass: Option<String>,
 }
-
 
 impl<S> axum::extract::FromRequestParts<S> for BasicAuthFromRequest
 where
@@ -479,25 +473,22 @@ where
 
     // FIXME: We also have a configuration flag do run without authentication
     // This must be handled here too ... otherwise we get an Auth header missing error.
-    async fn from_request_parts(parts: &mut axum::http::request::Parts, state: &S) -> Result<Self, Self::Rejection> {
-
+    async fn from_request_parts(
+        parts: &mut axum::http::request::Parts,
+        state: &S,
+    ) -> Result<Self, Self::Rejection> {
         let auth = AuthBasic::from_request_parts(parts, state).await;
 
         if let Ok(auth) = auth {
-            let user = Some(auth.0.0);
-            let pass = auth.0.1;
+            let user = Some(auth.0 .0);
+            let pass = auth.0 .1;
 
-            Ok(Self {
-                user,
-                pass
-            })
+            Ok(Self { user, pass })
         } else {
             Ok(Self {
                 user: None,
-                pass: None
+                pass: None,
             })
         }
-
-
     }
 }

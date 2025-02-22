@@ -4,7 +4,7 @@
 /// - UUIDs
 #[doc(hidden)]
 pub trait FuzzyEq<Rhs: ?Sized = Self> {
-	/// Use this when comparing objects that you do not want to compare properties that are
-	/// non-deterministic
-	fn fuzzy_eq(&self, other: &Rhs) -> bool;
+    /// Use this when comparing objects that you do not want to compare properties that are
+    /// non-deterministic
+    fn fuzzy_eq(&self, other: &Rhs) -> bool;
 }

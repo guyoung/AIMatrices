@@ -24,12 +24,10 @@ pub fn allowed_outbound_hosts(component: &AppComponent) -> anyhow::Result<Vec<St
         })?
         .unwrap_or_default();
 
-
     let allowed_http = component
         .get_metadata(ALLOWED_HTTP_KEY)
         .map(|h| h.unwrap_or_default())
         .unwrap_or_default();
-
 
     let converted = convert_allowed_http_to_allowed_hosts(&allowed_http, false).unwrap_or_default();
     allowed_hosts.extend(converted);

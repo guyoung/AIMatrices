@@ -23,10 +23,7 @@ impl RuntimeFactorsBuilder for FactorsBuilder {
         }
     }
 
-    fn build(
-        &mut self,
-        config: &FactorsConfig,
-    ) -> anyhow::Result<Self::Factors> {
+    fn build(&mut self, config: &FactorsConfig) -> anyhow::Result<Self::Factors> {
         let factors = TriggerFactors::new(
             Some(config.log_dir.clone()),
             config.working_dir.clone(),
@@ -41,7 +38,6 @@ impl RuntimeFactorsBuilder for FactorsBuilder {
         executor: &mut FactorsExecutor<Self::Factors, U>,
         config: &FactorsConfig,
     ) -> anyhow::Result<()> {
-
         executor.add_hooks(StdioLoggingExecutorHooks::new(
             config.follow_components.clone(),
             Some(config.log_dir.clone()),

@@ -10,7 +10,6 @@ use std::sync::Arc;
 use candle::quantized::QTensor;
 use candle::{Device, Result, Shape};
 
-
 // VarBuilder specialized for QTensors
 #[derive(Clone)]
 pub struct VarBuilder {

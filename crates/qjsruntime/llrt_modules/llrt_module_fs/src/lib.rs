@@ -29,8 +29,6 @@ pub const CONSTANT_R_OK: u32 = 4;
 pub const CONSTANT_W_OK: u32 = 2;
 pub const CONSTANT_X_OK: u32 = 1;
 
-
-
 pub struct FsModule;
 
 impl ModuleDef for FsModule {
@@ -74,7 +72,6 @@ impl ModuleDef for FsModule {
         })
     }
 }
-
 
 fn export_constants<'js>(ctx: &Ctx<'js>, exports: &Object<'js>) -> Result<()> {
     let constants = Object::new(ctx.clone())?;

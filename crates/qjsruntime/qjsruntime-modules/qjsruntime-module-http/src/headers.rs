@@ -1,6 +1,5 @@
 use std::{collections::BTreeMap, rc::Rc};
 
-
 use llrt_utils::{
     class::{CustomInspect, IteratorDef},
     object::map_to_entries,
@@ -152,10 +151,7 @@ impl Headers {
     pub fn from_http_headers(header_map: &BTreeMap<String, String>) -> Result<Self> {
         let mut headers = Vec::new();
         for (k, v) in header_map.iter() {
-            headers.push((
-                k.as_str().into(),
-                v.as_str().into(),
-            ));
+            headers.push((k.as_str().into(), v.as_str().into()));
         }
         Ok(Self { headers })
     }

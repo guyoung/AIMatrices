@@ -1,7 +1,7 @@
-use std::ffi::CString;
 use std::ffi::c_char;
-use std::path::PathBuf;
+use std::ffi::CString;
 use std::path::Path;
+use std::path::PathBuf;
 
 #[repr(i32)]
 #[non_exhaustive]
@@ -57,10 +57,8 @@ impl From<&Path> for CLibPath {
     }
 }
 
-
 impl Into<PathBuf> for CLibPath {
     fn into(self) -> PathBuf {
         PathBuf::from(self.0.to_str().unwrap_or_default())
     }
 }
-

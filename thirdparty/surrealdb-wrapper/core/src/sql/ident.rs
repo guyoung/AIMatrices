@@ -13,59 +13,59 @@ use std::str;
 pub struct Ident(#[serde(with = "no_nul_bytes")] pub String);
 
 impl From<String> for Ident {
-	fn from(v: String) -> Self {
-		Self(v)
-	}
+    fn from(v: String) -> Self {
+        Self(v)
+    }
 }
 
 impl From<&str> for Ident {
-	fn from(v: &str) -> Self {
-		Self::from(String::from(v))
-	}
+    fn from(v: &str) -> Self {
+        Self::from(String::from(v))
+    }
 }
 
 impl Deref for Ident {
-	type Target = String;
-	fn deref(&self) -> &Self::Target {
-		&self.0
-	}
+    type Target = String;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 impl Ident {
-	/// Convert the Ident to a raw String
-	pub fn to_raw(&self) -> String {
-		self.0.to_string()
-	}
-	/// Checks if this field is the `id` field
-	pub(crate) fn is_dash(&self) -> bool {
-		self.0.as_str() == "-"
-	}
-	/// Checks if this field is the `id` field
-	pub(crate) fn is_id(&self) -> bool {
-		self.0.as_str() == "id"
-	}
-	/// Checks if this field is the `type` field
-	pub(crate) fn is_type(&self) -> bool {
-		self.0.as_str() == "type"
-	}
-	/// Checks if this field is the `coordinates` field
-	pub(crate) fn is_coordinates(&self) -> bool {
-		self.0.as_str() == "coordinates"
-	}
-	/// Checks if this field is the `geometries` field
-	pub(crate) fn is_geometries(&self) -> bool {
-		self.0.as_str() == "geometries"
-	}
+    /// Convert the Ident to a raw String
+    pub fn to_raw(&self) -> String {
+        self.0.to_string()
+    }
+    /// Checks if this field is the `id` field
+    pub(crate) fn is_dash(&self) -> bool {
+        self.0.as_str() == "-"
+    }
+    /// Checks if this field is the `id` field
+    pub(crate) fn is_id(&self) -> bool {
+        self.0.as_str() == "id"
+    }
+    /// Checks if this field is the `type` field
+    pub(crate) fn is_type(&self) -> bool {
+        self.0.as_str() == "type"
+    }
+    /// Checks if this field is the `coordinates` field
+    pub(crate) fn is_coordinates(&self) -> bool {
+        self.0.as_str() == "coordinates"
+    }
+    /// Checks if this field is the `geometries` field
+    pub(crate) fn is_geometries(&self) -> bool {
+        self.0.as_str() == "geometries"
+    }
 }
 
 impl Display for Ident {
-	fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-		Display::fmt(&escape_ident(&self.0), f)
-	}
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Display::fmt(&escape_ident(&self.0), f)
+    }
 }
 
 impl InfoStructure for Ident {
-	fn structure(self) -> Value {
-		self.to_raw().into()
-	}
+    fn structure(self) -> Value {
+        self.to_raw().into()
+    }
 }

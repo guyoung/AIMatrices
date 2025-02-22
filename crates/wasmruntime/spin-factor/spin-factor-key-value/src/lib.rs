@@ -19,7 +19,6 @@ use spin_locked_app::MetadataKey;
 pub const KEY_VALUE_STORES_KEY: MetadataKey<Vec<String>> = MetadataKey::new("key_value_stores");
 pub use host::{log_cas_error, log_error, Error, KeyValueDispatch, Store, StoreManager};
 
-
 pub use util::{CachingStoreManager, DelegatingStoreManager};
 
 /// A factor that provides key-value storage.
@@ -52,7 +51,6 @@ impl Factor for KeyValueFactor {
         &self,
         mut ctx: ConfigureAppContext<T, Self>,
     ) -> anyhow::Result<Self::AppState> {
-
         let runtime_config = ctx.take_runtime_config().unwrap_or_default();
 
         let delegating_manager = DelegatingStoreManager::new(runtime_config.store_managers.clone());

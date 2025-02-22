@@ -1,10 +1,9 @@
 use anyhow::Context;
 
-use crate::llama_cpp_2::llama_batch::LlamaBatch;
-use crate::llama_cpp_2::sampling::LlamaSampler;
 use crate::llama_cpp_2::context::LlamaContext;
+use crate::llama_cpp_2::llama_batch::LlamaBatch;
 use crate::llama_cpp_2::model::Special;
-
+use crate::llama_cpp_2::sampling::LlamaSampler;
 
 pub struct InferBatch<'a> {
     pub ctx: LlamaContext<'a>,
@@ -12,12 +11,11 @@ pub struct InferBatch<'a> {
     pub max_token: i32,
     pub batch: LlamaBatch,
     pub sampler: LlamaSampler,
-    pub decoder: encoding_rs::Decoder
+    pub decoder: encoding_rs::Decoder,
 }
 
 impl<'a> InferBatch<'a> {
     pub fn next_token(&mut self) -> anyhow::Result<Option<String>> {
-
         if self.n_cur >= self.max_token {
             return Ok(None);
         }
@@ -31,7 +29,8 @@ impl<'a> InferBatch<'a> {
         }
 
         let output_bytes = self
-            .ctx.model
+            .ctx
+            .model
             .token_to_bytes(token, Special::Tokenize)
             .with_context(|| "Failed to convert token to byte")?;
 
@@ -48,8 +47,6 @@ impl<'a> InferBatch<'a> {
             .expect("Failed to add token...");
 
         self.n_cur += 1;
-
-
 
         self.ctx
             .decode(&mut self.batch)

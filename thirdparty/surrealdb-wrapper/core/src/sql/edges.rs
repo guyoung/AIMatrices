@@ -13,28 +13,24 @@ pub(crate) const TOKEN: &str = "$surrealdb::private::sql::Edges";
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 #[non_exhaustive]
 pub struct Edges {
-	pub dir: Dir,
-	pub from: Thing,
-	pub what: Tables,
+    pub dir: Dir,
+    pub from: Thing,
+    pub what: Tables,
 }
 
 impl Edges {
-	#[doc(hidden)]
-	pub fn new(dir: Dir, from: Thing, what: Tables) -> Self {
-		Edges {
-			dir,
-			from,
-			what,
-		}
-	}
+    #[doc(hidden)]
+    pub fn new(dir: Dir, from: Thing, what: Tables) -> Self {
+        Edges { dir, from, what }
+    }
 }
 
 impl fmt::Display for Edges {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		match self.what.len() {
-			0 => write!(f, "{}{}?", self.from, self.dir,),
-			1 => write!(f, "{}{}{}", self.from, self.dir, self.what),
-			_ => write!(f, "{}{}({})", self.from, self.dir, self.what),
-		}
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.what.len() {
+            0 => write!(f, "{}{}?", self.from, self.dir,),
+            1 => write!(f, "{}{}{}", self.from, self.dir, self.what),
+            _ => write!(f, "{}{}({})", self.from, self.dir, self.what),
+        }
+    }
 }

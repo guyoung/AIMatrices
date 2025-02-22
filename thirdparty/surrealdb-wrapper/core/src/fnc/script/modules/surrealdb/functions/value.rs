@@ -6,8 +6,8 @@ use js::prelude::Async;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"value",
-	"diff" => fut Async,
-	"patch" => fut Async
+    Package,
+    "value",
+    "diff" => fut Async,
+    "patch" => fut Async
 );

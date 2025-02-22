@@ -177,7 +177,7 @@ pub fn structured_clone<'js>(
                             let value = object.get(&key)?;
                             stack.push(StackItem::Value(index, value, Some(key), None));
                         }
-                    },
+                    }
                     Type::Array => {
                         if check_circular(
                             &mut tape,
@@ -211,7 +211,7 @@ pub fn structured_clone<'js>(
                                 Some(array_index),
                             ));
                         }
-                    },
+                    }
                     _ => {
                         tape.push(TapeItem {
                             parent,
@@ -219,13 +219,13 @@ pub fn structured_clone<'js>(
                             array_index,
                             value: TapeValue::Value(value),
                         });
-                    },
+                    }
                 }
                 index += 1;
-            },
+            }
             StackItem::ObjectEnd => {
                 visited.pop();
-            },
+            }
         }
     }
 
@@ -245,22 +245,22 @@ pub fn structured_clone<'js>(
         match &mut parent.value {
             TapeValue::Array(array) => {
                 array.set(array_index.unwrap(), value)?;
-            },
+            }
             TapeValue::Object(object) => {
                 let string = object_key.unwrap();
                 object.set(string, value)?;
-            },
+            }
             TapeValue::Collection(collection_value, collection_type) => {
                 match collection_type {
                     ObjectType::Set => {
                         collection_value.replace(primordials.constructor_set.construct((value,))?);
-                    },
+                    }
                     ObjectType::Map => {
                         collection_value.replace(primordials.constructor_map.construct((value,))?);
-                    },
+                    }
                 };
-            },
-            _ => {},
+            }
+            _ => {}
         };
     }
 
@@ -397,4 +397,3 @@ fn append_ctor_value<'js>(
     });
     Ok(())
 }
-

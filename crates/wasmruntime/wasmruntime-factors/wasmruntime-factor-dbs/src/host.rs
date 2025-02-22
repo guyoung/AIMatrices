@@ -10,7 +10,7 @@ impl InstanceState {
     async fn establish_connection(
         &mut self,
         database: String,
-        shared: bool
+        shared: bool,
     ) -> Result<Resource<dbs::Connection>, dbs::Error> {
         let namespace = {
             if shared {
@@ -44,7 +44,7 @@ impl dbs::HostConnection for InstanceState {
     async fn open(
         &mut self,
         database: String,
-        shared: bool
+        shared: bool,
     ) -> anyhow::Result<Result<Resource<dbs::Connection>, dbs::Error>> {
         let res = self.establish_connection(database, shared).await;
 
@@ -96,7 +96,6 @@ impl dbs::HostConnection for InstanceState {
         uid: String,
         data: Vec<u8>,
     ) -> anyhow::Result<Result<Vec<u8>, dbs::Error>> {
-
         let (namespace, database) = self.get_conn(connection).await?;
 
         let data: Value = serde_json::from_slice(&data).map_err(|_| dbs::Error::BadParameter)?;
@@ -112,7 +111,6 @@ impl dbs::HostConnection for InstanceState {
         } else {
             Ok(Err(dbs::Error::BadParameter))
         }
-
     }
 
     async fn delete(
@@ -121,8 +119,6 @@ impl dbs::HostConnection for InstanceState {
         table: String,
         uid: String,
     ) -> anyhow::Result<Result<Vec<u8>, dbs::Error>> {
-
-
         let (namespace, database) = self.get_conn(connection).await?;
 
         let res = self
@@ -132,7 +128,6 @@ impl dbs::HostConnection for InstanceState {
             .map_err(|_| dbs::Error::OperationFailed);
 
         Ok(convert_result(res))
-
     }
 
     async fn select_all(
@@ -157,7 +152,6 @@ impl dbs::HostConnection for InstanceState {
         table: String,
         uid: String,
     ) -> anyhow::Result<Result<Vec<u8>, dbs::Error>> {
-
         let (namespace, database) = self.get_conn(connection).await?;
 
         let res = self
@@ -167,7 +161,6 @@ impl dbs::HostConnection for InstanceState {
             .map_err(|_| dbs::Error::OperationFailed);
 
         Ok(convert_result(res))
-
     }
 
     async fn query(
@@ -184,7 +177,6 @@ impl dbs::HostConnection for InstanceState {
             .map_err(|_| dbs::Error::OperationFailed);
 
         Ok(convert_result(res))
-
     }
 
     async fn drop(&mut self, connection: Resource<dbs::Connection>) -> anyhow::Result<()> {

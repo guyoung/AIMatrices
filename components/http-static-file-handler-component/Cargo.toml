@@ -1,0 +1,39 @@
+[package]
+name = "http-static-file-handler-component"
+version = "0.2.0"
+authors = ["guyoung"]
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/guyoung/AIMatrices"
+
+[lib]
+crate-type = ["cdylib"]
+
+[package.metadata.component]
+package = "components:http-static-file-handler-component"
+
+[package.metadata.component.dependencies]
+
+[dependencies]
+wasmruntime-comp-sdk = { path = "../../crates/wasmruntime-comp-sdk" }
+
+wit-bindgen-rt = {workspace = true}
+
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+futures = { workspace = true }
+
+
+brotli = { workspace = true }
+flate2 = { workspace = true, default-features = false, features = ["zlib-rs"] }
+
+sha2 = { workspace = true }
+
+hex = { workspace = true }
+
+uuid = { workspace = true, features = ["v4"] }
+
+http = { workspace = true }
+mime_guess = { workspace = true }

@@ -8,7 +8,7 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn select_where_mtree_knn() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		CREATE pts:1 SET point = [1,2,3,4];
 		CREATE pts:2 SET point = [4,5,6,7];
 		CREATE pts:3;
@@ -19,13 +19,13 @@ async fn select_where_mtree_knn() -> Result<(), Error> {
 		SELECT id FROM pts WHERE point <|2|> $pt EXPLAIN;
 		UPDATE pts:3 set point = NONE;
 	";
-	let mut t = Test::new(sql).await?;
-	t.expect_size(9)?;
-	//
-	t.skip_ok(6)?;
-	//
-	t.expect_val(
-		"[
+    let mut t = Test::new(sql).await?;
+    t.expect_size(9)?;
+    //
+    t.skip_ok(6)?;
+    //
+    t.expect_val(
+        "[
 			{
 				id: pts:1,
 				dist: 2f
@@ -35,10 +35,10 @@ async fn select_where_mtree_knn() -> Result<(), Error> {
 				dist: 4f
 			}
 		]",
-	)?;
-	//
-	t.expect_val(
-		"[
+    )?;
+    //
+    t.expect_val(
+        "[
 					{
 						detail: {
 							plan: {
@@ -57,15 +57,15 @@ async fn select_where_mtree_knn() -> Result<(), Error> {
 						operation: 'Collector'
 					},
 			]",
-	)?;
-	//
-	t.skip_ok(1)?;
-	Ok(())
+    )?;
+    //
+    t.skip_ok(1)?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn delete_update_mtree_index() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		CREATE pts:1 SET point = [1,2,3,4];
 		CREATE pts:2 SET point = [4,5,6,7];
 		CREATE pts:3 SET point = [2,3,4,5];
@@ -76,17 +76,17 @@ async fn delete_update_mtree_index() -> Result<(), Error> {
 		LET $pt = [2,3,4,5];
 		SELECT id, vector::distance::knn() AS dist FROM pts WHERE point <|5|> $pt ORDER BY dist;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 9);
-	//
-	for _ in 0..8 {
-		let _ = res.remove(0).result?;
-	}
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 9);
+    //
+    for _ in 0..8 {
+        let _ = res.remove(0).result?;
+    }
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				dist: 2f,
 				id: pts:1
@@ -100,14 +100,14 @@ async fn delete_update_mtree_index() -> Result<(), Error> {
 				id: pts:3
 			}
 		]",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 #[tokio::test]
 async fn index_embedding() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		DEFINE INDEX idx_mtree_embedding_manhattan ON Document FIELDS items.embedding MTREE DIMENSION 4 DIST MANHATTAN;
 		DEFINE INDEX idx_mtree_embedding_cosine ON Document FIELDS items.embedding MTREE DIMENSION 4 DIST COSINE;
 		CREATE ONLY Document:1 CONTENT {
@@ -123,17 +123,17 @@ async fn index_embedding() -> Result<(), Error> {
 		};
 		"#;
 
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 3);
-	//
-	let _ = res.remove(0).result?;
-	let _ = res.remove(0).result?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"{
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 3);
+    //
+    let _ = res.remove(0).result?;
+    let _ = res.remove(0).result?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "{
 			id: Document:1,
 			items: [
 				{
@@ -147,14 +147,14 @@ async fn index_embedding() -> Result<(), Error> {
 				}
 			]
 		}",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_brute_force_knn() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		CREATE pts:1 SET point = [1,2,3,4];
 		CREATE pts:2 SET point = [4,5,6,7];
 		CREATE pts:3 SET point = [8,9,10,11];
@@ -164,14 +164,14 @@ async fn select_where_brute_force_knn() -> Result<(), Error> {
 		SELECT id, vector::distance::knn() AS dist FROM pts WHERE point <|2,EUCLIDEAN|> $pt ORDER BY dist;
 		SELECT id, vector::distance::knn() AS dist FROM pts WHERE point <|2,EUCLIDEAN|> $pt ORDER BY dist PARALLEL;
 	";
-	let mut t = Test::new(sql).await?;
-	//
-	t.expect_size(8)?;
-	//
-	t.skip_ok(5)?;
-	//
-	t.expect_val(
-		"[
+    let mut t = Test::new(sql).await?;
+    //
+    t.expect_size(8)?;
+    //
+    t.skip_ok(5)?;
+    //
+    t.expect_val(
+        "[
 				{
 					detail: {
 						table: 'pts',
@@ -185,11 +185,11 @@ async fn select_where_brute_force_knn() -> Result<(), Error> {
 					operation: 'Collector'
 				},
 			]",
-	)?;
-	//
-	for i in 0..2 {
-		t.expect_val_info(
-			"[
+    )?;
+    //
+    for i in 0..2 {
+        t.expect_val_info(
+            "[
 			{
 				id: pts:1,
 				dist: 2f
@@ -199,15 +199,15 @@ async fn select_where_brute_force_knn() -> Result<(), Error> {
 				dist: 4f
 			}
 		]",
-			i,
-		)?;
-	}
-	Ok(())
+            i,
+        )?;
+    }
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_where_hnsw_knn() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		CREATE pts:1 SET point = [1,2,3,4];
 		CREATE pts:2 SET point = [4,5,6,7];
 		CREATE pts:3;
@@ -220,12 +220,12 @@ async fn select_where_hnsw_knn() -> Result<(), Error> {
 		SELECT id, vector::distance::knn() AS dist FROM pts WHERE point <|2,EUCLIDEAN|> $pt EXPLAIN;
 		DELETE pts:3;
 	";
-	let mut t = Test::new(sql).await?;
-	t.expect_size(11)?;
-	t.skip_ok(6)?;
-	// KNN result with HNSW index
-	t.expect_val(
-		"[
+    let mut t = Test::new(sql).await?;
+    t.expect_size(11)?;
+    t.skip_ok(6)?;
+    // KNN result with HNSW index
+    t.expect_val(
+        "[
 			{
 				id: pts:1,
 				dist: 2f
@@ -235,10 +235,10 @@ async fn select_where_hnsw_knn() -> Result<(), Error> {
 				dist: 4f
 			}
 		]",
-	)?;
-	// Explains KNN with HNSW index
-	t.expect_val(
-		"[
+    )?;
+    // Explains KNN with HNSW index
+    t.expect_val(
+        "[
 					{
 						detail: {
 							plan: {
@@ -257,10 +257,10 @@ async fn select_where_hnsw_knn() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 			]",
-	)?;
-	// KNN result with brute force
-	t.expect_val(
-		"[
+    )?;
+    // KNN result with brute force
+    t.expect_val(
+        "[
 			{
 				id: pts:1,
 				dist: 2f
@@ -270,10 +270,10 @@ async fn select_where_hnsw_knn() -> Result<(), Error> {
 				dist: 4f
 			}
 		]",
-	)?;
-	// Explain KNN with brute force
-	t.expect_val(
-		"[
+    )?;
+    // Explain KNN with brute force
+    t.expect_val(
+        "[
 				{
 					detail: {
 						table: 'pts'
@@ -287,14 +287,14 @@ async fn select_where_hnsw_knn() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]",
-	)?;
-	t.skip_ok(1)?;
-	Ok(())
+    )?;
+    t.skip_ok(1)?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn select_mtree_knn_with_condition() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		DEFINE INDEX mt_pt1 ON pts FIELDS point MTREE DIMENSION 1;
 		INSERT INTO pts [
 			{ id: pts:1, point: [ 10f ], flag: true },
@@ -313,16 +313,16 @@ async fn select_mtree_knn_with_condition() -> Result<(), Error> {
 			WHERE flag = true && point <|2|> $pt
 			ORDER BY distance;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 5);
-	//
-	skip_ok(res, 3)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 5);
+    //
+    skip_ok(res, 3)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 					{
 						detail: {
 							plan: {
@@ -341,12 +341,12 @@ async fn select_mtree_knn_with_condition() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 			]",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 				{
 					id: pts:5,
 					flag: true,
@@ -358,15 +358,15 @@ async fn select_mtree_knn_with_condition() -> Result<(), Error> {
 					distance: 14f
 				}
 			]",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    Ok(())
 }
 
 #[test_log::test(tokio::test)]
 async fn select_hnsw_knn_with_condition() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		DEFINE INDEX hn_pt1 ON pts FIELDS point HNSW DIMENSION 1;
 		INSERT INTO pts [
 			{ id: pts:1, point: [ 10f ], flag: true },
@@ -385,16 +385,16 @@ async fn select_hnsw_knn_with_condition() -> Result<(), Error> {
 			WHERE flag = true AND point <|2,40|> $pt
 			ORDER BY distance;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 5);
-	//
-	skip_ok(res, 3)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 5);
+    //
+    skip_ok(res, 3)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 					{
 						detail: {
 							plan: {
@@ -413,12 +413,12 @@ async fn select_hnsw_knn_with_condition() -> Result<(), Error> {
 						operation: 'Collector'
 					}
 			]",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 				{
 					distance: 6f,
 					flag: true,
@@ -430,15 +430,15 @@ async fn select_hnsw_knn_with_condition() -> Result<(), Error> {
 					id: pts:3
 				}
 			]",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    Ok(())
 }
 
 #[test_log::test(tokio::test)]
 async fn select_bruteforce_knn_with_condition() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		INSERT INTO pts [
 			{ id: pts:1, point: [ 10f ], flag: true },
 			{ id: pts:2, point: [ 20f ], flag: false },
@@ -456,16 +456,16 @@ async fn select_bruteforce_knn_with_condition() -> Result<(), Error> {
 			WHERE flag = true AND point <|2,EUCLIDEAN|> $pt
 			ORDER BY distance;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 4);
-	//
-	skip_ok(res, 2)?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 4);
+    //
+    skip_ok(res, 2)?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 				{
 					detail: {
 						table: 'pts'
@@ -479,12 +479,12 @@ async fn select_bruteforce_knn_with_condition() -> Result<(), Error> {
 					operation: 'Collector'
 				}
 			]",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 				{
 					distance: 6f,
 					flag: true,
@@ -496,15 +496,15 @@ async fn select_bruteforce_knn_with_condition() -> Result<(), Error> {
 					id: pts:3
 				}
 			]",
-	);
-	assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
-	//
-	Ok(())
+    );
+    assert_eq!(format!("{:#}", tmp), format!("{:#}", val));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn check_hnsw_persistence() -> Result<(), Error> {
-	let sql = r"
+    let sql = r"
 		CREATE pts:1 SET point = [1,2,3,4];
 		CREATE pts:2 SET point = [4,5,6,7];
 		CREATE pts:4 SET point = [12,13,14,15];
@@ -515,11 +515,11 @@ async fn check_hnsw_persistence() -> Result<(), Error> {
 		SELECT id, vector::distance::knn() AS dist FROM pts WHERE point <|2,100|> [2,3,4,5];
 	";
 
-	// Ingest the data in the datastore.
-	let mut t = Test::new(sql).await?;
-	t.skip_ok(5)?;
-	t.expect_val(
-		"[
+    // Ingest the data in the datastore.
+    let mut t = Test::new(sql).await?;
+    t.skip_ok(5)?;
+    t.expect_val(
+        "[
 			{
 				id: pts:1,
 				dist: 2f
@@ -529,10 +529,10 @@ async fn check_hnsw_persistence() -> Result<(), Error> {
 				dist: 4f
 			}
 		]",
-	)?;
-	t.skip_ok(1)?;
-	t.expect_val(
-		"[
+    )?;
+    t.skip_ok(1)?;
+    t.expect_val(
+        "[
 			{
 				id: pts:1,
 				dist: 2f
@@ -542,16 +542,16 @@ async fn check_hnsw_persistence() -> Result<(), Error> {
 				dist: 4f
 			}
 		]",
-	)?;
+    )?;
 
-	// Restart the datastore and execute the SELECT query
-	let sql =
-		"SELECT id, vector::distance::knn() AS dist FROM pts WHERE point <|2,100|> [2,3,4,5];";
-	let mut t = t.restart(sql).await?;
+    // Restart the datastore and execute the SELECT query
+    let sql =
+        "SELECT id, vector::distance::knn() AS dist FROM pts WHERE point <|2,100|> [2,3,4,5];";
+    let mut t = t.restart(sql).await?;
 
-	// We should find results
-	t.expect_val(
-		"[
+    // We should find results
+    t.expect_val(
+        "[
 			{
 				id: pts:1,
 				dist: 2f
@@ -561,6 +561,6 @@ async fn check_hnsw_persistence() -> Result<(), Error> {
 				dist: 4f
 			}
 		]",
-	)?;
-	Ok(())
+    )?;
+    Ok(())
 }

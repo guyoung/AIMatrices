@@ -6,8 +6,7 @@ use std::sync::Arc;
 use runtime_config::RuntimeConfig;
 use spin_expressions::{ProviderResolver as ExpressionResolver, Template};
 use spin_factors::{
-    ConfigureAppContext, Factor, InitContext, PrepareContext, RuntimeFactors,
-    SelfInstanceBuilder,
+    ConfigureAppContext, Factor, InitContext, PrepareContext, RuntimeFactors, SelfInstanceBuilder,
 };
 
 /// A factor for providing variables to components.
@@ -49,8 +48,7 @@ impl Factor for VariablesFactor {
             )?;
         }
 
-
-        let runtime_config =  ctx.take_runtime_config().unwrap_or_default();
+        let runtime_config = ctx.take_runtime_config().unwrap_or_default();
 
         for provider in runtime_config.providers.clone() {
             expression_resolver.add_provider(provider);

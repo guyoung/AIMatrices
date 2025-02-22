@@ -3,6 +3,8 @@ pub mod conversions;
 
 use std::collections::HashMap;
 
+use futures::SinkExt;
+
 #[doc(inline)]
 pub use conversions::IntoResponse;
 #[doc(inline)]
@@ -12,8 +14,10 @@ pub use types::{
 };
 
 use self::conversions::{TryFromIncomingResponse, TryIntoOutgoingRequest};
+use super::wit::wasi::clocks0_2_0::monotonic_clock;
 use super::wit::wasi::http0_2_0::types;
-use futures::SinkExt;
+
+use wasmruntime_comp_executor::bindings::wasi::io::poll;
 use wasmruntime_comp_executor::bindings::wasi::io::streams::{self, StreamError};
 
 /// A unified request object that can represent both incoming and outgoing requests.
@@ -559,16 +563,14 @@ impl IncomingResponse {
 
         let body_stream = body.stream().expect("could not create a stream from body");
 
-        let read_size =  16 * 1024;
+        let read_size = 16 * 1024;
 
         let mut body_bytes = Vec::<u8>::with_capacity(read_size);
 
         loop {
             match body_stream.blocking_read(read_size as u64) {
                 Err(StreamError::Closed) => break,
-                Err(StreamError::LastOperationFailed(err)) => {
-                    return Err(err)
-                }
+                Err(StreamError::LastOperationFailed(err)) => return Err(err),
                 Ok(data) => {
                     body_bytes.extend(data);
                 }
@@ -576,7 +578,6 @@ impl IncomingResponse {
         }
 
         Ok(body_bytes)
-
     }
 }
 
@@ -663,6 +664,43 @@ where
         .map_err(|e: O::Error| SendError::ResponseConversion(e.into()))
 }
 
+const TIMEOUT_NS: u64 = 1_000_000_000;
+
+pub fn blocking_write_util(stream: &streams::OutputStream, mut bytes: &[u8]) -> Result<(), String> {
+    let timeout = monotonic_clock::subscribe_duration(TIMEOUT_NS);
+    let pollable = stream.subscribe();
+
+    while !bytes.is_empty() {
+        let ready = poll::poll(&[&pollable, &timeout]);
+
+        assert!(ready.len() > 0);
+        match ready[0] {
+            0 => {}
+            1 => {
+                return Err("Failed to write HTTP body, timeout".to_string());
+            }
+            _ => unreachable!(),
+        }
+
+        let permit = stream
+            .check_write()
+            .map_err(|_| "Failed to write HTTP body".to_string())?;
+
+        let len = bytes.len().min(permit as usize);
+        let (chunk, rest) = bytes.split_at(len);
+
+        stream
+            .write(chunk)
+            .map_err(|_| "Failed to write HTTP body".to_string())?;
+
+        stream
+            .blocking_flush()
+            .map_err(|_| "Failed to write HTTP body".to_string())?;
+
+        bytes = rest;
+    }
+    Ok(())
+}
 
 pub fn send_sync<I>(request: I) -> Result<Response, SendError>
 where
@@ -672,17 +710,18 @@ where
     let (request, body_buffer) = I::try_into_outgoing_request(request)
         .map_err(|e| SendError::RequestConversion(e.into()))?;
 
-
     if let Some(body_buffer) = body_buffer {
+        let body_buffer = body_buffer.as_slice();
+
         let request_body = request.body().expect("Body accessed more than once");
 
         let request_stream = request_body
             .write()
             .expect("Output stream accessed more than once");
 
-        request_stream
-            .blocking_write_and_flush(&body_buffer)
+        blocking_write_util(&request_stream, body_buffer)
             .map_err(|_| SendError::RequestConversion("Failed to write HTTP body".into()))?;
+
 
         //The OutputStream is a child resource: it must be dropped
         //before the parent OutgoingBody resource is dropped (or finished),
@@ -693,12 +732,15 @@ where
             .map_err(|_| SendError::RequestConversion("Failed to finalize HTTP body".into()))?;
     }
 
+
+
     let response = executor::outgoing_request_send_sync(request).map_err(SendError::Http)?;
 
-    let body = response.into_body_sync()
+
+
+    let body = response
+        .into_body_sync()
         .map_err(|e| SendError::ResponseConversion(e.into()))?;
-
-
 
     Ok(Response::builder()
         .status(response.status())

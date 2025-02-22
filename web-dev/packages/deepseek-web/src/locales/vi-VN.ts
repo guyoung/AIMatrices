@@ -49,6 +49,10 @@ export default {
     clearHistoryConfirm: 'Bạn có chắc chắn để xóa lịch sử trò chuyện?',
     preview: 'Xem trước',
     showRawText: 'Hiển thị dưới dạng văn bản thô',
+
+    newChat: 'Cuộc trò chuyện mới',
+    thinking: 'Suy nghĩ...',
+    downlaod: 'Tải về'
   },
   setting: {
     setting: 'Cài đặt',
@@ -74,7 +78,8 @@ export default {
     monthlyUsage: 'Sử dụng hàng tháng',
 
     about: 'Ở ngoài',
-    max_tokens: "Max tokens"
+    maxTokens: "Max tokens",
+    multiRoundChat: "Trò chuyện nhiều lần"
   },
   store: {
     siderButton: 'Prompt Store',

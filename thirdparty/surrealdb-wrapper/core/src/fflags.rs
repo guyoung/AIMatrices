@@ -25,7 +25,7 @@ pub static FFLAGS: FFlags = FFlags {
 #[allow(dead_code)]
 #[non_exhaustive]
 pub struct FFlags {
-	pub change_feed_live_queries: FFlagEnabledStatus,
+    pub change_feed_live_queries: FFlagEnabledStatus,
 }
 
 /// This struct is not used in the implementation;
@@ -34,43 +34,43 @@ pub struct FFlags {
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[non_exhaustive]
 pub struct FFlagEnabledStatus {
-	pub(crate) enabled_release: bool,
-	pub(crate) enabled_debug: bool,
-	pub(crate) enabled_test: bool,
-	pub(crate) owner: &'static str,
-	pub(crate) description: &'static str,
-	pub(crate) env_override: &'static str,
-	pub(crate) date_enabled_test: Option<&'static str>,
-	pub(crate) date_enabled_debug: Option<&'static str>,
-	pub(crate) date_enabled_release: Option<&'static str>,
-	pub(crate) release_version: Option<&'static str>,
+    pub(crate) enabled_release: bool,
+    pub(crate) enabled_debug: bool,
+    pub(crate) enabled_test: bool,
+    pub(crate) owner: &'static str,
+    pub(crate) description: &'static str,
+    pub(crate) env_override: &'static str,
+    pub(crate) date_enabled_test: Option<&'static str>,
+    pub(crate) date_enabled_debug: Option<&'static str>,
+    pub(crate) date_enabled_release: Option<&'static str>,
+    pub(crate) release_version: Option<&'static str>,
 }
 
 impl FFlagEnabledStatus {
-	#[allow(dead_code)]
-	pub fn enabled(&self) -> bool {
-		let mut enabled = false;
-		if let Ok(env_var) = std::env::var(self.env_override) {
-			if env_var.trim() == "true" {
-				return true;
-			}
-			return false;
-		}
-		// Test check
-		#[cfg(test)]
-		{
-			enabled = enabled || self.enabled_test;
-		}
-		// Debug build check
-		#[cfg(debug_assertions)]
-		{
-			enabled = enabled || self.enabled_debug;
-		}
-		// Release build check
-		#[cfg(not(debug_assertions))]
-		{
-			enabled = enabled || self.enabled_release;
-		}
-		enabled
-	}
+    #[allow(dead_code)]
+    pub fn enabled(&self) -> bool {
+        let mut enabled = false;
+        if let Ok(env_var) = std::env::var(self.env_override) {
+            if env_var.trim() == "true" {
+                return true;
+            }
+            return false;
+        }
+        // Test check
+        #[cfg(test)]
+        {
+            enabled = enabled || self.enabled_test;
+        }
+        // Debug build check
+        #[cfg(debug_assertions)]
+        {
+            enabled = enabled || self.enabled_debug;
+        }
+        // Release build check
+        #[cfg(not(debug_assertions))]
+        {
+            enabled = enabled || self.enabled_release;
+        }
+        enabled
+    }
 }

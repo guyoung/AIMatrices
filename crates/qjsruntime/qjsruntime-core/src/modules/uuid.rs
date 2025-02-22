@@ -1,4 +1,3 @@
-
 use once_cell::sync::Lazy;
 use ring::rand::SecureRandom;
 use rquickjs::{
@@ -17,8 +16,6 @@ use crate::{
     modules::{crypto::SYSTEM_RANDOM, module::export_default},
     utils::result::ResultExt,
 };
-
-
 
 const MAX_UUID: &str = "ffffffff-ffff-ffff-ffff-ffffffffffff";
 

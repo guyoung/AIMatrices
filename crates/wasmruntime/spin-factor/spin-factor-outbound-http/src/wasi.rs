@@ -22,8 +22,6 @@ use wasmtime_wasi_http::{
 use spin_factor_outbound_networking::{ComponentTlsConfigs, OutboundAllowedHosts};
 use spin_factors::RuntimeFactorsInstanceState;
 
-
-
 use crate::{
     intercept::{InterceptOutcome, OutboundHttpInterceptor},
     InstanceState, OutboundHttpFactor, SelfRequestOrigin,
@@ -79,17 +77,15 @@ impl<'a> WasiHttpView for WasiHttpImplInner<'a> {
         config: wasmtime_wasi_http::types::OutgoingRequestConfig,
     ) -> wasmtime_wasi_http::HttpResult<wasmtime_wasi_http::types::HostFutureIncomingResponse> {
         Ok(HostFutureIncomingResponse::Pending(
-            wasmtime_wasi::runtime::spawn(
-                send_request_impl(
-                    request,
-                    config,
-                    self.state.allowed_hosts.clone(),
-                    self.state.component_tls_configs.clone(),
-                    self.state.request_interceptor.clone(),
-                    self.state.self_request_origin.clone(),
-                    self.state.allow_private_ips,
-                ),
-            ),
+            wasmtime_wasi::runtime::spawn(send_request_impl(
+                request,
+                config,
+                self.state.allowed_hosts.clone(),
+                self.state.component_tls_configs.clone(),
+                self.state.request_interceptor.clone(),
+                self.state.self_request_origin.clone(),
+                self.state.allow_private_ips,
+            )),
         ))
     }
 }
@@ -172,7 +168,6 @@ async fn send_request_impl(
     }
 
     let _ = request.uri().authority().context("authority not set")?;
-
 
     Ok(send_request_handler(request, config, tls_client_config, allow_private_ips).await)
 }
@@ -310,8 +305,6 @@ async fn send_request_handler(
         .map_err(|_| ErrorCode::ConnectionReadTimeout)?
         .map_err(hyper_request_error)?
         .map(|body| body.map_err(hyper_request_error).boxed());
-
-
 
     Ok(wasmtime_wasi_http::types::IncomingResponse {
         resp,

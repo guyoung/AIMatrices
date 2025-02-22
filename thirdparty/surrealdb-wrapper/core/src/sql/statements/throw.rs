@@ -14,28 +14,33 @@ use std::fmt;
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 #[non_exhaustive]
 pub struct ThrowStatement {
-	pub error: Value,
+    pub error: Value,
 }
 
 impl ThrowStatement {
-	/// Check if we require a writeable transaction
-	pub(crate) fn writeable(&self) -> bool {
-		false
-	}
-	/// Process this type returning a computed simple Value
-	pub(crate) async fn compute(
-		&self,
-		stk: &mut Stk,
-		ctx: &Context,
-		opt: &Options,
-		doc: Option<&CursorDoc>,
-	) -> Result<Value, Error> {
-		Err(Error::Thrown(self.error.compute(stk, ctx, opt, doc).await?.to_raw_string()))
-	}
+    /// Check if we require a writeable transaction
+    pub(crate) fn writeable(&self) -> bool {
+        false
+    }
+    /// Process this type returning a computed simple Value
+    pub(crate) async fn compute(
+        &self,
+        stk: &mut Stk,
+        ctx: &Context,
+        opt: &Options,
+        doc: Option<&CursorDoc>,
+    ) -> Result<Value, Error> {
+        Err(Error::Thrown(
+            self.error
+                .compute(stk, ctx, opt, doc)
+                .await?
+                .to_raw_string(),
+        ))
+    }
 }
 
 impl fmt::Display for ThrowStatement {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "THROW {}", self.error)
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "THROW {}", self.error)
+    }
 }

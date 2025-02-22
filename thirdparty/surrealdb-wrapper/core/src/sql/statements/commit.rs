@@ -10,7 +10,7 @@ use std::fmt;
 pub struct CommitStatement;
 
 impl fmt::Display for CommitStatement {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("COMMIT TRANSACTION")
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("COMMIT TRANSACTION")
+    }
 }

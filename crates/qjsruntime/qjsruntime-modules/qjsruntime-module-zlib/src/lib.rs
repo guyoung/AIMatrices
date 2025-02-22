@@ -54,19 +54,22 @@ fn zlib_converter<'js>(
     let _ = match command {
         ZlibCommand::Deflate => {
             qjsruntime_compression::zlib::encoder(src, level).read_to_end(&mut dst)?
-        },
+        }
         ZlibCommand::DeflateRaw => {
             qjsruntime_compression::deflate::encoder(src, level).read_to_end(&mut dst)?
-        },
-        ZlibCommand::Gzip => qjsruntime_compression::gz::encoder(src, level).read_to_end(&mut dst)?,
+        }
+        ZlibCommand::Gzip => {
+            qjsruntime_compression::gz::encoder(src, level).read_to_end(&mut dst)?
+        }
         ZlibCommand::Inflate => qjsruntime_compression::zlib::decoder(src).read_to_end(&mut dst)?,
-        ZlibCommand::InflateRaw => qjsruntime_compression::deflate::decoder(src).read_to_end(&mut dst)?,
+        ZlibCommand::InflateRaw => {
+            qjsruntime_compression::deflate::decoder(src).read_to_end(&mut dst)?
+        }
         ZlibCommand::Gunzip => qjsruntime_compression::gz::decoder(src).read_to_end(&mut dst)?,
     };
 
     Buffer(dst).into_js(&ctx)
 }
-
 
 define_sync_function!(deflate_sync, zlib_converter, ZlibCommand::Deflate);
 
@@ -96,10 +99,12 @@ fn brotli_converter<'js>(
     let mut dst: Vec<u8> = Vec::with_capacity(src.len());
 
     let _ = match command {
-        BrotliCommand::Compress => qjsruntime_compression::brotli::encoder(src).read_to_end(&mut dst)?,
+        BrotliCommand::Compress => {
+            qjsruntime_compression::brotli::encoder(src).read_to_end(&mut dst)?
+        }
         BrotliCommand::Decompress => {
             qjsruntime_compression::brotli::decoder(src).read_to_end(&mut dst)?
-        },
+        }
     };
 
     Buffer(dst).into_js(&ctx)

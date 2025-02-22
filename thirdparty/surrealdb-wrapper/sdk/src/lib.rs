@@ -128,16 +128,16 @@ mod api;
 #[doc(hidden)]
 /// Channels for receiving a SurrealQL database export
 pub mod channel {
-	pub use channel::bounded;
-	pub use channel::unbounded;
-	pub use channel::Receiver;
-	pub use channel::Sender;
+    pub use channel::bounded;
+    pub use channel::unbounded;
+    pub use channel::Receiver;
+    pub use channel::Sender;
 }
 
 /// Different error types for embedded and remote databases
 pub mod error {
-	pub use crate::api::err::Error as Api;
-	pub use surrealdb_core::err::Error as Db;
+    pub use crate::api::err::Error as Api;
+    pub use surrealdb_core::err::Error as Db;
 }
 
 #[cfg(feature = "protocol-http")]
@@ -146,20 +146,20 @@ pub use api::headers;
 
 #[doc(inline)]
 pub use api::{
-	engine, method, opt,
-	value::{
-		self, Action, Bytes, Datetime, Notification, Number, Object, RecordId, RecordIdKey, Value,
-	},
-	Connect, Connection, Response, Result, Surreal,
+    engine, method, opt,
+    value::{
+        self, Action, Bytes, Datetime, Notification, Number, Object, RecordId, RecordIdKey, Value,
+    },
+    Connect, Connection, Response, Result, Surreal,
 };
 
 /// An error originating from the SurrealDB client library
 #[derive(Debug, thiserror::Error, serde::Serialize)]
 pub enum Error {
-	/// An error with an embedded storage engine
-	#[error("{0}")]
-	Db(#[from] crate::error::Db),
-	/// An error with a remote database instance
-	#[error("{0}")]
-	Api(#[from] crate::error::Api),
+    /// An error with an embedded storage engine
+    #[error("{0}")]
+    Db(#[from] crate::error::Db),
+    /// An error with a remote database instance
+    #[error("{0}")]
+    Api(#[from] crate::error::Api),
 }

@@ -392,8 +392,7 @@ fn main() {
     /*** ***/
     if target == "x86_64-pc-windows-gnu" {
         for lib in &[
-            "rocksdb", "bz2", "lz4", "snappy", "z", "zstd", "stdc++",
-            "shlwapi", // windows
+            "rocksdb", "bz2", "lz4", "snappy", "z", "zstd", "stdc++", "shlwapi", // windows
             "rpcrt4",  // windows
 
                        //"pthread",

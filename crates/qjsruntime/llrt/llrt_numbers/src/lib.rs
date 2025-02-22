@@ -47,16 +47,16 @@ pub fn i64_to_base_n(number: i64, radix: u8) -> String {
     match radix {
         10 => {
             return to_dec(number);
-        },
+        }
         2 => {
             let mut buf = [0u8; BIN_MAX_DIGITS];
             return to_base_less_than_10(&mut buf, number, 2);
-        },
+        }
         8 => {
             let mut buf = [0u8; OCT_MAX_DIGITS];
             return to_base_less_than_10(&mut buf, number, 8);
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     let mut abs_number = number;

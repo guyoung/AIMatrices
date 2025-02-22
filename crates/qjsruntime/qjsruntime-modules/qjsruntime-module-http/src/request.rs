@@ -5,16 +5,12 @@ use rquickjs::{
     Null, Object, Result, TypedArray, Value,
 };
 
-
-
 use llrt_json::parse::json_parse;
 use llrt_module_url::url_class::URL;
 
 use llrt_utils::{bytes::ObjectBytes, class::get_class, object::ObjectExt};
 
 use crate::{blob::Blob, headers::Headers};
-
-
 
 #[rquickjs::class]
 #[derive(rquickjs::JsLifetime)]
@@ -36,7 +32,6 @@ impl<'js> Trace<'js> for Request<'js> {
     }
 }
 
-
 impl<'js> Request<'js> {
     fn take_bytes(&mut self, ctx: &Ctx<'js>) -> Result<Option<ObjectBytes<'js>>> {
         match &self.body {
@@ -47,12 +42,11 @@ impl<'js> Request<'js> {
                     ObjectBytes::from(ctx, provided)?
                 };
                 Ok(Some(bytes))
-            },
+            }
             None => Ok(None),
         }
     }
 }
-
 
 #[rquickjs::methods(rename_all = "camelCase")]
 impl<'js> Request<'js> {
@@ -115,7 +109,6 @@ impl<'js> Request<'js> {
     fn keepalive(&self) -> bool {
         true
     }
-
 
     #[qjs(get)]
     fn body_used(&self) -> bool {
@@ -189,7 +182,6 @@ impl<'js> Request<'js> {
             body: self.body.clone(),
         })
     }
-
 }
 
 pub fn from_http_request<'js>(ctx: &Ctx<'js>, input: http::Request<Bytes>) -> Result<Request<'js>> {
@@ -213,13 +205,13 @@ pub fn from_http_request<'js>(ctx: &Ctx<'js>, input: http::Request<Bytes>) -> Re
     let req_headers = Object::new(ctx.clone())?;
 
     for (k, v) in headers.iter() {
-        req_headers.set(k.as_str(), v.to_str().unwrap_or_default())?   }
+        req_headers.set(k.as_str(), v.to_str().unwrap_or_default())?
+    }
 
     req_obj.set("headers", req_headers)?;
 
     Request::new(ctx.clone(), req_obj.into_value(), Opt::from(None))
 }
-
 
 fn assign_request<'js>(request: &mut Request<'js>, ctx: Ctx<'js>, obj: &Object<'js>) -> Result<()> {
     if let Some(url) = obj.get_optional("url")? {

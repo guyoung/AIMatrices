@@ -50,6 +50,10 @@ export default {
     clearHistoryConfirm: 'Вы уверены, что хотите очистить историю чата?',
     preview: 'Предварительный просмотр',
     showRawText: 'Показать как обычный текст',
+
+    newChat: 'Новый чат',
+    thinking: 'В чем дело?...',
+    downlaod: 'Многораундная беседа'
   },
   setting: {
     setting: 'Настройки',
@@ -75,7 +79,8 @@ export default {
     monthlyUsage: 'Ежемесячное использование',
 
     about: 'О нас',
-    max_tokens: "Max tokens"
+    maxTokens: "Max tokens",
+    multiRoundChat: "Многораундная беседа"
   },
   store: {
     siderButton: 'Хранилище подсказок',

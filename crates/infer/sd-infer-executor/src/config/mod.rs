@@ -1,9 +1,8 @@
-mod txt2img_config;
 mod context_config;
+mod txt2img_config;
 
-pub use context_config::{ ContextConfig, ContextConfigBuilder, ContextConfigBuilderError};
-pub use txt2img_config::{ Txt2imgConfig, Txt2imgConfigBuilder, Txt2imgConfigBuilderError};
-
+pub use context_config::{ContextConfig, ContextConfigBuilder, ContextConfigBuilderError};
+pub use txt2img_config::{Txt2imgConfig, Txt2imgConfigBuilder, Txt2imgConfigBuilderError};
 
 /***
 use derive_builder::Builder;

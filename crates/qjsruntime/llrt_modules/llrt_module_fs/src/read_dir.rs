@@ -107,15 +107,11 @@ impl<'js> IntoJs<'js> for ReadDir {
     }
 }
 
-
 pub fn read_dir_sync(mut path: String, options: Opt<Object<'_>>) -> Result<ReadDir> {
     let (with_file_types, skip_root_pos, mut directory_walker) =
         process_options_and_create_directory_walker(&mut path, options);
 
     let mut items = Vec::with_capacity(64);
-
-
-
 
     while let Some((child, metadata)) = directory_walker.walk_sync()? {
         append_directory_and_metadata_to_vec(
@@ -126,9 +122,6 @@ pub fn read_dir_sync(mut path: String, options: Opt<Object<'_>>) -> Result<ReadD
             metadata,
         );
     }
-
-
-
 
     items.sort_by(|a, b| a.name.partial_cmp(&b.name).unwrap());
 
@@ -174,7 +167,7 @@ fn process_options_and_create_directory_walker(
                     path.insert_str(0, CURRENT_DIR_STR);
                 }
                 path.len() + 1
-            },
+            }
         }
     };
 

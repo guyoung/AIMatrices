@@ -1,199 +1,243 @@
 import { defineStore } from 'pinia'
-import { defaultState, getLocalState, setLocalState } from './helper'
+
 import { router } from '@/router'
 
+import { get, post } from '@/utils/request'
+
+
 export const useChatStore = defineStore('chat-store', {
-  state: (): Chat.ChatState => getLocalState(),
+    state: (): Chat.ChatState => ({
+        usingContext: true,
+        conversations: [],
+        active: null,
+        messages: []
+    }),
 
-  getters: {
-    getChatHistoryByCurrentActive(state: Chat.ChatState) {
-      const index = state.history.findIndex(item => item.uuid === state.active)
-      if (index !== -1)
-        return state.history[index]
-      return null
+    getters: {
     },
 
-    getChatByUuid(state: Chat.ChatState) {
-      return (uuid?: number) => {
-        if (uuid)
-          return state.chat.find(item => item.uuid === uuid)?.data ?? []
-        return state.chat.find(item => item.uuid === state.active)?.data ?? []
-      }
-    },
-  },
+    actions: {
+        setUsingContext(context: boolean) {
+            this.usingContext = context
+        },
 
-  actions: {
-    setUsingContext(context: boolean) {
-      this.usingContext = context
-      this.recordState()
-    },
+        async addConversation(conversation: Partial<Chat.ChatConversation>) {
+            let data: Chat.ChatConversation = {
+                id: null,
+                title: conversation.title,
+                isEdit: conversation.isEdit,
+                seq_num: conversation.seq_num,
+                created_at: null,
+                updated_at: null,
+                user_id: null
+            }
 
-    addHistory(history: Chat.History, chatData: Chat.Chat[] = []) {
-      this.history.unshift(history)
-      this.chat.unshift({ uuid: history.uuid, data: chatData })
-      this.active = history.uuid
-      this.reloadRoute(history.uuid)
-    },
+            try {
+                let res = await post({
+                    url: '/chat/add-conversation',
+                    data: data
+                })
 
-    updateHistory(uuid: number, edit: Partial<Chat.History>) {
-      const index = this.history.findIndex(item => item.uuid === uuid)
-      if (index !== -1) {
-        this.history[index] = { ...this.history[index], ...edit }
-        this.recordState()
-      }
-    },
+                let result = res.result
 
-    async deleteHistory(index: number) {
-      this.history.splice(index, 1)
-      this.chat.splice(index, 1)
+                if (result.length > 0) {
+                    await this.fetchConversations()
 
-      if (this.history.length === 0) {
-        this.active = null
-        this.reloadRoute()
-        return
-      }
+                    return result[0]
+                }               
 
-      if (index > 0 && index <= this.history.length) {
-        const uuid = this.history[index - 1].uuid
-        this.active = uuid
-        this.reloadRoute(uuid)
-        return
-      }
+            } catch (e) {
+                console.log(e)
+            }
 
-      if (index === 0) {
-        if (this.history.length > 0) {
-          const uuid = this.history[0].uuid
-          this.active = uuid
-          this.reloadRoute(uuid)
-        }
-      }
+            return null
 
-      if (index > this.history.length) {
-        const uuid = this.history[this.history.length - 1].uuid
-        this.active = uuid
-        this.reloadRoute(uuid)
-      }
-    },
+        },
 
-    async setActive(uuid: number) {
-      this.active = uuid
-      return await this.reloadRoute(uuid)
-    },
+        async updateConversation(conversation: Chat.ChatConversation) {
+            try {
+                await post({
+                    url: '/chat/update-conversation',
+                    data: conversation
+                });
 
-    getChatByUuidAndIndex(uuid: number, index: number) {
-      if (!uuid || uuid === 0) {
-        if (this.chat.length)
-          return this.chat[0].data[index]
-        return null
-      }
-      const chatIndex = this.chat.findIndex(item => item.uuid === uuid)
-      if (chatIndex !== -1)
-        return this.chat[chatIndex].data[index]
-      return null
-    },
+                await this.fetchConversations()
 
-    addChatByUuid(uuid: number, chat: Chat.Chat) {
-      if (!uuid || uuid === 0) {
-        if (this.history.length === 0) {
-          const uuid = Date.now()
-          this.history.push({ uuid, title: chat.text, isEdit: false })
-          this.chat.push({ uuid, data: [chat] })
-          this.active = uuid
-          this.recordState()
-        }
-        else {
-          this.chat[0].data.push(chat)
-          if (this.history[0].title === 'New Chat')
-            this.history[0].title = chat.text
-          this.recordState()
-        }
-      }
+            } catch (e) {
+                console.log(e)
+            }
+        },
 
-      const index = this.chat.findIndex(item => item.uuid === uuid)
-      if (index !== -1) {
-        this.chat[index].data.push(chat)
-        if (this.history[index].title === 'New Chat')
-          this.history[index].title = chat.text
-        this.recordState()
-      }
-    },
 
-    updateChatByUuid(uuid: number, index: number, chat: Chat.Chat) {
-      if (!uuid || uuid === 0) {
-        if (this.chat.length) {
-          this.chat[0].data[index] = chat
-          this.recordState()
-        }
-        return
-      }
+        async deleteConversation(conversation: Chat.ChatConversation) {
+            try {
+                await post({
+                    url: '/chat/delete-conversation',
+                    data: conversation
+                });
 
-      const chatIndex = this.chat.findIndex(item => item.uuid === uuid)
-      if (chatIndex !== -1) {
-        this.chat[chatIndex].data[index] = chat
-        this.recordState()
-      }
-    },
+                await this.fetchConversations();
 
-    updateChatSomeByUuid(uuid: number, index: number, chat: Partial<Chat.Chat>) {
-      if (!uuid || uuid === 0) {
-        if (this.chat.length) {
-          this.chat[0].data[index] = { ...this.chat[0].data[index], ...chat }
-          this.recordState()
-        }
-        return
-      }
+            } catch (e) {
+                console.log(e)
+            }
+        },
 
-      const chatIndex = this.chat.findIndex(item => item.uuid === uuid)
-      if (chatIndex !== -1) {
-        this.chat[chatIndex].data[index] = { ...this.chat[chatIndex].data[index], ...chat }
-        this.recordState()
-      }
-    },
+        async deleteConversations() {
+            try {
+                await post({
+                    url: '/chat/delete-conversations'
+                });
 
-    deleteChatByUuid(uuid: number, index: number) {
-      if (!uuid || uuid === 0) {
-        if (this.chat.length) {
-          this.chat[0].data.splice(index, 1)
-          this.recordState()
-        }
-        return
-      }
+                await this.fetchConversations();
 
-      const chatIndex = this.chat.findIndex(item => item.uuid === uuid)
-      if (chatIndex !== -1) {
-        this.chat[chatIndex].data.splice(index, 1)
-        this.recordState()
-      }
-    },
+            } catch (e) {
+                console.log(e)
+            }
+        },
 
-    clearChatByUuid(uuid: number) {
-      if (!uuid || uuid === 0) {
-        if (this.chat.length) {
-          this.chat[0].data = []
-          this.recordState()
-        }
-        return
-      }
+        async addMessage(conversation_id: string, message: Partial<Chat.ChatMessage>) {
+            let data: Chat.ChatMessage = {
+                id: null,
+                content: message.content,
+                role: message.role,
+                status: 1,
+                seq_num: message.seq_num,
+                created_at: null,
+                updated_at: null,
+                conversation_id: conversation_id,
+                user_id: null,
+                parent_id: message.parent_id,
+                request_id: message.request_id,
+                metadata: {},
 
-      const index = this.chat.findIndex(item => item.uuid === uuid)
-      if (index !== -1) {
-        this.chat[index].data = []
-        this.recordState()
-      }
-    },
+                inversion: message.inversion,
+                error: message.error,
+                loading: message.loading,
+            }
 
-    clearHistory() {
-      this.$state = { ...defaultState() }
-      this.recordState()
-    },
+            try {
+                let res = await post({
+                    url: '/chat/add-message',
+                    data: data
+                });
 
-    async reloadRoute(uuid?: number) {
-      this.recordState()
-      await router.push({ name: 'Chat', params: { uuid } })
-    },
+                let result = res.result
+                if (result.length > 0) {
+                    await this.fetchMessages();
 
-    recordState() {
-      setLocalState(this.$state)
-    },
-  },
+                    return result[0]
+                }                
+
+            } catch (e) {
+                console.log(e)
+            }
+
+            return null
+
+        },
+
+        async updateMessage(message: Chat.ChatMessage) {
+            try {
+                await post({
+                    url: '/chat/update-message',
+                    data: message
+                });
+
+                await this.fetchMessages();
+
+            } catch (e) {
+                console.log(e)
+            }
+        },
+
+        async batchUpdateMessage(conversation_id: string, loading: boolean) {
+            try {
+                await post({
+                     url: `/chat/batch-update-messages?conversation=${conversation_id}&loading=${loading}`
+             
+                });
+
+                await this.fetchMessages();
+
+            } catch (e) {
+                console.log(e)
+            }
+        },
+
+
+
+        async deleteMessage(message: Chat.ChatMessage) {
+            try {
+                await post({
+                    url: '/chat/delete-message',
+                    data: message
+                });
+
+                await this.fetchMessages();
+
+            } catch (e) {
+                console.log(e)
+            }
+        },
+
+        
+        async deleteMessages(conversation_id: string) {
+            try {
+                await post({
+                    url: `/chat/delete-messages?conversation=${conversation_id}`,                   
+                });
+
+                await this.fetchMessages();
+
+            } catch (e) {
+                console.log(e)
+            }
+        },
+
+
+        async fetchConversations() {
+            try {
+                const res = await get({
+                    url: '/chat/conversations'
+                });
+
+                this.conversations = res.result;
+
+            } catch (e) {
+                console.log(e)
+            }
+
+            return [];
+        },
+
+        async fetchMessages() {
+            try {
+                const res = await get({
+                    url: `/chat/messages?conversation=${this.active}`
+                });
+
+                this.messages = res.result;
+
+            } catch (e) {
+                console.log(e)
+            }
+
+            return [];
+        },
+
+        async setActiveConversation(id: string) {  
+            this.active = id
+
+            await this.fetchMessages()
+
+            return await this.reloadRoute(id)
+        },
+
+        async reloadRoute(conversationID?: string) {      
+            await router.push({ name: 'Chat', params: { conversationID } })
+        },
+
+    }
 })
+

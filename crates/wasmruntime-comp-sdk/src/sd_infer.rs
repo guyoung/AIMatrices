@@ -1,16 +1,8 @@
-
-
-pub use crate::wit::comp::sd_infer::{
-    self, Error, InferencingParams, InferencingResult
-};
-
+pub use crate::wit::comp::sd_infer::{self, Error, InferencingParams, InferencingResult};
 
 impl Default for InferencingParams {
     fn default() -> Self {
-        Self {
-            max_tokens: 100,
-
-        }
+        Self { max_tokens: 100 }
     }
 }
 
@@ -27,4 +19,3 @@ pub fn txt2img_with_options(
 ) -> Result<InferencingResult, Error> {
     sd_infer::txt2img(preset, prompt, Some(options))
 }
-

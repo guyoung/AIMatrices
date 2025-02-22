@@ -11,38 +11,36 @@ use super::Value;
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 #[non_exhaustive]
 pub struct Version(
-	#[revision(end = 2, convert_fn = "convert_version_datetime")] pub Datetime,
-	#[revision(start = 2)] pub Value,
+    #[revision(end = 2, convert_fn = "convert_version_datetime")] pub Datetime,
+    #[revision(start = 2)] pub Value,
 );
 
 impl Version {
-	fn convert_version_datetime(
-		&mut self,
-		_revision: u16,
-		old: Datetime,
-	) -> Result<(), revision::Error> {
-		self.0 = Value::Datetime(old);
-		Ok(())
-	}
+    fn convert_version_datetime(
+        &mut self,
+        _revision: u16,
+        old: Datetime,
+    ) -> Result<(), revision::Error> {
+        self.0 = Value::Datetime(old);
+        Ok(())
+    }
 
-	pub(crate) async fn compute(
-		&self,
-		stk: &mut Stk,
-		ctx: &Context,
-		opt: &Options,
-		doc: Option<&CursorDoc>,
-	) -> Result<u64, Error> {
-		match self.0.compute(stk, ctx, opt, doc).await? {
-			Value::Datetime(v) => Ok(v.to_u64()),
-			found => Err(Error::InvalidVersion {
-				found,
-			}),
-		}
-	}
+    pub(crate) async fn compute(
+        &self,
+        stk: &mut Stk,
+        ctx: &Context,
+        opt: &Options,
+        doc: Option<&CursorDoc>,
+    ) -> Result<u64, Error> {
+        match self.0.compute(stk, ctx, opt, doc).await? {
+            Value::Datetime(v) => Ok(v.to_u64()),
+            found => Err(Error::InvalidVersion { found }),
+        }
+    }
 }
 
 impl fmt::Display for Version {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "VERSION {}", self.0)
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "VERSION {}", self.0)
+    }
 }

@@ -56,7 +56,6 @@ pub fn generate_sampler(
 
     sampler = sampler.add_greedy();
 
-
     Ok(sampler)
 }
 

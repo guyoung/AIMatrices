@@ -14,8 +14,7 @@ pub trait MakeKeyValueStore: 'static + Send + Sync {
     type StoreManager: StoreManager;
 
     /// Creates a new store manager from the runtime configuration.
-    fn make_store(&self)
-                  -> anyhow::Result<Self::StoreManager>;
+    fn make_store(&self) -> anyhow::Result<Self::StoreManager>;
 }
 
 /// Runtime configuration for all key value stores.

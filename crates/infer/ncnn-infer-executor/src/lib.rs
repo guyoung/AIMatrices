@@ -2,15 +2,13 @@
 #[allow(non_upper_case_globals)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
-
-
 mod allocator;
+mod bindings;
 mod datareader;
 mod extractor;
 mod mat;
 mod net;
 mod option;
-mod bindings;
 
 use bindings as ncnn_bind;
 

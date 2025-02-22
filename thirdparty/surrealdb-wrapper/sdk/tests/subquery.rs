@@ -8,7 +8,7 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn subquery_select() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		-- Create a record
 		CREATE person:test SET name = 'Tobie', age = 21;
 		-- Select all records, returning an array
@@ -24,89 +24,89 @@ async fn subquery_select() -> Result<(), Error> {
 		-- Using an outer SELECT, select a specific record in a subquery, returning an array
 		SELECT * FROM (SELECT age >= 18 AS adult FROM person:test) WHERE adult = true;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 7);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 7);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 21,
 				id: person:test,
 				name: 'Tobie'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				adult: true
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				adult: true
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				adult: true
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				adult: true
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				adult: true
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				adult: true
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn subquery_ifelse_set() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		-- Check if the record exists
 		LET $record = (SELECT *, count() AS count FROM person:test);
 		-- Return the specified record
@@ -138,84 +138,52 @@ async fn subquery_ifelse_set() -> Result<(), Error> {
 			UPSERT person:test SET sport = ['basketball'] RETURN sport;
 		END;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 9);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::None;
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse("[]");
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 9);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::None;
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse("[]");
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				sport: [
 					'basketball',
 				]
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::None;
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
-			{
-				count: 1,
-				id: person:test,
-				sport: [
-					'basketball',
-				]
-			}
-		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
-			{
-				sport: [
-					'basketball',
-					'football',
-				]
-			}
-		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::None;
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::None;
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				count: 1,
 				id: person:test,
 				sport: [
 					'basketball',
-					'football',
 				]
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				sport: [
 					'basketball',
@@ -223,15 +191,47 @@ async fn subquery_ifelse_set() -> Result<(), Error> {
 				]
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::None;
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
+			{
+				count: 1,
+				id: person:test,
+				sport: [
+					'basketball',
+					'football',
+				]
+			}
+		]",
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
+			{
+				sport: [
+					'basketball',
+					'football',
+				]
+			}
+		]",
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn subquery_ifelse_array() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		-- Check if the record exists
 		LET $record = (SELECT *, count() AS count FROM person:test);
 		-- Return the specified record
@@ -263,84 +263,84 @@ async fn subquery_ifelse_array() -> Result<(), Error> {
 			UPSERT person:test SET sport = ['basketball'] RETURN sport;
 		END;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 9);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::None;
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse("[]");
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 9);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::None;
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse("[]");
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				sport: [
 					'basketball',
 				]
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::None;
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
-			{
-				count: 1,
-				id: person:test,
-				sport: [
-					'basketball',
-				]
-			}
-		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
-			{
-				sport: [
-					'basketball',
-					'football',
-				]
-			}
-		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::None;
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::None;
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				count: 1,
 				id: person:test,
 				sport: [
 					'basketball',
+				]
+			}
+		]",
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
+			{
+				sport: [
+					'basketball',
 					'football',
 				]
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::None;
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
+			{
+				count: 1,
+				id: person:test,
+				sport: [
+					'basketball',
+					'football',
+				]
+			}
+		]",
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				sport: [
 					'basketball',
@@ -349,8 +349,8 @@ async fn subquery_ifelse_array() -> Result<(), Error> {
 				]
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }

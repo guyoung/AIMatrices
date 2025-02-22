@@ -9,11 +9,11 @@ use std::fmt;
 pub struct Explain(pub bool);
 
 impl fmt::Display for Explain {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("EXPLAIN")?;
-		if self.0 {
-			f.write_str(" FULL")?;
-		}
-		Ok(())
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("EXPLAIN")?;
+        if self.0 {
+            f.write_str(" FULL")?;
+        }
+        Ok(())
+    }
 }

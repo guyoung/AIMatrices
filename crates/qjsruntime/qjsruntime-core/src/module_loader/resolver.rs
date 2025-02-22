@@ -1,3 +1,12 @@
+use llrt_utils::result::ResultExt;
+use once_cell::sync::Lazy;
+use qjsruntime_module_locator::path::{
+    self, is_absolute, name_extname, replace_backslash, resolve_path_with_separator,
+};
+use rquickjs::{loader::Resolver, Ctx, Error, Result};
+use simd_json::{derived::ValueObjectAccessAsScalar, BorrowedValue};
+use std::convert::Into;
+use std::string::ToString;
 use std::{
     borrow::Cow,
     collections::HashMap,
@@ -6,15 +15,6 @@ use std::{
     rc::Rc,
     sync::Mutex,
 };
-use std::convert::Into;
-use std::string::ToString;
-use qjsruntime_module_locator::path::{
-    self, is_absolute, name_extname, replace_backslash, resolve_path_with_separator,
-};
-use llrt_utils::result::ResultExt;
-use once_cell::sync::Lazy;
-use rquickjs::{loader::Resolver, Ctx, Error, Result};
-use simd_json::{derived::ValueObjectAccessAsScalar, BorrowedValue};
 use tracing::trace;
 
 use crate::{
@@ -34,8 +34,7 @@ fn rc_string_to_cow<'a>(rc: Rc<String>) -> Cow<'a, str> {
 static NODE_MODULES_PATHS_CACHE: Lazy<Mutex<HashMap<String, Vec<Box<str>>>>> =
     Lazy::new(|| Mutex::new(HashMap::new()));
 
-pub const  FILESYSTEM_ROOT: &str = "/";
-
+pub const FILESYSTEM_ROOT: &str = "/";
 
 #[derive(Debug, Default)]
 pub struct CustomResolver;
@@ -65,8 +64,6 @@ pub fn require_resolve<'a>(
 ) -> Result<Cow<'a, str>> {
     trace!("require_resolve(x, y):({}, {})", x, y);
 
-
-
     //fast path for when we have supported extensions
     let (_, ext_name) = name_extname(x);
     let is_supported_ext = is_supported_ext(ext_name);
@@ -76,7 +73,6 @@ pub fn require_resolve<'a>(
     }
 
     let x_normalized = path::normalize(x);
-
 
     if is_supported_ext && Path::new(&x_normalized).is_file() {
         return resolved_by_file_exists(x_normalized.into());
@@ -160,8 +156,6 @@ pub fn require_resolve<'a>(
     Err(Error::new_resolving(y.to_string(), x.to_string()))
 }
 
-
-
 fn resolved_by_file_exists(path: Cow<'_, str>) -> Result<Cow<'_, str>> {
     trace!("+- Resolved by `FILE`: {}\n", path);
     to_abs_path(path)
@@ -198,7 +192,7 @@ fn load_as_file<'a>(ctx: &Ctx<'_>, x: Rc<String>) -> Result<Option<Cow<'a, str>>
                     // 1. MAYBE_DETECT_AND_LOAD(X.js)
                     trace!("|  load_as_file(2.b.1): {}", file);
                     return Ok(Some(file.into()));
-                },
+                }
                 Some(path) => {
                     let mut package_json = fs::read(path.as_ref()).or_throw(ctx)?;
                     let package_json =
@@ -212,7 +206,7 @@ fn load_as_file<'a>(ctx: &Ctx<'_>, x: Rc<String>) -> Result<Option<Cow<'a, str>>
                             return Ok(Some(file.into()));
                         }
                     }
-                },
+                }
             }
             // d. MAYBE_DETECT_AND_LOAD(X.js)
             trace!("|  load_as_file(2.d): {}", file);
@@ -246,7 +240,7 @@ fn load_index<'a>(ctx: &Ctx<'_>, x: Rc<String>) -> Result<Option<Cow<'a, str>>> 
                 None => {
                     trace!("|  load_index(1.b): {}", file);
                     return Ok(Some(file.into()));
-                },
+                }
                 // c. If the SCOPE/package.json contains "type" field,
                 Some(path) => {
                     let mut package_json = fs::read(path.as_ref()).or_throw(ctx)?;
@@ -262,7 +256,7 @@ fn load_index<'a>(ctx: &Ctx<'_>, x: Rc<String>) -> Result<Option<Cow<'a, str>>> 
                     // 2. Else, load X/index.js as an CommonJS module. STOP.
                     trace!("|  load_index(1.c.2): {}", file);
                     return Ok(Some(file.into()));
-                },
+                }
             }
         }
     }
@@ -502,7 +496,7 @@ fn load_package_self(ctx: &Ctx<'_>, x: &str, dir: &str, is_esm: bool) -> Result<
         // 2. If no scope was found, return.
         None => {
             return Ok(None);
-        },
+        }
         Some(path) => {
             package_json_file = fs::read(path.as_ref()).or_throw(ctx)?;
             package_json = simd_json::to_borrowed_value(&mut package_json_file).or_throw(ctx)?;
@@ -516,7 +510,7 @@ fn load_package_self(ctx: &Ctx<'_>, x: &str, dir: &str, is_esm: bool) -> Result<
                     return Ok(None);
                 }
             }
-        },
+        }
     };
     // 5. let MATCH = PACKAGE_EXPORTS_RESOLVE(pathToFileURL(SCOPE),
     //    "." + X.slice("name".length), `package.json` "exports", ["node", "require"])

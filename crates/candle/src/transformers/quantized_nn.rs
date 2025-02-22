@@ -4,7 +4,6 @@
 //! utilities including embedding, linear layers, and various normalization techniques.
 //! Most implementations provide quantized weights support.
 
-
 use candle::quantized::QTensor;
 use candle::{Module, Result, Tensor};
 

@@ -10,7 +10,7 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn update_merge_and_content() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		CREATE person:test CONTENT { name: 'Tobie' };
 		UPDATE person:test CONTENT { name: 'Jaime' };
 		UPDATE person:test CONTENT 'some content';
@@ -18,69 +18,69 @@ async fn update_merge_and_content() -> Result<(), Error> {
 		UPDATE person:test MERGE { age: 50 };
 		UPDATE person:test MERGE 'some content';
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 6);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 6);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 				name: 'Tobie',
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 				name: 'Jaime',
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(matches!(
-		tmp.err(),
-		Some(e) if e.to_string() == r#"Can not use 'some content' in a CONTENT clause"#
-	));
-	//
-	let tmp = res.remove(0).result;
-	assert!(matches!(
-		tmp.err(),
-		Some(e) if e.to_string() == r#"Can not use 'some content' in a CONTENT clause"#
-	));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(matches!(
+        tmp.err(),
+        Some(e) if e.to_string() == r#"Can not use 'some content' in a CONTENT clause"#
+    ));
+    //
+    let tmp = res.remove(0).result;
+    assert!(matches!(
+        tmp.err(),
+        Some(e) if e.to_string() == r#"Can not use 'some content' in a CONTENT clause"#
+    ));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 				name: 'Jaime',
 				age: 50,
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(matches!(
-		tmp.err(),
-		Some(e) if e.to_string() == r#"Can not use 'some content' in a MERGE clause"#
-	));
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(matches!(
+        tmp.err(),
+        Some(e) if e.to_string() == r#"Can not use 'some content' in a MERGE clause"#
+    ));
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn update_simple_with_input() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		DEFINE FIELD name ON TABLE person
 			ASSERT
 				IF $input THEN
@@ -103,86 +103,86 @@ async fn update_simple_with_input() -> Result<(), Error> {
 		UPDATE person:test SET name = 'Tobie';
 		SELECT * FROM person:test;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 8);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 8);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 				name: 'Name: Tobie',
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(matches!(
-		tmp.err(),
-		Some(e) if e.to_string() == r#"Found 'Name: jaime' for field `name`, with record `person:test`, but field must conform to: IF $input THEN $input = /^[A-Z]{1}[a-z]+$/ ELSE true END"#
-	));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(matches!(
+        tmp.err(),
+        Some(e) if e.to_string() == r#"Found 'Name: jaime' for field `name`, with record `person:test`, but field must conform to: IF $input THEN $input = /^[A-Z]{1}[a-z]+$/ ELSE true END"#
+    ));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 				name: 'Name: Jaime',
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(matches!(
-		tmp.err(),
-		Some(e) if e.to_string() == r#"Found 'Name: tobie' for field `name`, with record `person:test`, but field must conform to: IF $input THEN $input = /^[A-Z]{1}[a-z]+$/ ELSE true END"#
-	));
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(matches!(
+        tmp.err(),
+        Some(e) if e.to_string() == r#"Found 'Name: tobie' for field `name`, with record `person:test`, but field must conform to: IF $input THEN $input = /^[A-Z]{1}[a-z]+$/ ELSE true END"#
+    ));
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 				name: 'Name: Tobie',
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:test,
 				name: 'Name: Tobie',
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn update_complex_with_input() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		DEFINE FIELD images ON product
 			TYPE array
 			ASSERT array::len($value) > 0
@@ -193,108 +193,108 @@ async fn update_complex_with_input() -> Result<(), Error> {
 		;
 		CREATE product:test SET images = [' test.png '];
 	";
-	let mut t = Test::new(sql).await?;
-	t.skip_ok(2)?;
-	t.expect_val(
-		"[
+    let mut t = Test::new(sql).await?;
+    t.skip_ok(2)?;
+    t.expect_val(
+        "[
 			{
 				id: product:test,
 				images: ['test.png'],
 			}
 		]",
-	)?;
-	Ok(())
+    )?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn update_with_return_clause() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		CREATE person:test SET age = 18, name = 'John';
 		UPDATE person:test SET age = 25 RETURN VALUE $before;
 		UPDATE person:test SET age = 30 RETURN VALUE { old_age: $before.age, new_age: $after.age };
 		UPDATE person:test SET age = 35 RETURN age, name;
 		DELETE person:test RETURN VALUE $before;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 5);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 5);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 18,
 				id: person:test,
 				name: 'John'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 18,
 				id: person:test,
 				name: 'John'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				new_age: 30,
 				old_age: 25
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 35,
 				name: 'John'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				age: 35,
 				id: person:test,
 				name: 'John'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn update_with_object_array_string_field_names() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		UPSERT person:one SET field.key = 'value';
 		UPSERT person:two SET field['key'] = 'value';
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 2);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 2);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				field: {
 					key: 'value'
@@ -302,12 +302,12 @@ async fn update_with_object_array_string_field_names() -> Result<(), Error> {
 				id: person:one
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				field: {
 					key: 'value'
@@ -315,15 +315,15 @@ async fn update_with_object_array_string_field_names() -> Result<(), Error> {
 				id: person:two
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn update_records_and_arrays_with_json_patch() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		UPSERT person:test CONTENT {
 			username: 'parsley',
 			bugs: [],
@@ -357,14 +357,14 @@ async fn update_records_and_arrays_with_json_patch() -> Result<(), Error> {
 			}
 		];
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 3);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 3);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				biscuits: [
 					{
@@ -379,12 +379,12 @@ async fn update_records_and_arrays_with_json_patch() -> Result<(), Error> {
 				username: 'parsley'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				biscuits: [
 					{
@@ -405,12 +405,12 @@ async fn update_records_and_arrays_with_json_patch() -> Result<(), Error> {
 				username: 'parsley'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				biscuits: [
 					{
@@ -432,10 +432,10 @@ async fn update_records_and_arrays_with_json_patch() -> Result<(), Error> {
 				username: 'parsley'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 //
@@ -443,7 +443,7 @@ async fn update_records_and_arrays_with_json_patch() -> Result<(), Error> {
 //
 
 async fn common_permissions_checks(auth_enabled: bool) {
-	let tests = vec![
+    let tests = vec![
 		// Root level
 		((().into(), Role::Owner), ("NS", "DB"), true, "owner at root level should be able to update a record"),
 		((().into(), Role::Editor), ("NS", "DB"), true, "editor at root level should be able to update a record"),
@@ -468,323 +468,359 @@ async fn common_permissions_checks(auth_enabled: bool) {
 		((("NS", "DB").into(), Role::Viewer), ("NS", "OTHER_DB"), false, "viewer at database level should not be able to update a record on another database"),
 		((("NS", "DB").into(), Role::Viewer), ("OTHER_NS", "DB"), false, "viewer at database level should not be able to update a record on another namespace even if the database name matches"),
 	];
-	let statement = "UPDATE person:test CONTENT { name: 'Name' };";
+    let statement = "UPDATE person:test CONTENT { name: 'Name' };";
 
-	for ((level, role), (ns, db), should_succeed, msg) in tests.into_iter() {
-		let sess = Session::for_level(level, role).with_ns(ns).with_db(db);
+    for ((level, role), (ns, db), should_succeed, msg) in tests.into_iter() {
+        let sess = Session::for_level(level, role).with_ns(ns).with_db(db);
 
-		// Test the statement when the table already exists
-		{
-			let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
+        // Test the statement when the table already exists
+        {
+            let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
 
-			// Prepare datastore
-			let mut resp = ds
-				.execute("CREATE person:test", &Session::owner().with_ns("NS").with_db("DB"), None)
-				.await
-				.unwrap();
-			let res = resp.remove(0).output();
-			assert!(
-				res.is_ok() && res.unwrap() != Value::parse("[]"),
-				"unexpected error creating person record"
-			);
-			let mut resp = ds
-				.execute(
-					"CREATE person:test",
-					&Session::owner().with_ns("OTHER_NS").with_db("DB"),
-					None,
-				)
-				.await
-				.unwrap();
-			let res = resp.remove(0).output();
-			assert!(
-				res.is_ok() && res.unwrap() != Value::parse("[]"),
-				"unexpected error creating person record"
-			);
-			let mut resp = ds
-				.execute(
-					"CREATE person:test",
-					&Session::owner().with_ns("NS").with_db("OTHER_DB"),
-					None,
-				)
-				.await
-				.unwrap();
-			let res = resp.remove(0).output();
-			assert!(
-				res.is_ok() && res.unwrap() != Value::parse("[]"),
-				"unexpected error creating person record"
-			);
+            // Prepare datastore
+            let mut resp = ds
+                .execute(
+                    "CREATE person:test",
+                    &Session::owner().with_ns("NS").with_db("DB"),
+                    None,
+                )
+                .await
+                .unwrap();
+            let res = resp.remove(0).output();
+            assert!(
+                res.is_ok() && res.unwrap() != Value::parse("[]"),
+                "unexpected error creating person record"
+            );
+            let mut resp = ds
+                .execute(
+                    "CREATE person:test",
+                    &Session::owner().with_ns("OTHER_NS").with_db("DB"),
+                    None,
+                )
+                .await
+                .unwrap();
+            let res = resp.remove(0).output();
+            assert!(
+                res.is_ok() && res.unwrap() != Value::parse("[]"),
+                "unexpected error creating person record"
+            );
+            let mut resp = ds
+                .execute(
+                    "CREATE person:test",
+                    &Session::owner().with_ns("NS").with_db("OTHER_DB"),
+                    None,
+                )
+                .await
+                .unwrap();
+            let res = resp.remove(0).output();
+            assert!(
+                res.is_ok() && res.unwrap() != Value::parse("[]"),
+                "unexpected error creating person record"
+            );
 
-			// Run the test
-			let mut resp = ds.execute(statement, &sess, None).await.unwrap();
-			let res = resp.remove(0).output();
+            // Run the test
+            let mut resp = ds.execute(statement, &sess, None).await.unwrap();
+            let res = resp.remove(0).output();
 
-			// Select always succeeds, but the result may be empty
-			assert!(res.is_ok());
+            // Select always succeeds, but the result may be empty
+            assert!(res.is_ok());
 
-			if should_succeed {
-				assert!(res.unwrap() != Value::parse("[]"), "{}", msg);
+            if should_succeed {
+                assert!(res.unwrap() != Value::parse("[]"), "{}", msg);
 
-				// Verify the update was persisted
-				let mut resp = ds
-					.execute(
-						"SELECT name FROM person:test",
-						&Session::owner().with_ns("NS").with_db("DB"),
-						None,
-					)
-					.await
-					.unwrap();
-				let res = resp.remove(0).output();
-				let res = res.unwrap().to_string();
-				assert!(res.contains("Name"), "{}: {:?}", msg, res);
-			} else {
-				assert!(res.unwrap() == Value::parse("[]"), "{}", msg);
+                // Verify the update was persisted
+                let mut resp = ds
+                    .execute(
+                        "SELECT name FROM person:test",
+                        &Session::owner().with_ns("NS").with_db("DB"),
+                        None,
+                    )
+                    .await
+                    .unwrap();
+                let res = resp.remove(0).output();
+                let res = res.unwrap().to_string();
+                assert!(res.contains("Name"), "{}: {:?}", msg, res);
+            } else {
+                assert!(res.unwrap() == Value::parse("[]"), "{}", msg);
 
-				// Verify the update was not persisted
-				let mut resp = ds
-					.execute(
-						"SELECT name FROM person:test",
-						&Session::owner().with_ns("NS").with_db("DB"),
-						None,
-					)
-					.await
-					.unwrap();
-				let res = resp.remove(0).output();
-				let res = res.unwrap().to_string();
-				assert!(!res.contains("Name"), "{}: {:?}", msg, res);
-			}
-		}
-	}
+                // Verify the update was not persisted
+                let mut resp = ds
+                    .execute(
+                        "SELECT name FROM person:test",
+                        &Session::owner().with_ns("NS").with_db("DB"),
+                        None,
+                    )
+                    .await
+                    .unwrap();
+                let res = resp.remove(0).output();
+                let res = res.unwrap().to_string();
+                assert!(!res.contains("Name"), "{}: {:?}", msg, res);
+            }
+        }
+    }
 }
 
 #[tokio::test]
 async fn check_permissions_auth_enabled() {
-	let auth_enabled = true;
-	//
-	// Test common scenarios
-	//
+    let auth_enabled = true;
+    //
+    // Test common scenarios
+    //
 
-	common_permissions_checks(auth_enabled).await;
+    common_permissions_checks(auth_enabled).await;
 
-	//
-	// Test Anonymous user
-	//
+    //
+    // Test Anonymous user
+    //
 
-	let statement = "UPDATE person:test CONTENT { name: 'Name' };";
+    let statement = "UPDATE person:test CONTENT { name: 'Name' };";
 
-	// When the table grants no permissions
-	{
-		let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
+    // When the table grants no permissions
+    {
+        let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
 
-		let mut resp = ds
-			.execute(
-				"DEFINE TABLE person PERMISSIONS NONE; CREATE person:test;",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		assert!(res.is_ok(), "failed to create table: {:?}", res);
-		let res = resp.remove(0).output();
-		assert!(res.is_ok() && res.unwrap() != Value::parse("[]"), "{}", "failed to create record");
+        let mut resp = ds
+            .execute(
+                "DEFINE TABLE person PERMISSIONS NONE; CREATE person:test;",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        assert!(res.is_ok(), "failed to create table: {:?}", res);
+        let res = resp.remove(0).output();
+        assert!(
+            res.is_ok() && res.unwrap() != Value::parse("[]"),
+            "{}",
+            "failed to create record"
+        );
 
-		let mut resp = ds
-			.execute(statement, &Session::default().with_ns("NS").with_db("DB"), None)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
+        let mut resp = ds
+            .execute(
+                statement,
+                &Session::default().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
 
-		assert!(
-			res.unwrap() == Value::parse("[]"),
-			"{}",
-			"anonymous user should not be able to select if the table has no permissions"
-		);
+        assert!(
+            res.unwrap() == Value::parse("[]"),
+            "{}",
+            "anonymous user should not be able to select if the table has no permissions"
+        );
 
-		// Verify the update was not persisted
-		let mut resp = ds
-			.execute(
-				"SELECT name FROM person:test",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		let res = res.unwrap().to_string();
-		assert!(
-			!res.contains("Name"),
-			"{}: {:?}",
-			"anonymous user should not be able to update a record if the table has no permissions",
-			res
-		);
-	}
+        // Verify the update was not persisted
+        let mut resp = ds
+            .execute(
+                "SELECT name FROM person:test",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        let res = res.unwrap().to_string();
+        assert!(
+            !res.contains("Name"),
+            "{}: {:?}",
+            "anonymous user should not be able to update a record if the table has no permissions",
+            res
+        );
+    }
 
-	// When the table exists and grants full permissions
-	{
-		let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
+    // When the table exists and grants full permissions
+    {
+        let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
 
-		let mut resp = ds
-			.execute(
-				"DEFINE TABLE person PERMISSIONS FULL; CREATE person:test;",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		assert!(res.is_ok(), "failed to create table: {:?}", res);
-		let res = resp.remove(0).output();
-		assert!(res.is_ok() && res.unwrap() != Value::parse("[]"), "{}", "failed to create record");
+        let mut resp = ds
+            .execute(
+                "DEFINE TABLE person PERMISSIONS FULL; CREATE person:test;",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        assert!(res.is_ok(), "failed to create table: {:?}", res);
+        let res = resp.remove(0).output();
+        assert!(
+            res.is_ok() && res.unwrap() != Value::parse("[]"),
+            "{}",
+            "failed to create record"
+        );
 
-		let mut resp = ds
-			.execute(statement, &Session::default().with_ns("NS").with_db("DB"), None)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
+        let mut resp = ds
+            .execute(
+                statement,
+                &Session::default().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
 
-		assert!(
-			res.unwrap() != Value::parse("[]"),
-			"{}",
-			"anonymous user should be able to select if the table has full permissions"
-		);
+        assert!(
+            res.unwrap() != Value::parse("[]"),
+            "{}",
+            "anonymous user should be able to select if the table has full permissions"
+        );
 
-		// Verify the update was persisted
-		let mut resp = ds
-			.execute(
-				"SELECT name FROM person:test",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		let res = res.unwrap().to_string();
-		assert!(
-			res.contains("Name"),
-			"{}: {:?}",
-			"anonymous user should be able to update a record if the table has full permissions",
-			res
-		);
-	}
+        // Verify the update was persisted
+        let mut resp = ds
+            .execute(
+                "SELECT name FROM person:test",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        let res = res.unwrap().to_string();
+        assert!(
+            res.contains("Name"),
+            "{}: {:?}",
+            "anonymous user should be able to update a record if the table has full permissions",
+            res
+        );
+    }
 }
 
 #[tokio::test]
 async fn check_permissions_auth_disabled() {
-	let auth_enabled = false;
-	//
-	// Test common scenarios
-	//
+    let auth_enabled = false;
+    //
+    // Test common scenarios
+    //
 
-	common_permissions_checks(auth_enabled).await;
+    common_permissions_checks(auth_enabled).await;
 
-	//
-	// Test Anonymous user
-	//
+    //
+    // Test Anonymous user
+    //
 
-	let statement = "UPDATE person:test CONTENT { name: 'Name' };";
+    let statement = "UPDATE person:test CONTENT { name: 'Name' };";
 
-	// When the table grants no permissions
-	{
-		let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
+    // When the table grants no permissions
+    {
+        let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
 
-		let mut resp = ds
-			.execute(
-				"DEFINE TABLE person PERMISSIONS NONE; CREATE person:test;",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		assert!(res.is_ok(), "failed to create table: {:?}", res);
-		let res = resp.remove(0).output();
-		assert!(res.is_ok() && res.unwrap() != Value::parse("[]"), "{}", "failed to create record");
+        let mut resp = ds
+            .execute(
+                "DEFINE TABLE person PERMISSIONS NONE; CREATE person:test;",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        assert!(res.is_ok(), "failed to create table: {:?}", res);
+        let res = resp.remove(0).output();
+        assert!(
+            res.is_ok() && res.unwrap() != Value::parse("[]"),
+            "{}",
+            "failed to create record"
+        );
 
-		let mut resp = ds
-			.execute(statement, &Session::default().with_ns("NS").with_db("DB"), None)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
+        let mut resp = ds
+            .execute(
+                statement,
+                &Session::default().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
 
-		assert!(
-			res.unwrap() != Value::parse("[]"),
-			"{}",
-			"anonymous user should be able to update a record if the table has no permissions"
-		);
+        assert!(
+            res.unwrap() != Value::parse("[]"),
+            "{}",
+            "anonymous user should be able to update a record if the table has no permissions"
+        );
 
-		// Verify the update was persisted
-		let mut resp = ds
-			.execute(
-				"SELECT name FROM person:test",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		let res = res.unwrap().to_string();
-		assert!(
-			res.contains("Name"),
-			"{}: {:?}",
-			"anonymous user should be able to update a record if the table has no permissions",
-			res
-		);
-	}
+        // Verify the update was persisted
+        let mut resp = ds
+            .execute(
+                "SELECT name FROM person:test",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        let res = res.unwrap().to_string();
+        assert!(
+            res.contains("Name"),
+            "{}: {:?}",
+            "anonymous user should be able to update a record if the table has no permissions",
+            res
+        );
+    }
 
-	// When the table exists and grants full permissions
-	{
-		let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
+    // When the table exists and grants full permissions
+    {
+        let ds = new_ds().await.unwrap().with_auth_enabled(auth_enabled);
 
-		let mut resp = ds
-			.execute(
-				"DEFINE TABLE person PERMISSIONS FULL; CREATE person:test;",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		assert!(res.is_ok(), "failed to create table: {:?}", res);
-		let res = resp.remove(0).output();
-		assert!(res.is_ok() && res.unwrap() != Value::parse("[]"), "{}", "failed to create record");
+        let mut resp = ds
+            .execute(
+                "DEFINE TABLE person PERMISSIONS FULL; CREATE person:test;",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        assert!(res.is_ok(), "failed to create table: {:?}", res);
+        let res = resp.remove(0).output();
+        assert!(
+            res.is_ok() && res.unwrap() != Value::parse("[]"),
+            "{}",
+            "failed to create record"
+        );
 
-		let mut resp = ds
-			.execute(statement, &Session::default().with_ns("NS").with_db("DB"), None)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
+        let mut resp = ds
+            .execute(
+                statement,
+                &Session::default().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
 
-		assert!(
-			res.unwrap() != Value::parse("[]"),
-			"{}",
-			"anonymous user should be able to select if the table has full permissions"
-		);
+        assert!(
+            res.unwrap() != Value::parse("[]"),
+            "{}",
+            "anonymous user should be able to select if the table has full permissions"
+        );
 
-		// Verify the update was persisted
-		let mut resp = ds
-			.execute(
-				"SELECT name FROM person:test",
-				&Session::owner().with_ns("NS").with_db("DB"),
-				None,
-			)
-			.await
-			.unwrap();
-		let res = resp.remove(0).output();
-		let res = res.unwrap().to_string();
-		assert!(
-			res.contains("Name"),
-			"{}: {:?}",
-			"anonymous user should be able to update a record if the table has full permissions",
-			res
-		);
-	}
+        // Verify the update was persisted
+        let mut resp = ds
+            .execute(
+                "SELECT name FROM person:test",
+                &Session::owner().with_ns("NS").with_db("DB"),
+                None,
+            )
+            .await
+            .unwrap();
+        let res = resp.remove(0).output();
+        let res = res.unwrap().to_string();
+        assert!(
+            res.contains("Name"),
+            "{}: {:?}",
+            "anonymous user should be able to update a record if the table has full permissions",
+            res
+        );
+    }
 }
 
 #[tokio::test]
 async fn update_field_permissions() -> Result<(), Error> {
-	let dbs = new_ds().await?;
+    let dbs = new_ds().await?;
 
-	let sql = r#"
+    let sql = r#"
 		DEFINE TABLE data PERMISSIONS FULL;
 		DEFINE FIELD private ON data TYPE string PERMISSIONS FOR UPDATE FULL, FOR SELECT NONE;
 		CREATE data:1 SET public = "public", private = "private";
@@ -793,54 +829,54 @@ async fn update_field_permissions() -> Result<(), Error> {
 		DEFINE TABLE user PERMISSIONS FULL;
 		CREATE user:1;
 	"#;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 6);
-	//
-	let _ = res.remove(0).result?;
-	let _ = res.remove(0).result?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 6);
+    //
+    let _ = res.remove(0).result?;
+    let _ = res.remove(0).result?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: data:1,
 				public: 'public',
 				private: 'private'
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let _ = res.remove(0).result?;
-	let _ = res.remove(0).result?;
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let _ = res.remove(0).result?;
+    let _ = res.remove(0).result?;
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: user:1
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
+    );
+    assert_eq!(tmp, val);
 
-	let sql = r#"
+    let sql = r#"
 		UPDATE data:1 SET public = private;
 	"#;
-	let ses = Session::for_record("test", "test", "user", Value::parse("user:1"));
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 1);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let ses = Session::for_record("test", "test", "user", Value::parse("user:1"));
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 1);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: data:1
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
+    );
+    assert_eq!(tmp, val);
 
-	Ok(())
+    Ok(())
 }

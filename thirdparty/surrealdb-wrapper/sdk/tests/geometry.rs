@@ -8,18 +8,18 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn geometry_point() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		UPSERT city:london SET centre = (-0.118092, 51.509865);
 		SELECT * FROM city:london;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 2);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 2);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"centre": {
 					"type": "Point",
@@ -28,12 +28,12 @@ async fn geometry_point() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"centre": {
 					"type": "Point",
@@ -42,15 +42,15 @@ async fn geometry_point() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn geometry_polygon() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		UPSERT city:london SET area = {
 			type: 'Polygon',
 			coordinates: [[
@@ -69,14 +69,14 @@ async fn geometry_polygon() -> Result<(), Error> {
 		};
 		SELECT * FROM city:london;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 3);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 3);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"area": {
 					"type": "Polygon",
@@ -93,12 +93,12 @@ async fn geometry_polygon() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"area": {
 					"type": "Polygon",
@@ -115,12 +115,12 @@ async fn geometry_polygon() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"area": {
 					"type": "Polygon",
@@ -137,15 +137,15 @@ async fn geometry_polygon() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn geometry_multipoint() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		UPSERT city:london SET points = {
 			type: 'MultiPoint',
 			coordinates: [
@@ -162,14 +162,14 @@ async fn geometry_multipoint() -> Result<(), Error> {
 		};
 		SELECT * FROM city:london;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 3);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 3);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"points": {
 					"type": "MultiPoint",
@@ -181,12 +181,12 @@ async fn geometry_multipoint() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"points": {
 					"type": "MultiPoint",
@@ -198,12 +198,12 @@ async fn geometry_multipoint() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"points": {
 					"type": "MultiPoint",
@@ -215,15 +215,15 @@ async fn geometry_multipoint() -> Result<(), Error> {
 				"id": r"city:london"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn geometry_multipolygon() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		UPSERT university:oxford SET area = {
 			type: 'MultiPolygon',
 			coordinates: [
@@ -240,14 +240,14 @@ async fn geometry_multipolygon() -> Result<(), Error> {
 		};
 		SELECT * FROM university:oxford;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 3);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 3);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"area": {
 					"type": "MultiPolygon",
@@ -263,12 +263,12 @@ async fn geometry_multipolygon() -> Result<(), Error> {
 				"id": r"university:oxford"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"area": {
 					"type": "MultiPolygon",
@@ -284,12 +284,12 @@ async fn geometry_multipolygon() -> Result<(), Error> {
 				"id": r"university:oxford"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				"area": {
 					"type": "MultiPolygon",
@@ -305,15 +305,15 @@ async fn geometry_multipolygon() -> Result<(), Error> {
 				"id": r"university:oxford"
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn geometry_inner_access() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		SELECT type, coordinates[0] as lng, coordinates[1] AS lat FROM type::point([-0.118092, 51.509865]);
 		SELECT type, coordinates[0] as lng, coordinates[1] AS lat FROM (-0.118092, 51.509865);
 		SELECT coordinates FROM {
@@ -345,38 +345,38 @@ async fn geometry_inner_access() -> Result<(), Error> {
 			],
 		};
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 4);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 4);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				lat: 51.509865,
 				lng: -0.118092,
 				type: 'Point'
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				lat: 51.509865,
 				lng: -0.118092,
 				type: 'Point'
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				coordinates: [
 					[
@@ -404,12 +404,12 @@ async fn geometry_inner_access() -> Result<(), Error> {
 				]
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		r#"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        r#"[
 			{
 				coordinates: [
 					[
@@ -465,8 +465,8 @@ async fn geometry_inner_access() -> Result<(), Error> {
 				]
 			}
 		]"#,
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }

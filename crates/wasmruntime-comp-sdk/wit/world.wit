@@ -8,6 +8,8 @@ world platform {
   import wasi:config/store@0.2.0-draft-2024-09-27;
   import wasi:http/outgoing-handler@0.2.0;
 
+
+
  import key-value;
  import variables;
 

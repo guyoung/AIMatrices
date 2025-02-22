@@ -50,10 +50,7 @@ pub trait RuntimeFactors: Send + Sync + Sized + 'static {
     ) -> crate::Result<()>;
 
     /// Configure the factors with the given app and runtime config.
-    fn configure_app(
-        &self,
-        app: App,
-    ) -> crate::Result<ConfiguredApp<Self>>;
+    fn configure_app(&self, app: App) -> crate::Result<ConfiguredApp<Self>>;
 
     /// Prepare the factors' instance state builders.
     fn prepare(

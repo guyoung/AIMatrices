@@ -3,7 +3,6 @@ use std::option::Option;
 
 use serde::{Deserialize, Serialize};
 
-
 use crate::impl_builder_methods;
 
 use super::common;

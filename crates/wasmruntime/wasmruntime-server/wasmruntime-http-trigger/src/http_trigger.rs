@@ -7,7 +7,6 @@ use spin_factors::RuntimeFactors;
 
 use wasmruntime_core::{Trigger, TriggerInstanceState};
 
-
 /// A TriggerApp for the HTTP trigger.
 pub type TriggerApp<F> = wasmruntime_core::TriggerApp<HttpTrigger, F>;
 
@@ -18,7 +17,6 @@ pub type TriggerInstanceBuilder<'a, F> =
 pub struct HttpTriggerArgs {
     /// IP address and port to listen on
     pub address: SocketAddr,
-
 }
 
 /// The Spin HTTP trigger.
@@ -58,7 +56,6 @@ impl HttpTrigger {
     }
 
     fn validate_app(_app: &App) -> anyhow::Result<()> {
-
         Ok(())
     }
 }

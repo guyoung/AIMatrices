@@ -15,23 +15,23 @@ use std::fmt;
 pub struct ContinueStatement;
 
 impl ContinueStatement {
-	/// Check if we require a writeable transaction
-	pub(crate) fn writeable(&self) -> bool {
-		false
-	}
-	/// Process this type returning a computed simple Value
-	pub(crate) async fn compute(
-		&self,
-		_ctx: &Context,
-		_opt: &Options,
-		_doc: Option<&CursorDoc>,
-	) -> Result<Value, Error> {
-		Err(Error::Continue)
-	}
+    /// Check if we require a writeable transaction
+    pub(crate) fn writeable(&self) -> bool {
+        false
+    }
+    /// Process this type returning a computed simple Value
+    pub(crate) async fn compute(
+        &self,
+        _ctx: &Context,
+        _opt: &Options,
+        _doc: Option<&CursorDoc>,
+    ) -> Result<Value, Error> {
+        Err(Error::Continue)
+    }
 }
 
 impl fmt::Display for ContinueStatement {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("CONTINUE")
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("CONTINUE")
+    }
 }

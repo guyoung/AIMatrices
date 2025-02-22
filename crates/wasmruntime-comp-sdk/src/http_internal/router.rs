@@ -101,7 +101,7 @@ impl Router {
         };
 
         if path.is_none() {
-            return "Incorrect request path".into_response()
+            return "Incorrect request path".into_response();
         }
 
         let RouteMatch { params, handler } = self.find(path.unwrap().as_str(), method);

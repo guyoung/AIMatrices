@@ -8,6 +8,9 @@ import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { t } from '@/locales'
 import { copyToClip } from '@/utils/copy'
 
+import MarkdownEditor from '@/addons/markdown-editor/index.vue'
+import MermaidEditor from '@/addons/mermaid-editor/index.vue'
+
 interface Props {
   inversion?: boolean
   error?: boolean
@@ -22,6 +25,10 @@ const { isMobile } = useBasicLayout()
 
 const textRef = ref<HTMLElement>()
 
+const showMarkdownEditor = ref(false)
+const showMermaidEditor = ref(false)
+const handledCode = ref("")
+
 const mdi = new MarkdownIt({
   html: false,
   linkify: true,
@@ -29,9 +36,9 @@ const mdi = new MarkdownIt({
     const validLang = !!(language && hljs.getLanguage(language))
     if (validLang) {
       const lang = language ?? ''
-      return highlightBlock(hljs.highlight(code, { language: lang }).value, lang)
+      return highlightBlock(hljs.highlight(code, { language: lang }).value, lang, language)
     }
-    return highlightBlock(hljs.highlightAuto(code).value, '')
+    return highlightBlock(hljs.highlightAuto(code).value, '', language)
   },
 })
 
@@ -58,8 +65,23 @@ const text = computed(() => {
   return value
 })
 
-function highlightBlock(str: string, lang?: string) {
-  return `<pre class="code-block-wrapper"><div class="code-block-header"><span class="code-block-header__lang">${lang}</span><span class="code-block-header__copy">${t('chat.copyCode')}</span></div><code class="hljs code-block-body ${lang}">${str}</code></pre>`
+function highlightBlock(str: string, language?: string, language2?: string) {
+  let html = `<pre class="code-block-wrapper"><div class="code-block-header">`
+
+  if ((language && language.toLowerCase() == 'markdown') || (language2 && language2.toLowerCase() == 'markdown')) {
+    html += `<span class="code-block-header__markdown hover:cursor-pointer">${language || language2}</span>`
+  }
+  else if ((language && language.toLowerCase() == 'mermaid') || (language2 && language2.toLowerCase() == 'mermaid')) {
+    html += `<span class="code-block-header__mermaid hover:cursor-pointer">${language || language2}</span>`
+  }
+  else {
+    html += `<span class="code-block-header__lang">${language}</span>`
+  }
+
+  html += `<span class="code-block-header__copy">${t('chat.copyCode')}</span>`
+
+  html += `</div><code class="hljs code-block-body ${language}">${str}</code></pre>`
+  return html
 }
 
 function addCopyEvents() {
@@ -81,25 +103,79 @@ function addCopyEvents() {
   }
 }
 
+function addMarkdownEvents() {
+  if (textRef.value) {
+    const btns = textRef.value.querySelectorAll('.code-block-header__markdown')
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const code = btn.parentElement?.nextElementSibling?.textContent
+        if (code) {
+          handledCode.value = code
+          showMarkdownEditor.value = true
+        }
+      })
+    })
+  }
+}
+
+function addMermaidEvents() {
+  if (textRef.value) {
+    const btns = textRef.value.querySelectorAll('.code-block-header__mermaid')
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const code = btn.parentElement?.nextElementSibling?.textContent
+        if (code) {       
+          handledCode.value = code
+          showMermaidEditor.value = true
+        }
+      })
+    })
+  }
+}
+
 function removeCopyEvents() {
   if (textRef.value) {
     const copyBtn = textRef.value.querySelectorAll('.code-block-header__copy')
     copyBtn.forEach((btn) => {
-      btn.removeEventListener('click', () => {})
+      btn.removeEventListener('click', () => { })
+    })
+  }
+}
+
+function removeMarkdownEvents() {
+  if (textRef.value) {
+    const btns = textRef.value.querySelectorAll('.code-block-header__markdown')
+    btns.forEach((btn) => {
+      btn.removeEventListener('click', () => { })
+    })
+  }
+}
+
+function removeMermaidEvents() {
+  if (textRef.value) {
+    const copyBtn = textRef.value.querySelectorAll('.code-block-header__mermaid')
+    copyBtn.forEach((btn) => {
+      btn.removeEventListener('click', () => { })
     })
   }
 }
 
 onMounted(() => {
   addCopyEvents()
+  addMarkdownEvents()
+  addMermaidEvents()
 })
 
 onUpdated(() => {
   addCopyEvents()
+  addMarkdownEvents()
+  addMermaidEvents()
 })
 
 onUnmounted(() => {
   removeCopyEvents()
+  removeMarkdownEvents()
+  removeMermaidEvents()
 })
 </script>
 
@@ -113,6 +189,8 @@ onUnmounted(() => {
       <div v-else class="whitespace-pre-wrap" v-text="text" />
     </div>
   </div>
+  <MarkdownEditor :content="handledCode" v-model:visible="showMarkdownEditor" />
+  <MermaidEditor :content="handledCode" v-model:visible="showMermaidEditor" />
 </template>
 
 <style lang="less">

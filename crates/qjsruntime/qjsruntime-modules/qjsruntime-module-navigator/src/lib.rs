@@ -1,4 +1,3 @@
-
 use rquickjs::{Ctx, Object, Result};
 
 fn get_user_agent() -> &'static str {

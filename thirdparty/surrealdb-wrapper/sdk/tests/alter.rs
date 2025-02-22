@@ -10,7 +10,7 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn define_alter_table() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		DEFINE TABLE test;
 		INFO FOR DB;
 
@@ -32,17 +32,17 @@ async fn define_alter_table() -> Result<(), Error> {
 			TYPE ANY;
 		INFO FOR DB;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 6);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"{
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 6);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "{
 			accesses: {},
 			analyzers: {},
 			configs: {},
@@ -52,14 +52,14 @@ async fn define_alter_table() -> Result<(), Error> {
 			tables: { test: 'DEFINE TABLE test TYPE ANY SCHEMALESS PERMISSIONS NONE' },
 			users: {},
 		}",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
 		"{
 			accesses: {},
 			analyzers: {},
@@ -71,14 +71,14 @@ async fn define_alter_table() -> Result<(), Error> {
 			users: {},
 		}",
 	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"{
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "{
 			accesses: {},
 			analyzers: {},
 			configs: {},
@@ -88,36 +88,36 @@ async fn define_alter_table() -> Result<(), Error> {
 			tables: { test: 'DEFINE TABLE test TYPE ANY SCHEMAFULL PERMISSIONS NONE' },
 			users: {},
 		}",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn define_alter_table_if_exists() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		ALTER TABLE test COMMENT 'bla';
 		ALTER TABLE IF EXISTS test COMMENT 'bla';
 		INFO FOR DB
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 3);
-	//
-	let tmp = res.remove(0).result;
-	let _err = Error::TbNotFound {
-		value: "test".to_string(),
-	};
-	assert!(matches!(tmp, Err(_err)));
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"{
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 3);
+    //
+    let tmp = res.remove(0).result;
+    let _err = Error::TbNotFound {
+        value: "test".to_string(),
+    };
+    assert!(matches!(tmp, Err(_err)));
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "{
 			accesses: {},
 			analyzers: {},
 			configs: {},
@@ -127,8 +127,8 @@ async fn define_alter_table_if_exists() -> Result<(), Error> {
 			tables: {},
 			users: {},
 		}",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }

@@ -32,18 +32,16 @@ mod modules {
     #[cfg(feature = "zlib")]
     pub use qjsruntime_module_zlib as zlib;
 
-    #[cfg(feature = "variables")]
-    pub use qjsruntime_module_variables as variables;
-    #[cfg(feature = "key-value")]
-    pub use qjsruntime_module_key_value as key_value;
-    #[cfg(feature = "http")]
-    pub use qjsruntime_module_http as http;
     #[cfg(feature = "dbs")]
     pub use qjsruntime_module_dbs as dbs;
+    #[cfg(feature = "http")]
+    pub use qjsruntime_module_http as http;
+    #[cfg(feature = "key-value")]
+    pub use qjsruntime_module_key_value as key_value;
+    #[cfg(feature = "variables")]
+    pub use qjsruntime_module_variables as variables;
 
     #[cfg(feature = "openai")]
     pub use qjsruntime_module_openai as openai;
 }
 pub use llrt_utils::time;
-
-

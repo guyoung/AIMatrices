@@ -5,11 +5,11 @@ use crate::fnc::script::modules::impl_module_def;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"object",
-	"entries" => run,
-	"from_entries" => run,
-	"keys" => run,
-	"len" => run,
-	"values" => run
+    Package,
+    "object",
+    "entries" => run,
+    "from_entries" => run,
+    "keys" => run,
+    "len" => run,
+    "values" => run
 );

@@ -5,38 +5,41 @@ use surrealdb::err::Error;
 
 #[tokio::test]
 async fn idiom_chain_part_optional() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		{}.prop.is_bool();
 		{}.prop?.is_bool();
 	"#;
-	Test::new(sql).await?.expect_val("false")?.expect_val("None")?;
-	Ok(())
+    Test::new(sql)
+        .await?
+        .expect_val("false")?
+        .expect_val("None")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_index_expression() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		[1,2,3,4][1 + 1];
 	"#;
-	Test::new(sql).await?.expect_val("3")?;
-	Ok(())
+    Test::new(sql).await?.expect_val("3")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_index_call() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		DEFINE FUNCTION fn::foo() {
 			return 1 + 1;
 		};
 		RETURN [1,2,3,4][fn::foo()];
 	"#;
-	Test::new(sql).await?.expect_val("None")?.expect_val("3")?;
-	Ok(())
+    Test::new(sql).await?.expect_val("None")?.expect_val("3")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_index_range() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		[1,2,3,4][1..2];
 		[1,2,3,4][1..=2];
 		[1,2,3,4][1>..=2];
@@ -45,48 +48,48 @@ async fn idiom_index_range() -> Result<(), Error> {
 		[1,2,3,4][..2];
 		[1,2,3,4][..=2];
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val("[2]")?
-		.expect_val("[2,3]")?
-		.expect_val("[3]")?
-		.expect_val("[3,4]")?
-		.expect_val("[2,3,4]")?
-		.expect_val("[1,2]")?
-		.expect_val("[1,2,3]")?;
-	Ok(())
+    Test::new(sql)
+        .await?
+        .expect_val("[2]")?
+        .expect_val("[2,3]")?
+        .expect_val("[3]")?
+        .expect_val("[3,4]")?
+        .expect_val("[2,3,4]")?
+        .expect_val("[1,2]")?
+        .expect_val("[1,2,3]")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_array_nested_prop_continues_as_array() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
     	[{x:2}].x[0];
     	[{x:2}].x.at(0);
 	"#;
-	Test::new(sql).await?.expect_val("2")?.expect_val("2")?;
-	Ok(())
+    Test::new(sql).await?.expect_val("2")?.expect_val("2")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_select_all_from_nested_array_prop() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
     	CREATE a:1, a:2;
         RELATE a:1->edge:1->a:2;
         a:1->edge.out;
         a:1->edge.out.*;
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val("[{id: a:1}, {id: a:2}]")?
-		.expect_val("[{id: edge:1, in: a:1, out: a:2}]")?
-		.expect_val("[a:2]")?
-		.expect_val("[{id: a:2}]")?;
-	Ok(())
+    Test::new(sql)
+        .await?
+        .expect_val("[{id: a:1}, {id: a:2}]")?
+        .expect_val("[{id: edge:1, in: a:1, out: a:2}]")?
+        .expect_val("[a:2]")?
+        .expect_val("[{id: a:2}]")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_graph_with_filter_should_be_flattened() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
     	CREATE person:1, person:2, person:3;
 		RELATE person:1->likes:1->person:2;
 		RELATE person:2->likes:2->person:3;
@@ -97,29 +100,29 @@ async fn idiom_graph_with_filter_should_be_flattened() -> Result<(), Error> {
 		[person:1]->likes->person[?true]->likes->person;
 		SELECT ->likes[?true]->person as likes FROM person;
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val("[{id: person:1}, {id: person:2}, {id: person:3}]")?
-		.expect_val("[{id: likes:1, in: person:1, out: person:2}]")?
-		.expect_val("[{id: likes:2, in: person:2, out: person:3}]")?
-		.expect_val("[person:3]")?
-		.expect_val("[person:3]")?
-		.expect_val("[person:2]")?
-		.expect_val("[[person:2]]")?
-		.expect_val("[[person:3]]")?
-		.expect_val(
-			"[
+    Test::new(sql)
+        .await?
+        .expect_val("[{id: person:1}, {id: person:2}, {id: person:3}]")?
+        .expect_val("[{id: likes:1, in: person:1, out: person:2}]")?
+        .expect_val("[{id: likes:2, in: person:2, out: person:3}]")?
+        .expect_val("[person:3]")?
+        .expect_val("[person:3]")?
+        .expect_val("[person:2]")?
+        .expect_val("[[person:2]]")?
+        .expect_val("[[person:3]]")?
+        .expect_val(
+            "[
 			{likes: [person:2]},
 			{likes: [person:3]},
 			{likes: []},
 		]",
-		)?;
-	Ok(())
+        )?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_optional_after_value_should_pass_through() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		none?;
 		null?;
 		1?;
@@ -142,22 +145,22 @@ async fn idiom_optional_after_value_should_pass_through() -> Result<(), Error> {
 			]]
 		}?;
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val("none")?
-		.expect_val("null")?
-		.expect_val("1")?
-		.expect_val("'a'")?
-		.expect_val("1s")?
-		.expect_val("d'1970-01-01T00:00:00Z'")?
-		.expect_val("u'0192fb97-e8ee-7683-8198-95710b103bd5'")?
-		.expect_val("[]")?
-		.expect_val("{}")?
-		.expect_val("(89.0, 90.0)")?
-		.expect_bytes([104, 104, 101, 104, 101, 104, 101])?
-		.expect_val("person:aeon")?
-		.expect_val(
-			"{
+    Test::new(sql)
+        .await?
+        .expect_val("none")?
+        .expect_val("null")?
+        .expect_val("1")?
+        .expect_val("'a'")?
+        .expect_val("1s")?
+        .expect_val("d'1970-01-01T00:00:00Z'")?
+        .expect_val("u'0192fb97-e8ee-7683-8198-95710b103bd5'")?
+        .expect_val("[]")?
+        .expect_val("{}")?
+        .expect_val("(89.0, 90.0)")?
+        .expect_bytes([104, 104, 101, 104, 101, 104, 101])?
+        .expect_val("person:aeon")?
+        .expect_val(
+            "{
 			type: 'Polygon',
 			coordinates: [[
 				[-111.0690, 45.0032],
@@ -166,13 +169,13 @@ async fn idiom_optional_after_value_should_pass_through() -> Result<(), Error> {
 				[-111.0672, 40.9862]
 			]]
 		}",
-		)?;
-	Ok(())
+        )?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_recursion_graph() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		INSERT INTO person [
 			{ id: person:tobie, name: 'Tobie' },
 			{ id: person:jaime, name: 'Jaime' },
@@ -196,10 +199,10 @@ async fn idiom_recursion_graph() -> Result<(), Error> {
 
 		SELECT VALUE @{..}.{ name, knows: ->knows->person.@ } FROM person;
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val(
-			"[
+    Test::new(sql)
+        .await?
+        .expect_val(
+            "[
 			{ id: person:tobie, name: 'Tobie' },
 			{ id: person:jaime, name: 'Jaime' },
 			{ id: person:micha, name: 'Micha' },
@@ -207,18 +210,18 @@ async fn idiom_recursion_graph() -> Result<(), Error> {
 			{ id: person:mary, name: 'Mary' },
 			{ id: person:tim, name: 'Tim' },
 		]",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{ id: knows:1, in: person:tobie, out: person:jaime },
 			{ id: knows:2, in: person:tobie, out: person:micha },
 			{ id: knows:3, in: person:micha, out: person:john },
 			{ id: knows:4, in: person:jaime, out: person:mary },
 			{ id: knows:5, in: person:mary, out: person:tim },
 		]",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{ name: 'Jaime', names_1sts: ['Mary'] },
 			{ name: 'John', names_1sts: [] },
 			{ name: 'Mary', names_1sts: ['Tim'] },
@@ -226,9 +229,9 @@ async fn idiom_recursion_graph() -> Result<(), Error> {
 			{ name: 'Tim', names_1sts: [] },
 			{ name: 'Tobie', names_1sts: ['Jaime', 'Micha'] },
 		]",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{ name: 'Jaime', names_2nds: ['Tim'] },
 			{ name: 'John', names_2nds: [] },
 			{ name: 'Mary', names_2nds: [] },
@@ -236,9 +239,9 @@ async fn idiom_recursion_graph() -> Result<(), Error> {
 			{ name: 'Tim', names_2nds: [] },
 			{ name: 'Tobie', names_2nds: ['Mary', 'John'] },
 		]",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{ name: 'Jaime', names_3rds: [] },
 			{ name: 'John', names_3rds: [] },
 			{ name: 'Mary', names_3rds: [] },
@@ -246,9 +249,9 @@ async fn idiom_recursion_graph() -> Result<(), Error> {
 			{ name: 'Tim', names_3rds: [] },
 			{ name: 'Tobie', names_3rds: ['Tim'] },
 		]",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{
 				knows: [{
 					knows: [{
@@ -302,13 +305,13 @@ async fn idiom_recursion_graph() -> Result<(), Error> {
 				name: 'Tobie'
 			}
 		]",
-		)?;
-	Ok(())
+        )?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_recursion_record_links() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		INSERT [
 			{ id: planet:earth, 		name: 'Earth', 				contains: [country:us, country:canada] },
 
@@ -351,7 +354,7 @@ async fn idiom_recursion_record_links() -> Result<(), Error> {
 
 		planet:earth.{..}.{ id, name, places: contains.@.chain(|$v| $v ?? []) };
 	"#;
-	Test::new(sql)
+    Test::new(sql)
 		.await?
 		.expect_val("[
 			{ id: planet:earth, 		name: 'Earth', 				contains: [country:us, country:canada] },
@@ -761,12 +764,12 @@ async fn idiom_recursion_record_links() -> Result<(), Error> {
 				}
 			]
 		}")?;
-	Ok(())
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_recursion_path_elimination() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		INSERT [
 			{ id: a:1, name: 'One',   links: [a:2, a:3] },
 			{ id: a:2, name: 'Two',   links: [a:3] },
@@ -778,23 +781,23 @@ async fn idiom_recursion_path_elimination() -> Result<(), Error> {
 		a:1.{3}.{ name, links: links.@ };
 		a:1.{4}.{ name, links: links.@ };
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val(
-			"[
+    Test::new(sql)
+        .await?
+        .expect_val(
+            "[
 			{ id: a:1, name: 'One',   links: [a:2, a:3] },
 			{ id: a:2, name: 'Two',   links: [a:3] },
 			{ id: a:3, name: 'Three', links: [] },
 		]",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			name: 'One',
 			links: [a:2, a:3],
 		}",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			name: 'One',
 			links: [
 				{
@@ -807,9 +810,9 @@ async fn idiom_recursion_path_elimination() -> Result<(), Error> {
 				}
 			],
 		}",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			name: 'One',
 			links: [
 				{
@@ -823,14 +826,14 @@ async fn idiom_recursion_path_elimination() -> Result<(), Error> {
 				}
 			],
 		}",
-		)?
-		.expect_val("NONE")?;
-	Ok(())
+        )?
+        .expect_val("NONE")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_recursion_repeat_recurse_nested_destructure() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		INSERT [
 			{ id: a:1, name: 'One',   links: { a: [a:2, a:3] } },
 			{ id: a:2, name: 'Two',   links: { a: [a:3] } },
@@ -842,25 +845,25 @@ async fn idiom_recursion_repeat_recurse_nested_destructure() -> Result<(), Error
 		a:1.{3}.{ name, links.{ a: a.@ } };
 		a:1.{4}.{ name, links.{ a: a.@ } };
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val(
-			"[
+    Test::new(sql)
+        .await?
+        .expect_val(
+            "[
 			{ id: a:1, name: 'One',   links: { a: [a:2, a:3] } },
 			{ id: a:2, name: 'Two',   links: { a: [a:3] } },
 			{ id: a:3, name: 'Three', links: { a: [] } },
 		]",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			name: 'One',
 			links: {
 				a: [a:2, a:3]
 			},
 		}",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			name: 'One',
 			links: {
 				a: [
@@ -879,9 +882,9 @@ async fn idiom_recursion_repeat_recurse_nested_destructure() -> Result<(), Error
 				]
 			},
 		}",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			name: 'One',
 			links: {
 				a: [
@@ -901,14 +904,14 @@ async fn idiom_recursion_repeat_recurse_nested_destructure() -> Result<(), Error
 				]
 			},
 		}",
-		)?
-		.expect_val("NONE")?;
-	Ok(())
+        )?
+        .expect_val("NONE")?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_recursion_limits() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		FOR $i IN 1..=300 {
 			UPSERT type::thing('a', $i) SET link = type::thing('a', $i + 1);
 		};
@@ -920,22 +923,22 @@ async fn idiom_recursion_limits() -> Result<(), Error> {
 
 		a:1.@;
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val("NONE")?
-		.expect_error("Found 0 for bound but expected at least 1.")?
-		.expect_error("Exceeded the idiom recursion limit of 256.")?
-		.expect_val("a:257")?
-		.expect_error("Found 257 for bound but expected 256 at most.")?
-		.expect_error(
-			"Tried to use a `@` repeat recurse symbol in a position where it is not supported",
-		)?;
-	Ok(())
+    Test::new(sql)
+        .await?
+        .expect_val("NONE")?
+        .expect_error("Found 0 for bound but expected at least 1.")?
+        .expect_error("Exceeded the idiom recursion limit of 256.")?
+        .expect_val("a:257")?
+        .expect_error("Found 257 for bound but expected 256 at most.")?
+        .expect_error(
+            "Tried to use a `@` repeat recurse symbol in a position where it is not supported",
+        )?;
+    Ok(())
 }
 
 #[tokio::test]
 async fn idiom_object_dot_star() -> Result<(), Error> {
-	let sql = r#"
+    let sql = r#"
 		{ a: 1, b: 2 }.*;
 
 		DEFINE FIELD obj ON test TYPE object;
@@ -972,20 +975,20 @@ async fn idiom_object_dot_star() -> Result<(), Error> {
 		return person:tobie;
 		return person:tobie.*;
 	"#;
-	Test::new(sql)
-		.await?
-		.expect_val("[1, 2]")?
-		.expect_val("NONE")?
-		.expect_val("NONE")?
-		.expect_error("Found 'a' for field `obj[*]`, with record `test:1`, but expected a number")?
-		.expect_val("NONE")?
-		.expect_val("NONE")?
-		.expect_val("NONE")?
-		.expect_error(
-			"Found 9 for field `emails.address`, with record `user:1`, but expected a string",
-		)?
-		.expect_val(
-			"[
+    Test::new(sql)
+        .await?
+        .expect_val("[1, 2]")?
+        .expect_val("NONE")?
+        .expect_val("NONE")?
+        .expect_error("Found 'a' for field `obj[*]`, with record `test:1`, but expected a number")?
+        .expect_val("NONE")?
+        .expect_val("NONE")?
+        .expect_val("NONE")?
+        .expect_error(
+            "Found 9 for field `emails.address`, with record `user:1`, but expected a string",
+        )?
+        .expect_val(
+            "[
 			{
 				emails: {
 					address: 'me@me.com'
@@ -993,9 +996,9 @@ async fn idiom_object_dot_star() -> Result<(), Error> {
 				id: user:2
 			}
 		]",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{
 				emails: {
 					address: 'me@me.com'
@@ -1008,67 +1011,67 @@ async fn idiom_object_dot_star() -> Result<(), Error> {
 				]
 			}
 		]",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			id: person:tobie,
 			name: 'tobie'
 		}",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			id: person:tobie,
 			name: 'tobie'
 		}",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			id: person:tobie,
 			name: 'tobie'
 		}",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			id: person:tobie,
 			name: 'tobie'
 		}",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			person:tobie,
 			'tobie'
 		]",
-		)?
-		.expect_val(
-			"{
+        )?
+        .expect_val(
+            "{
 			id: person:tobie,
 			name: 'tobie'
 		}",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{
 				id: person:tobie,
 				name: 'tobie'
 			},
 			'tobie'
 		]",
-		)?
-		.expect_val(
-			"[
+        )?
+        .expect_val(
+            "[
 			{
 				id: person:tobie,
 				name: 'tobie'
 			},
 			'tobie'
 		]",
-		)?
-		.expect_val("person:tobie")?
-		.expect_val(
-			"{
+        )?
+        .expect_val("person:tobie")?
+        .expect_val(
+            "{
 			id: person:tobie,
 			name: 'tobie'
 		}",
-		)?;
-	Ok(())
+        )?;
+    Ok(())
 }

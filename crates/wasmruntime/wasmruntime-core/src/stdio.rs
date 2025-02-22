@@ -13,7 +13,6 @@ use spin_factor_wasi::WasiFactor;
 use spin_factors::RuntimeFactors;
 use spin_factors_executor::ExecutorHooks;
 
-
 /// Which components should have their logs followed on stdout/stderr.
 #[derive(Clone, Debug, Default)]
 pub enum FollowComponents {

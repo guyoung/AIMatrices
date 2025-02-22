@@ -12,37 +12,37 @@ use std::future::IntoFuture;
 #[derive(Debug)]
 #[must_use = "futures do nothing unless you `.await` or poll them"]
 pub struct Version<'r, C: Connection> {
-	pub(super) client: Cow<'r, Surreal<C>>,
+    pub(super) client: Cow<'r, Surreal<C>>,
 }
 
 impl<C> Version<'_, C>
 where
-	C: Connection,
+    C: Connection,
 {
-	/// Converts to an owned type which can easily be moved to a different thread
-	pub fn into_owned(self) -> Version<'static, C> {
-		Version {
-			client: Cow::Owned(self.client.into_owned()),
-		}
-	}
+    /// Converts to an owned type which can easily be moved to a different thread
+    pub fn into_owned(self) -> Version<'static, C> {
+        Version {
+            client: Cow::Owned(self.client.into_owned()),
+        }
+    }
 }
 
 impl<'r, Client> IntoFuture for Version<'r, Client>
 where
-	Client: Connection,
+    Client: Connection,
 {
-	type Output = Result<semver::Version>;
-	type IntoFuture = BoxFuture<'r, Self::Output>;
+    type Output = Result<semver::Version>;
+    type IntoFuture = BoxFuture<'r, Self::Output>;
 
-	fn into_future(self) -> Self::IntoFuture {
-		Box::pin(async move {
-			let router = self.client.router.extract()?;
-			let version = router.execute_value(Command::Version).await?;
-			let version = version.into_inner().to_raw_string();
-			let semantic = version.trim_start_matches("surrealdb-");
-			semantic
-				.parse()
-				.map_err(|_| Error::InvalidSemanticVersion(format!("\"{version}\"")).into())
-		})
-	}
+    fn into_future(self) -> Self::IntoFuture {
+        Box::pin(async move {
+            let router = self.client.router.extract()?;
+            let version = router.execute_value(Command::Version).await?;
+            let version = version.into_inner().to_raw_string();
+            let semantic = version.trim_start_matches("surrealdb-");
+            semantic
+                .parse()
+                .map_err(|_| Error::InvalidSemanticVersion(format!("\"{version}\"")).into())
+        })
+    }
 }

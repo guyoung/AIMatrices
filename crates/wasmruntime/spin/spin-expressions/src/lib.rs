@@ -1,8 +1,8 @@
 pub mod provider;
 mod template;
 
-use std::{borrow::Cow, collections::HashMap, fmt::Debug};
 use std::sync::Arc;
+use std::{borrow::Cow, collections::HashMap, fmt::Debug};
 
 use spin_locked_app::Variable;
 

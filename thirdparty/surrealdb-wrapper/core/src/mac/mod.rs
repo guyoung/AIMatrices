@@ -7,18 +7,18 @@ macro_rules! fail {
 
 /// Converts some text into a new line byte string
 macro_rules! bytes {
-	($expression:expr) => {
-		format!("{}\n", $expression).into_bytes()
-	};
+    ($expression:expr) => {
+        format!("{}\n", $expression).into_bytes()
+    };
 }
 
 /// Pauses and yields execution to the tokio runtime
 macro_rules! yield_now {
-	() => {
-		if tokio::runtime::Handle::try_current().is_ok() {
-			tokio::task::yield_now().await;
-		}
-	};
+    () => {
+        if tokio::runtime::Handle::try_current().is_ok() {
+            tokio::task::yield_now().await;
+        }
+    };
 }
 
 /// Creates a new b-tree map of key-value pairs
@@ -52,15 +52,15 @@ macro_rules! get_cfg {
 /// fail fast and return an error from a function does not leave
 /// a transaction in an uncommitted state without rolling back.
 macro_rules! catch {
-	($txn:ident, $default:expr) => {
-		match $default {
-			Err(e) => {
-				let _ = $txn.cancel().await;
-				return Err(e);
-			}
-			Ok(v) => v,
-		}
-	};
+    ($txn:ident, $default:expr) => {
+        match $default {
+            Err(e) => {
+                let _ = $txn.cancel().await;
+                return Err(e);
+            }
+            Ok(v) => v,
+        }
+    };
 }
 
 /// Runs a method on a transaction, ensuring that the transaction
@@ -70,21 +70,21 @@ macro_rules! catch {
 /// fast and return an error from a function does not leave a
 /// transaction in an uncommitted state without rolling back.
 macro_rules! run {
-	($txn:ident, $default:expr) => {
-		match $default {
-			Err(e) => {
-				let _ = $txn.cancel().await;
-				Err(e)
-			}
-			Ok(v) => match $txn.commit().await {
-				Err(e) => {
-					let _ = $txn.cancel().await;
-					Err(e)
-				}
-				Ok(_) => Ok(v),
-			},
-		}
-	};
+    ($txn:ident, $default:expr) => {
+        match $default {
+            Err(e) => {
+                let _ = $txn.cancel().await;
+                Err(e)
+            }
+            Ok(v) => match $txn.commit().await {
+                Err(e) => {
+                    let _ = $txn.cancel().await;
+                    Err(e)
+                }
+                Ok(_) => Ok(v),
+            },
+        }
+    };
 }
 
 /// A macro that allows lazily parsing a value from the environment variable,
@@ -103,20 +103,20 @@ macro_rules! run {
 /// from the environment variable or the default value.
 #[macro_export]
 macro_rules! lazy_env_parse {
-	($key:expr, $t:ty) => {
-		std::sync::LazyLock::new(|| {
-			std::env::var($key)
-				.and_then(|s| Ok(s.parse::<$t>().unwrap_or_default()))
-				.unwrap_or_default()
-		})
-	};
-	($key:expr, $t:ty, $default:expr) => {
-		std::sync::LazyLock::new(|| {
-			std::env::var($key)
-				.and_then(|s| Ok(s.parse::<$t>().unwrap_or($default)))
-				.unwrap_or($default)
-		})
-	};
+    ($key:expr, $t:ty) => {
+        std::sync::LazyLock::new(|| {
+            std::env::var($key)
+                .and_then(|s| Ok(s.parse::<$t>().unwrap_or_default()))
+                .unwrap_or_default()
+        })
+    };
+    ($key:expr, $t:ty, $default:expr) => {
+        std::sync::LazyLock::new(|| {
+            std::env::var($key)
+                .and_then(|s| Ok(s.parse::<$t>().unwrap_or($default)))
+                .unwrap_or($default)
+        })
+    };
 }
 
 /// Lazily parses an environment variable into a specified type. If the environment variable is not set or the parsing fails,
@@ -133,13 +133,13 @@ macro_rules! lazy_env_parse {
 /// A `Lazy` static variable that stores the parsed value or the default value.
 #[macro_export]
 macro_rules! lazy_env_parse_or_else {
-	($key:expr, $t:ty, $default:expr) => {
-		std::sync::LazyLock::new(|| {
-			std::env::var($key)
-				.and_then(|s| Ok(s.parse::<$t>().unwrap_or_else($default)))
-				.unwrap_or_else($default)
-		})
-	};
+    ($key:expr, $t:ty, $default:expr) => {
+        std::sync::LazyLock::new(|| {
+            std::env::var($key)
+                .and_then(|s| Ok(s.parse::<$t>().unwrap_or_else($default)))
+                .unwrap_or_else($default)
+        })
+    };
 }
 
 #[cfg(test)]
@@ -226,60 +226,66 @@ macro_rules! async_defer{
 
 #[cfg(test)]
 mod test {
-	use crate::err::Error;
+    use crate::err::Error;
 
-	#[tokio::test]
-	async fn async_defer_basic() {
-		let mut counter = 0;
+    #[tokio::test]
+    async fn async_defer_basic() {
+        let mut counter = 0;
 
-		async_defer!(defer {
-			assert_eq!(counter,1);
-		} after {
-			assert_eq!(counter,0);
-			counter += 1;
-		})
-		.await;
+        async_defer!(defer {
+            assert_eq!(counter,1);
+        } after {
+            assert_eq!(counter,0);
+            counter += 1;
+        })
+        .await;
 
-		async_defer!(let t = (()) defer {
-			panic!("shouldn't be called");
-		} after {
-			assert_eq!(counter,1);
-			counter += 1;
-			t.take();
-		})
-		.await;
-	}
+        async_defer!(let t = (()) defer {
+            panic!("shouldn't be called");
+        } after {
+            assert_eq!(counter,1);
+            counter += 1;
+            t.take();
+        })
+        .await;
+    }
 
-	#[tokio::test]
-	#[should_panic(expected = "this is should be the message of the panic")]
-	async fn async_defer_panic() {
-		let mut counter = 0;
+    #[tokio::test]
+    #[should_panic(expected = "this is should be the message of the panic")]
+    async fn async_defer_panic() {
+        let mut counter = 0;
 
-		async_defer!(defer {
-			// This should still execute
-			assert_eq!(counter,1);
-			panic!("this is should be the message of the panic")
-		} after {
-			assert_eq!(counter,0);
-			counter += 1;
-			panic!("this panic should be caught")
-		})
-		.await;
-	}
+        async_defer!(defer {
+            // This should still execute
+            assert_eq!(counter,1);
+            panic!("this is should be the message of the panic")
+        } after {
+            assert_eq!(counter,0);
+            counter += 1;
+            panic!("this panic should be caught")
+        })
+        .await;
+    }
 
-	#[test]
-	fn fail_literal() {
-		let Error::Unreachable(msg) = fail!("Reached unreachable code") else {
-			panic!()
-		};
-		assert_eq!("crates/core/src/mac/mod.rs:272: Reached unreachable code", msg);
-	}
+    #[test]
+    fn fail_literal() {
+        let Error::Unreachable(msg) = fail!("Reached unreachable code") else {
+            panic!()
+        };
+        assert_eq!(
+            "crates/core/src/mac/mod.rs:272: Reached unreachable code",
+            msg
+        );
+    }
 
-	#[test]
-	fn fail_arguments() {
-		let Error::Unreachable(msg) = fail!("Found {} but expected {}", "test", "other") else {
-			panic!()
-		};
-		assert_eq!("crates/core/src/mac/mod.rs:280: Found test but expected other", msg);
-	}
+    #[test]
+    fn fail_arguments() {
+        let Error::Unreachable(msg) = fail!("Found {} but expected {}", "test", "other") else {
+            panic!()
+        };
+        assert_eq!(
+            "crates/core/src/mac/mod.rs:280: Found test but expected other",
+            msg
+        );
+    }
 }

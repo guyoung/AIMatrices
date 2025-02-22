@@ -4,101 +4,101 @@ use uuid::Uuid;
 
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub(crate) enum Key {
-	/// A cache key for nodes
-	Nds,
-	/// A cache key for root users
-	Rus,
-	/// A cache key for root accesses
-	Ras,
-	/// A cache key for root access grants
-	Rgs(String),
-	/// A cache key for namespaces
-	Nss,
-	/// A cache key for namespace users
-	Nus(String),
-	/// A cache key for namespace accesses
-	Nas(String),
-	/// A cache key for namespace access grants
-	Ngs(String, String),
-	/// A cache key for databases
-	Dbs(String),
-	/// A cache key for database users
-	Dus(String, String),
-	/// A cache key for database accesses
-	Das(String, String),
-	/// A cache key for database access grants
-	Dgs(String, String, String),
-	/// A cache key for analyzers (on a database)
-	Azs(String, String),
-	/// A cache key for functions (on a database)
-	Fcs(String, String),
-	/// A cache key for models (on a database)
-	Mls(String, String),
-	/// A cache key for configs (on a database)
-	Cgs(String, String),
-	/// A cache key for parameters (on a database)
-	Pas(String, String),
-	/// A cache key for tables
-	Tbs(String, String),
-	/// A cache key for events (on a table)
-	Evs(String, String, String),
-	/// A cache key for fieds (on a table)
-	Fds(String, String, String),
-	/// A cache key for views (on a table)
-	Fts(String, String, String),
-	/// A cache key for indexes (on a table)
-	Ixs(String, String, String),
-	/// A cache key for live queries (on a table)
-	Lvs(String, String, String),
-	/// A cache key for a node
-	Nd(Uuid),
-	/// A cache key for a root user
-	Ru(String),
-	/// A cache key for a root access
-	Ra(String),
-	/// A cache key for a root access grant
-	Rg(String, String),
-	/// A cache key for a namespace
-	Ns(String),
-	/// A cache key for a namespace user
-	Nu(String, String),
-	/// A cache key for a namespace access
-	Na(String, String),
-	/// A cache key for a namespace access grant
-	Ng(String, String, String),
-	/// A cache key for a database
-	Db(String, String),
-	/// A cache key for a database user
-	Du(String, String, String),
-	/// A cache key for a database access
-	Da(String, String, String),
-	/// A cache key for a database access grant
-	Dg(String, String, String, String),
-	/// A cache key for an analyzer (on a database)
-	Az(String, String, String),
-	/// A cache key for a function (on a database)
-	Fc(String, String, String),
-	/// A cache key for a model (on a database)
-	Ml(String, String, String, String),
-	/// A cache key for a config (on a database)
-	Cg(String, String, String),
-	/// A cache key for a parameter (on a database)
-	Pa(String, String, String),
-	/// A cache key for a table
-	Tb(String, String, String),
-	/// A cache key for an event (on a table)
-	Ev(String, String, String, String),
-	/// A cache key for a fied (on a table)
-	Fd(String, String, String, String),
-	/// A cache key for an index (on a table)
-	Ix(String, String, String, String),
-	/// A cache key for a record
-	Record(String, String, String, Id),
+    /// A cache key for nodes
+    Nds,
+    /// A cache key for root users
+    Rus,
+    /// A cache key for root accesses
+    Ras,
+    /// A cache key for root access grants
+    Rgs(String),
+    /// A cache key for namespaces
+    Nss,
+    /// A cache key for namespace users
+    Nus(String),
+    /// A cache key for namespace accesses
+    Nas(String),
+    /// A cache key for namespace access grants
+    Ngs(String, String),
+    /// A cache key for databases
+    Dbs(String),
+    /// A cache key for database users
+    Dus(String, String),
+    /// A cache key for database accesses
+    Das(String, String),
+    /// A cache key for database access grants
+    Dgs(String, String, String),
+    /// A cache key for analyzers (on a database)
+    Azs(String, String),
+    /// A cache key for functions (on a database)
+    Fcs(String, String),
+    /// A cache key for models (on a database)
+    Mls(String, String),
+    /// A cache key for configs (on a database)
+    Cgs(String, String),
+    /// A cache key for parameters (on a database)
+    Pas(String, String),
+    /// A cache key for tables
+    Tbs(String, String),
+    /// A cache key for events (on a table)
+    Evs(String, String, String),
+    /// A cache key for fieds (on a table)
+    Fds(String, String, String),
+    /// A cache key for views (on a table)
+    Fts(String, String, String),
+    /// A cache key for indexes (on a table)
+    Ixs(String, String, String),
+    /// A cache key for live queries (on a table)
+    Lvs(String, String, String),
+    /// A cache key for a node
+    Nd(Uuid),
+    /// A cache key for a root user
+    Ru(String),
+    /// A cache key for a root access
+    Ra(String),
+    /// A cache key for a root access grant
+    Rg(String, String),
+    /// A cache key for a namespace
+    Ns(String),
+    /// A cache key for a namespace user
+    Nu(String, String),
+    /// A cache key for a namespace access
+    Na(String, String),
+    /// A cache key for a namespace access grant
+    Ng(String, String, String),
+    /// A cache key for a database
+    Db(String, String),
+    /// A cache key for a database user
+    Du(String, String, String),
+    /// A cache key for a database access
+    Da(String, String, String),
+    /// A cache key for a database access grant
+    Dg(String, String, String, String),
+    /// A cache key for an analyzer (on a database)
+    Az(String, String, String),
+    /// A cache key for a function (on a database)
+    Fc(String, String, String),
+    /// A cache key for a model (on a database)
+    Ml(String, String, String, String),
+    /// A cache key for a config (on a database)
+    Cg(String, String, String),
+    /// A cache key for a parameter (on a database)
+    Pa(String, String, String),
+    /// A cache key for a table
+    Tb(String, String, String),
+    /// A cache key for an event (on a table)
+    Ev(String, String, String, String),
+    /// A cache key for a fied (on a table)
+    Fd(String, String, String, String),
+    /// A cache key for an index (on a table)
+    Ix(String, String, String, String),
+    /// A cache key for a record
+    Record(String, String, String, Id),
 }
 
 impl<'a> From<Lookup<'a>> for Key {
-	#[rustfmt::skip]
-	fn from(value: Lookup<'a>) -> Self {
+    #[rustfmt::skip]
+    fn from(value: Lookup<'a>) -> Self {
 		match value {
 			//
 			Lookup::Nds => Key::Nds,

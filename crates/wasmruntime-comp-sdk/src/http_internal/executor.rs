@@ -4,7 +4,9 @@ use crate::wit::wasi::http0_2_0::types::{
 };
 
 use wasmruntime_comp_executor::bindings::wasi::io;
-use wasmruntime_comp_executor::bindings::wasi::io::streams::{InputStream, OutputStream, StreamError};
+use wasmruntime_comp_executor::bindings::wasi::io::streams::{
+    InputStream, OutputStream, StreamError,
+};
 
 use futures::{future, sink, stream, Sink, Stream};
 
@@ -101,7 +103,10 @@ pub(crate) fn outgoing_request_send(
                 if let Some(response) = response.get() {
                     Poll::Ready(response.unwrap())
                 } else {
-                    wasmruntime_comp_executor::push_waker(response.subscribe(), context.waker().clone());
+                    wasmruntime_comp_executor::push_waker(
+                        response.subscribe(),
+                        context.waker().clone(),
+                    );
                     Poll::Pending
                 }
             }
@@ -109,7 +114,6 @@ pub(crate) fn outgoing_request_send(
         }
     })
 }
-
 
 pub(crate) fn outgoing_request_send_sync(
     request: OutgoingRequest,
@@ -126,7 +130,7 @@ pub(crate) fn outgoing_request_send_sync(
                 .expect("Http response not ready")
                 .expect("Http response accessed more than once");
 
-           response
+            response
         }
 
         Err(error) => Err(error.clone()),
@@ -157,7 +161,10 @@ pub fn incoming_body(
                 match stream.read(READ_SIZE) {
                     Ok(buffer) => {
                         if buffer.is_empty() {
-                            wasmruntime_comp_executor::push_waker(stream.subscribe(), context.waker().clone());
+                            wasmruntime_comp_executor::push_waker(
+                                stream.subscribe(),
+                                context.waker().clone(),
+                            );
                             Poll::Pending
                         } else {
                             Poll::Ready(Some(Ok(buffer)))

@@ -6,8 +6,8 @@ use crate::Value;
 #[revisioned(revision = 1)]
 #[derive(Clone, Debug, Deserialize)]
 pub(crate) struct Failure {
-	pub(crate) code: i64,
-	pub(crate) message: String,
+    pub(crate) code: i64,
+    pub(crate) message: String,
 }
 
 #[revisioned(revision = 1)]
@@ -15,9 +15,9 @@ pub(crate) struct Failure {
 #[serde(rename_all = "UPPERCASE")]
 #[non_exhaustive]
 pub enum ResponseAction {
-	Create,
-	Update,
-	Delete,
+    Create,
+    Update,
+    Delete,
 }
 
 #[revisioned(revision = 1)]
@@ -26,8 +26,8 @@ pub enum ResponseAction {
 #[doc(hidden)]
 #[non_exhaustive]
 pub enum Status {
-	Ok,
-	Err,
+    Ok,
+    Err,
 }
 
 #[revisioned(revision = 1)]
@@ -35,7 +35,7 @@ pub enum Status {
 #[doc(hidden)]
 #[non_exhaustive]
 pub struct QueryMethodResponse {
-	pub time: String,
-	pub status: Status,
-	pub result: Value,
+    pub time: String,
+    pub status: Status,
+    pub result: Value,
 }

@@ -1,13 +1,11 @@
-use std::path::Path;
 use derive_builder::Builder;
+use std::path::Path;
 
-
-use crate::WeightType;
 use crate::RngFunction;
 use crate::Schedule;
+use crate::WeightType;
 
 use crate::clib::CLibPath;
-
 
 #[derive(Builder, Debug, Clone)]
 #[builder(setter(into, strip_option), build_fn(validate = "Self::validate"))]
@@ -36,7 +34,6 @@ pub struct ContextConfig {
     #[builder(default = "Default::default()")]
     pub vae: CLibPath,
 
-
     /// Path to taesd. Using Tiny AutoEncoder for fast decoding (low quality)
     #[builder(default = "Default::default()")]
     pub taesd: CLibPath,
@@ -52,7 +49,6 @@ pub struct ContextConfig {
     /// Path to embeddings
     #[builder(default = "Default::default()")]
     pub embeddings: CLibPath,
-
 
     /// Path to PHOTOMAKER stacked id embeddings
     #[builder(default = "Default::default()")]
@@ -70,7 +66,6 @@ pub struct ContextConfig {
     /// Weight type. If not specified, the default is the type of the weight file
     #[builder(default = "WeightType::SD_TYPE_COUNT")]
     pub weight_type: WeightType,
-
 
     /// RNG (default: CUDA)
     #[builder(default = "RngFunction::CUDA_RNG")]
@@ -106,12 +101,10 @@ pub struct ContextConfig {
     /// Path to esrgan model. Upscale images after generate, just RealESRGAN_x4plus_anime_6B supported by now
     #[builder(default = "Default::default()")]
     pub upscale_model: Option<CLibPath>,
-
-
 }
 
 impl ContextConfigBuilder {
-    fn validate(&self) -> Result<(), ContextConfigBuilderError>  {
+    fn validate(&self) -> Result<(), ContextConfigBuilderError> {
         self.validate_model()?;
 
         Ok(())

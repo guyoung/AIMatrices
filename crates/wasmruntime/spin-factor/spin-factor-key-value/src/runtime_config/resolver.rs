@@ -2,18 +2,13 @@ use std::{collections::HashMap, sync::Arc};
 
 use anyhow::Context as _;
 
-use super::{ RuntimeConfig, StoreManager, MakeKeyValueStore };
-
-
+use super::{MakeKeyValueStore, RuntimeConfig, StoreManager};
 
 /// A function that creates a store manager from a TOML table.
-type StoreFn =
-    Arc<dyn Fn() -> anyhow::Result<Arc<dyn StoreManager>> + Send + Sync>;
-
+type StoreFn = Arc<dyn Fn() -> anyhow::Result<Arc<dyn StoreManager>> + Send + Sync>;
 
 fn store_fn<T: MakeKeyValueStore>(provider_type: T) -> StoreFn {
     Arc::new(move || {
-
         let provider = provider_type
             .make_store()
             .context("could not make key-value store from runtime config")?;
@@ -44,17 +39,12 @@ impl RuntimeConfigResolver {
     ///
     /// Users must ensure that the store type for `config` has been registered with
     /// the resolver using [`Self::register_store_type`].
-    pub fn add_default_store<T>(
-        &mut self,
-        label: &'static str,
-    ) -> anyhow::Result<()>
+    pub fn add_default_store<T>(&mut self, label: &'static str) -> anyhow::Result<()>
     where
         T: MakeKeyValueStore,
     {
-        self.defaults.insert(
-            label,
-            T::RUNTIME_CONFIG_TYPE.to_owned(),
-        );
+        self.defaults
+            .insert(label, T::RUNTIME_CONFIG_TYPE.to_owned());
         Ok(())
     }
 
@@ -76,7 +66,6 @@ impl RuntimeConfigResolver {
         Ok(())
     }
 
-
     /// The default stores are also added to the runtime config.
     pub fn resolve(&self) -> anyhow::Result<RuntimeConfig> {
         let mut runtime_config = RuntimeConfig::default();
@@ -94,8 +83,6 @@ impl RuntimeConfigResolver {
         Ok(runtime_config)
     }
 
-
-
     ///  returns a store manager.
     ///
     /// Errors if there is no [`MakeKeyValueStore`] registered for the store config's type
@@ -110,4 +97,3 @@ impl RuntimeConfigResolver {
         maker()
     }
 }
-

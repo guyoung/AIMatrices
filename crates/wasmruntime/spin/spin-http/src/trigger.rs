@@ -24,7 +24,6 @@ pub enum HandlerType {
 /// The `incoming-handler` export prefix for all `wasi:http` 0.2 versions
 pub const WASI_HTTP_EXPORT_0_2_PREFIX: &str = "wasi:http/incoming-handler@0.2";
 
-
 impl HandlerType {
     /// Determine the handler type from the exports of a component.
     pub fn from_component(

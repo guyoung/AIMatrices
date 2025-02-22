@@ -93,7 +93,7 @@ impl Encoder {
             Self::Base64 => bytes_from_b64(&bytes.into()),
             Self::Utf8 | Self::Windows1252 | Self::Utf16le | Self::Utf16be => {
                 Ok(bytes.into().into())
-            },
+            }
         }
     }
 
@@ -165,8 +165,8 @@ pub enum Endian {
 
 pub fn bytes_to_utf16_string(bytes: &[u8], endian: Endian, lossy: bool) -> Result<String, String> {
     if bytes.len() % 2 != 0 {
-        return Err("Input byte slice length must be even".to_string());    }
-
+        return Err("Input byte slice length must be even".to_string());
+    }
 
     let data16: Vec<u16> = match endian {
         Endian::Little => bytes

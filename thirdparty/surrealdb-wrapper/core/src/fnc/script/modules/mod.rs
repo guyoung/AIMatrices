@@ -4,13 +4,15 @@ pub mod surrealdb;
 use js::loader::{BuiltinResolver, ModuleLoader};
 
 pub fn resolver() -> BuiltinResolver {
-	BuiltinResolver::default().with_module("os").with_module("surrealdb")
+    BuiltinResolver::default()
+        .with_module("os")
+        .with_module("surrealdb")
 }
 
 pub fn loader() -> ModuleLoader {
-	ModuleLoader::default()
-		.with_module("os", os::Package)
-		.with_module("surrealdb", surrealdb::Package)
+    ModuleLoader::default()
+        .with_module("os", os::Package)
+        .with_module("surrealdb", surrealdb::Package)
 }
 
 macro_rules! impl_module_def {

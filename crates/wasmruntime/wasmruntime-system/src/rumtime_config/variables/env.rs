@@ -6,8 +6,8 @@ use std::{
 };
 
 use anyhow::{self, Context as _};
-use serde::Deserialize;
 use async_trait::async_trait;
+use serde::Deserialize;
 
 use spin_expressions::{Key, Provider};
 

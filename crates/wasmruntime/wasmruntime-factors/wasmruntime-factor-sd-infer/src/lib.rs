@@ -5,7 +5,7 @@ pub mod runtime_config;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
-use tokio::sync::RwLock;
+use tokio::sync::Mutex;
 
 use spin_factors::{
     ConfigureAppContext, Factor, PrepareContext, RuntimeFactors, SelfInstanceBuilder,
@@ -14,7 +14,8 @@ use spin_locked_app::MetadataKey;
 
 use engine::SdInferEngine;
 
-pub const LOCAL_SD_MODELS: MetadataKey<HashMap<String, String>> = MetadataKey::new("local_sd_models");
+pub const LOCAL_SD_MODELS: MetadataKey<HashMap<String, String>> =
+    MetadataKey::new("local_sd_models");
 
 pub struct SdInferFactor {}
 
@@ -97,13 +98,13 @@ impl Factor for SdInferFactor {
 
 /// The application state for the LLM factor.
 pub struct AppState {
-    engine: Arc<RwLock<dyn SdInferEngine>>,
+    engine: Arc<Mutex<dyn SdInferEngine>>,
     component_allowed_models: HashMap<String, Arc<HashSet<String>>>,
 }
 
 /// The instance state for the LLM factor.
 pub struct InstanceState {
-    engine: Arc<RwLock<dyn SdInferEngine>>,
+    engine: Arc<Mutex<dyn SdInferEngine>>,
     pub allowed_models: Arc<HashSet<String>>,
 }
 

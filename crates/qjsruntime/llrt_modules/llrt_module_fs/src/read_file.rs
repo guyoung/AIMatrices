@@ -5,9 +5,6 @@ use llrt_buffer::Buffer;
 use llrt_utils::{object::ObjectExt, result::ResultExt};
 use rquickjs::{function::Opt, Ctx, Error, FromJs, IntoJs, Result, Value};
 
-
-
-
 pub fn read_file_sync(
     ctx: Ctx<'_>,
     path: String,

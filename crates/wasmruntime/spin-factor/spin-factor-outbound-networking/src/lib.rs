@@ -20,8 +20,6 @@ use spin_factors::{
 
 use runtime_config::RuntimeConfig;
 
-
-
 pub use config::{
     allowed_outbound_hosts, is_service_chaining_host, parse_service_chaining_target,
     validate_service_chaining_for_components, AllowedHostConfig, AllowedHostsConfig, HostConfig,

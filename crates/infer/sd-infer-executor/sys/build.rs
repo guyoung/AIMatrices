@@ -16,11 +16,9 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=wrapper.h");
 
-
     // Copy stable-diffusion code into the build script directory
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
     let diffusion_root = out.join("stable-diffusion.cpp/");
-
 
     if !diffusion_root.exists() {
         create_dir_all(&diffusion_root).unwrap();
@@ -31,7 +29,6 @@ fn main() {
                 e
             )
         });
-
 
         remove_default_params_stb(&diffusion_root.join("thirdparty/stb_image_write.h"))
             .unwrap_or_else(|e| panic!("Failed to remove default parameters from stb: {}", e));
@@ -103,11 +100,8 @@ fn main() {
     println!("cargo:rustc-link-lib=static=ggml-base");
     println!("cargo:rustc-link-lib=static=ggml-cpu");
 
-
-
     #[cfg(feature = "vulkan")]
     println!("cargo:rustc-link-lib=static=ggml-vulkan");
-
 
     if target.contains("apple") {
         println!("cargo:rustc-link-lib=framework=Accelerate");
@@ -116,17 +110,16 @@ fn main() {
     if cfg!(target_os = "linux") {
         println!(
             "{}",
-            format!("cargo:rustc-link-lib={}={}",  "static", "stdc++")
+            format!("cargo:rustc-link-lib={}={}", "static", "stdc++")
         );
     }
 
     if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
         println!(
             "{}",
-            format!("cargo:rustc-link-lib={}={}",  "static", "stdc++")
+            format!("cargo:rustc-link-lib={}={}", "static", "stdc++")
         );
     }
-
 }
 
 fn add_link_search_path(dir: &Path) -> std::io::Result<()> {

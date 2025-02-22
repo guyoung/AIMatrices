@@ -4,14 +4,9 @@ use rquickjs::{
     Ctx, Exception, Result,
 };
 
-
-use llrt_utils::{
-    module::{export_default, ModuleInfo},
-};
+use llrt_utils::module::{export_default, ModuleInfo};
 
 use wasmruntime_comp_sdk::variables;
-
-
 
 fn get<'js>(ctx: Ctx<'js>, name: String) -> Result<String> {
     let val = variables::get(name.as_str())

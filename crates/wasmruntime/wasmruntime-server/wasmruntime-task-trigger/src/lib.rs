@@ -6,10 +6,8 @@ use wasmtime_wasi::pipe::MemoryOutputPipe;
 
 use spin_app::App;
 
-use spin_factors::RuntimeFactors;
 use spin_factor_wasi::WasiFactor;
-
-
+use spin_factors::RuntimeFactors;
 
 use wasmruntime_core::{Trigger, TriggerInstanceState};
 
@@ -58,13 +56,10 @@ pub struct TaskTriggerConfig {
     pub component: String,
 
     pub schedule: String,
-
 }
 
 #[derive(Clone)]
-pub struct TaskExecutor {
-
-}
+pub struct TaskExecutor {}
 
 impl TaskExecutor {
     pub async fn execute<F: RuntimeFactors>(
@@ -76,9 +71,9 @@ impl TaskExecutor {
 
         let wasi_builder = instance_builder
             .factor_builder::<WasiFactor>()
-            .context("The wagi HTTP trigger was configured without the required wasi support")?;
+            .context("The task trigger was configured without the required wasi support")?;
 
-        // Set up Wagi environment
+        // Set up environment
         // wasi_builder.args();
         // wasi_builder.env();
         // wasi_builder.stdin_pipe();
@@ -94,23 +89,22 @@ impl TaskExecutor {
             .await
             .or_else(ignore_successful_proc_exit_trap)?
         {
-            tracing::error!("Wagi main function returned unsuccessful result");
+            tracing::error!("Task main function returned unsuccessful result");
         }
-        tracing::info!("Wagi execution complete");
+        tracing::info!("Task execution complete");
 
         // Drop the store so we're left with a unique reference to `stdout`:
         drop(store);
 
         let stdout = stdout.try_into_inner().unwrap();
 
-
         Ok(stdout.to_vec())
     }
 }
 
-
-
-fn ignore_successful_proc_exit_trap(guest_err: anyhow::Error) -> anyhow::Result<anyhow::Result<(), ()>> {
+fn ignore_successful_proc_exit_trap(
+    guest_err: anyhow::Error,
+) -> anyhow::Result<anyhow::Result<(), ()>> {
     match guest_err
         .root_cause()
         .downcast_ref::<wasmtime_wasi::I32Exit>()

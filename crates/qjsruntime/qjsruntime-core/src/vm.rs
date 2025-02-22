@@ -13,8 +13,8 @@ use rquickjs::{
     function::Opt,
     loader::FileResolver,
     prelude::{Func, Rest},
-    CatchResultExt, CaughtError, Context, Ctx, Error, Function, IntoJs, Object, Result,
-    Runtime, Value,
+    CatchResultExt, CaughtError, Context, Ctx, Error, Function, IntoJs, Object, Result, Runtime,
+    Value,
 };
 
 use llrt_json::{parse::json_parse_string, stringify::json_stringify_replacer_space};
@@ -24,8 +24,6 @@ use llrt_utils::{
     object::ObjectExt,
     primordials::{BasePrimordials, Primordial},
 };
-
-
 
 use crate::module_loader::loader::CustomLoader;
 use crate::module_loader::require;
@@ -192,7 +190,8 @@ impl Vm {
 
             let res: Value = func.call((req,))?;
 
-            let res = qjsruntime_module_http::convert::convert_js_value_to_http_response(&ctx, res)?;
+            let res =
+                qjsruntime_module_http::convert::convert_js_value_to_http_response(&ctx, res)?;
 
             Ok(res)
         })
@@ -306,8 +305,3 @@ fn load<'js>(ctx: Ctx<'js>, filename: String, options: Opt<Object<'js>>) -> Resu
 
     ctx.eval_file_with_options(filename, eval_options)
 }
-
-
-
-
-

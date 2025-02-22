@@ -50,6 +50,10 @@ export default {
     clearHistoryConfirm: 'Are you sure to clear chat history?',
     preview: 'Preview',
     showRawText: 'Show as raw text',
+
+    newChat: 'New Chat',
+    thinking: 'Thinking...',
+    downlaod: 'Download'
   },
   setting: {
     setting: 'Setting',
@@ -75,7 +79,8 @@ export default {
     monthlyUsage: 'Monthly Usage',
 
     about: 'Aboout',
-    max_tokens: "Max tokens"
+    maxTokens: "Max tokens",
+    multiRoundChat: "Multi round chat"
 
   },
   store: {

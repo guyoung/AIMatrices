@@ -33,7 +33,7 @@ pub fn json_parse<'js, T: Into<Vec<u8>>>(ctx: &Ctx<'js>, json: T) -> Result<Valu
                 error_msg.push_str("')");
             }
             return Err(Exception::throw_syntax(ctx, &error_msg));
-        },
+        }
     };
     let tape = tape.0;
 
@@ -77,7 +77,7 @@ fn parse_node<'js>(ctx: &Ctx<'js>, tape: &[Node], index: usize) -> Result<(Value
             }
 
             Ok((js_object.into_value(), current_index))
-        },
+        }
         Node::Array { len, .. } => {
             let js_array = Array::new(ctx.clone())?;
             let mut current_index = index + 1;
@@ -89,6 +89,6 @@ fn parse_node<'js>(ctx: &Ctx<'js>, tape: &[Node], index: usize) -> Result<(Value
             }
 
             Ok((js_array.into_value(), current_index))
-        },
+        }
     }
 }

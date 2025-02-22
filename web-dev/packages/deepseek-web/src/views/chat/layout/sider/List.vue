@@ -5,48 +5,79 @@ import { SvgIcon } from '@/components/common'
 import { useAppStore, useChatStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { debounce } from '@/utils/functions/debounce'
+import { t } from '@/locales'
 
 const { isMobile } = useBasicLayout()
 
 const appStore = useAppStore()
 const chatStore = useChatStore()
 
-const dataSources = computed(() => chatStore.history)
+const dataSources = computed(() => chatStore.conversations)
 
-async function handleSelect({ uuid }: Chat.History) {
-  if (isActive(uuid))
+async function handleSelect(conversation: Chat.ChatConversation) {
+  if (isActive(conversation.id))
     return
 
-  if (chatStore.active)
-    chatStore.updateHistory(chatStore.active, { isEdit: false })
-  await chatStore.setActive(uuid)
+  if (chatStore.active) {
+     conversation.isEdit = false
+
+    await chatStore.updateConversation(conversation)
+
+  }    
+
+  await chatStore.setActiveConversation(conversation.id)
 
   if (isMobile.value)
     appStore.setSiderCollapsed(true)
 }
 
-function handleEdit({ uuid }: Chat.History, isEdit: boolean, event?: MouseEvent) {
+async function handleEdit(conversation: Chat.ChatConversation, isEdit: boolean, event?: MouseEvent) {
   event?.stopPropagation()
-  chatStore.updateHistory(uuid, { isEdit })
+
+  conversation.isEdit = isEdit
+
+  await chatStore.updateConversation(conversation)
+
 }
 
-function handleDelete(index: number, event?: MouseEvent | TouchEvent) {
+async function handleDelete(conversation: Chat.ChatConversation, event?: MouseEvent | TouchEvent) {
   event?.stopPropagation()
-  chatStore.deleteHistory(index)
+
+  await chatStore.deleteMessages(conversation.id)
+
+  await chatStore.deleteConversation(conversation)
+
+  if (chatStore.conversations.length > 0) {
+    await chatStore.setActiveConversation(chatStore.conversations[0].id)
+  } else {
+    let conversation = await chatStore.addConversation({ title: t('chat.newChat'), isEdit: false, seq_num: new Date().getTime() })
+
+    if (conversation) {
+      chatStore.setActiveConversation(conversation.id)
+    }
+  }
+
+
   if (isMobile.value)
     appStore.setSiderCollapsed(true)
 }
 
 const handleDeleteDebounce = debounce(handleDelete, 600)
 
-function handleEnter({ uuid }: Chat.History, isEdit: boolean, event: KeyboardEvent) {
+async function handleEnter(conversation: Chat.ChatConversation, isEdit: boolean, event: KeyboardEvent) {
   event?.stopPropagation()
-  if (event.key === 'Enter')
-    chatStore.updateHistory(uuid, { isEdit })
+
+  if (event.key === 'Enter') {
+
+    conversation.isEdit = isEdit
+
+    await chatStore.updateConversation(conversation)
+ 
+  }
 }
 
-function isActive(uuid: number) {
-  return chatStore.active === uuid
+function isActive(id: string | null) {
+  return chatStore.active === id
 }
 </script>
 
@@ -63,7 +94,7 @@ function isActive(uuid: number) {
         <div v-for="(item, index) of dataSources" :key="index">
           <a
             class="relative flex items-center gap-3 px-3 py-3 break-all border rounded-md cursor-pointer hover:bg-neutral-100 group dark:border-neutral-800 dark:hover:bg-[#24272e]"
-            :class="isActive(item.uuid) && ['border-[#4b9e5f]', 'bg-neutral-100', 'text-[#4b9e5f]', 'dark:bg-[#24272e]', 'dark:border-[#4b9e5f]', 'pr-14']"
+            :class="isActive(item.id) && ['border-[#4b9e5f]', 'bg-neutral-100', 'text-[#4b9e5f]', 'dark:bg-[#24272e]', 'dark:border-[#4b9e5f]', 'pr-14']"
             @click="handleSelect(item)"
           >
             <span>
@@ -77,7 +108,7 @@ function isActive(uuid: number) {
               />
               <span v-else>{{ item.title }}</span>
             </div>
-            <div v-if="isActive(item.uuid)" class="absolute z-10 flex visible right-1">
+            <div v-if="isActive(item.id)" class="absolute z-10 flex visible right-1">
               <template v-if="item.isEdit">
                 <button class="p-1" @click="handleEdit(item, false, $event)">
                   <SvgIcon icon="ri:save-line" />
@@ -87,7 +118,7 @@ function isActive(uuid: number) {
                 <button class="p-1">
                   <SvgIcon icon="ri:edit-line" @click="handleEdit(item, true, $event)" />
                 </button>
-                <NPopconfirm placement="bottom" @positive-click="handleDeleteDebounce(index, $event)">
+                <NPopconfirm placement="bottom" @positive-click="handleDeleteDebounce(item, $event)">
                   <template #trigger>
                     <button class="p-1">
                       <SvgIcon icon="ri:delete-bin-line" />

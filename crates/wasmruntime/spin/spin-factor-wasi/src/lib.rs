@@ -18,15 +18,11 @@ use wasmtime_wasi::SocketAddrUse;
 use spin_app::AppComponent;
 
 use spin_factors::{
-    Factor, FactorInstanceBuilder, InitContext, PrepareContext,
-    RuntimeFactors, RuntimeFactorsInstanceState,
+    Factor, FactorInstanceBuilder, InitContext, PrepareContext, RuntimeFactors,
+    RuntimeFactorsInstanceState,
 };
 
-
-
 use io::{PipeReadStream, PipedWriteStream};
-
-
 
 pub struct WasiFactor {
     files_mounter: Box<dyn FilesMounter>,

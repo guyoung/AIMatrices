@@ -1,4 +1,3 @@
-
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
@@ -6,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use crate::impl_builder_methods;
 
 use super::types;
-
 
 #[derive(Debug, Serialize, Clone)]
 pub struct AssistantRequest {

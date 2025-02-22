@@ -9,16 +9,15 @@ use once_cell::sync::Lazy;
 use rquickjs::{
     class::{Trace, Tracer},
     function::Opt,
-    ArrayBuffer, Class, Coerced, Ctx, Exception, JsLifetime, Null, Object, Result, TypedArray,
-    Value,
+    ArrayBuffer, Class, Coerced, Ctx, Exception, IntoJs, JsLifetime, Null, Object, Result,
+    TypedArray, Value,
 };
 
 use llrt_json::parse::json_parse;
-use llrt_utils::bytes::ObjectBytes;
 use llrt_module_url::url_class::URL;
+use llrt_utils::bytes::ObjectBytes;
 
 use crate::{blob::Blob, headers::Headers};
-
 
 static STATUS_TEXTS: Lazy<HashMap<u16, &'static str>> = Lazy::new(|| {
     let mut map = HashMap::new();
@@ -105,7 +104,6 @@ unsafe impl<'js> JsLifetime<'js> for Response<'js> {
     type Changed<'to> = Response<'to>;
 }
 
-
 impl<'js> Trace<'js> for Response<'js> {
     fn trace<'a>(&self, tracer: Tracer<'a, 'js>) {
         self.headers.trace(tracer);
@@ -114,7 +112,6 @@ impl<'js> Trace<'js> for Response<'js> {
         }
     }
 }
-
 
 impl<'js> Response<'js> {
     fn take_bytes(&mut self, ctx: &Ctx<'js>) -> Result<Option<Vec<u8>>> {
@@ -127,7 +124,7 @@ impl<'js> Response<'js> {
                     let bytes = ObjectBytes::from(ctx, val)?;
                     bytes.as_bytes().to_vec()
                 }
-            },
+            }
             None => return Ok(None),
         };
 
@@ -157,7 +154,6 @@ impl<'js> Response<'js> {
             if let Some(status_text_opt) = opt.get("statusText")? {
                 status_text = Some(status_text_opt);
             }
-
         }
 
         let headers = Class::instance(ctx.clone(), headers.unwrap_or_default())?;
@@ -329,7 +325,7 @@ impl<'js> Response<'js> {
             url: "".into(),
             start: Instant::now(),
             status: 400,
-            status_text: Some("Bad Request".to_string()) ,
+            status_text: Some("Bad Request".to_string()),
             redirected: false,
             headers,
             content_encoding: None,
@@ -347,13 +343,12 @@ impl<'js> Response<'js> {
             url: "".into(),
             start: Instant::now(),
             status: 403,
-            status_text: Some("Forbidden".to_string()) ,
+            status_text: Some("Forbidden".to_string()),
             redirected: false,
             headers,
             content_encoding: None,
         })
     }
-
 
     #[qjs(static, rename = "not_found")]
     fn not_found_static(ctx: Ctx<'js>) -> Result<Self> {
@@ -366,7 +361,7 @@ impl<'js> Response<'js> {
             url: "".into(),
             start: Instant::now(),
             status: 404,
-            status_text: Some("Not Found".to_string()) ,
+            status_text: Some("Not Found".to_string()),
             redirected: false,
             headers,
             content_encoding: None,
@@ -374,32 +369,31 @@ impl<'js> Response<'js> {
     }
 
     #[qjs(static, rename = "internal_server_error")]
-    fn internal_server_error_static(ctx: Ctx<'js>, error: Opt<Value<'js>>) -> Result<Self> {
-
-       let body = if let Some(error) = error.0 {
-           Some(error)
-       } else {
-           None
-       };
-
+    fn internal_server_error_static(ctx: Ctx<'js>, error: Opt<String>) -> Result<Self> {
         let headers = Headers::default();
+
+        let body = if let Some(error) = error.0 {
+            Some(error)
+        } else {
+            None
+        };
+
         let headers = Class::instance(ctx.clone(), headers)?;
 
-
+        let body = body.into_js(&ctx)?;
 
         Ok(Self {
-            body,
+            body: Some(body),
             method: "".into(),
             url: "".into(),
             start: Instant::now(),
             status: 500,
-            status_text: Some("Internal Server Error".to_string()) ,
+            status_text: Some("Internal Server Error".to_string()),
             redirected: false,
             headers,
             content_encoding: None,
         })
     }
-
 
     #[qjs(static)]
     fn redirect(
@@ -431,7 +425,12 @@ impl<'js> Response<'js> {
         })
     }
 
-    fn out_static(ctx: Ctx<'js>, body: Value<'js>, options: Opt<Object<'js>>, default_content_type: String)  -> Result<Self> {
+    fn out_static(
+        ctx: Ctx<'js>,
+        body: Value<'js>,
+        options: Opt<Object<'js>>,
+        default_content_type: String,
+    ) -> Result<Self> {
         let mut status = 200;
         let mut headers = None;
         let mut status_text = None;
@@ -446,7 +445,6 @@ impl<'js> Response<'js> {
             if let Some(headers_opt) = opt.get("headers")? {
                 headers = Some(Headers::from_value(&ctx, headers_opt)?);
             }
-
         }
 
         let headers = Class::instance(ctx.clone(), headers.unwrap_or_default())?;
@@ -472,4 +470,3 @@ impl<'js> Response<'js> {
         })
     }
 }
-

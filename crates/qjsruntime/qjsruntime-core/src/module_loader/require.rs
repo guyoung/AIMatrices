@@ -91,7 +91,6 @@ pub fn init(ctx: &Ctx, module_names: HashSet<&'static str>) -> Result<()> {
             trace!("Before specifier: {}", specifier);
 
             let import_specifier: Rc<str> = if !is_cjs_import {
-
                 let specifier = specifier.trim_start_matches("node:").to_string();
 
                 if module_names.contains(specifier.as_str()) {

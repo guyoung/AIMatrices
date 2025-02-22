@@ -24,4 +24,4 @@ wasmtime::component::bindgen!({
     trappable_imports: true,
 });
 
-pub use wasmruntime::comp as comp;
+pub use wasmruntime::comp;

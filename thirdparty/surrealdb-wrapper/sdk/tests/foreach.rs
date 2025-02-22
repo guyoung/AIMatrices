@@ -8,7 +8,7 @@ use surrealdb::sql::Value;
 
 #[tokio::test]
 async fn foreach_simple() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		FOR $test IN [1, 2, 3] {
 			IF $test == 2 {
 				BREAK;
@@ -31,53 +31,31 @@ async fn foreach_simple() -> Result<(), Error> {
 		};
 		SELECT * FROM person;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 6);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 6);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:1,
 				test: 1,
 			},
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
-			{
-				id: person:1,
-				test: 1,
-			},
-			{
-				id: person:4,
-				test: 4,
-			},
-			{
-				id: person:6,
-				test: 6,
-			},
-		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_err());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:1,
 				test: 1,
@@ -91,15 +69,37 @@ async fn foreach_simple() -> Result<(), Error> {
 				test: 6,
 			},
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_err());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
+			{
+				id: person:1,
+				test: 1,
+			},
+			{
+				id: person:4,
+				test: 4,
+			},
+			{
+				id: person:6,
+				test: 6,
+			},
+		]",
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn foreach_nested() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		FOR $i IN [1,2,3,4,5] {
 			FOR $j IN [6,7,8,9,0] {
 				CREATE type::thing('person', [$i, $j]);
@@ -107,17 +107,17 @@ async fn foreach_nested() -> Result<(), Error> {
 		};
 		SELECT * FROM person;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 2);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 2);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:[1, 0]
 			},
@@ -194,15 +194,15 @@ async fn foreach_nested() -> Result<(), Error> {
 				id: person:[5, 9]
 			}
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }
 
 #[tokio::test]
 async fn foreach_range() -> Result<(), Error> {
-	let sql = "
+    let sql = "
 		FOR $test IN 1..4 {
 			IF $test == 2 {
 				BREAK;
@@ -211,24 +211,24 @@ async fn foreach_range() -> Result<(), Error> {
 		};
 		SELECT * FROM person;
 	";
-	let dbs = new_ds().await?;
-	let ses = Session::owner().with_ns("test").with_db("test");
-	let res = &mut dbs.execute(sql, &ses, None).await?;
-	assert_eq!(res.len(), 2);
-	//
-	let tmp = res.remove(0).result;
-	assert!(tmp.is_ok());
-	//
-	let tmp = res.remove(0).result?;
-	let val = Value::parse(
-		"[
+    let dbs = new_ds().await?;
+    let ses = Session::owner().with_ns("test").with_db("test");
+    let res = &mut dbs.execute(sql, &ses, None).await?;
+    assert_eq!(res.len(), 2);
+    //
+    let tmp = res.remove(0).result;
+    assert!(tmp.is_ok());
+    //
+    let tmp = res.remove(0).result?;
+    let val = Value::parse(
+        "[
 			{
 				id: person:1,
 				test: 1,
 			},
 		]",
-	);
-	assert_eq!(tmp, val);
-	//
-	Ok(())
+    );
+    assert_eq!(tmp, val);
+    //
+    Ok(())
 }

@@ -50,6 +50,10 @@ export default {
     clearHistoryConfirm: '確定清除紀錄?',
     preview: '預覽',
     showRawText: '顯示原文',
+
+    newChat: '新的聊天',
+    thinking: '思考中...',
+    download: '下载'
   },
   setting: {
     setting: '設定',
@@ -75,7 +79,8 @@ export default {
     monthlyUsage: '本月使用量',
 
     about: '关于',
-    max_tokens: "Max tokens"
+    maxTokens: "Max tokens",
+    multiRoundChat: "多轮聊天"
   },
   store: {
     siderButton: '提示詞商店',

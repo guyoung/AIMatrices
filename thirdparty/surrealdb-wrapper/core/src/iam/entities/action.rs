@@ -8,53 +8,53 @@ use crate::dbs::Statement;
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd)]
 #[non_exhaustive]
 pub enum Action {
-	View,
-	Edit,
+    View,
+    Edit,
 }
 
 impl std::fmt::Display for Action {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-		match self {
-			Action::View => write!(f, "View"),
-			Action::Edit => write!(f, "Edit"),
-		}
-	}
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Action::View => write!(f, "View"),
+            Action::Edit => write!(f, "Edit"),
+        }
+    }
 }
 
 impl Action {
-	pub fn id(&self) -> String {
-		self.to_string()
-	}
+    pub fn id(&self) -> String {
+        self.to_string()
+    }
 }
 
 impl std::convert::From<&Action> for EntityUid {
-	fn from(action: &Action) -> Self {
-		EntityUid::from_type_name_and_id(
-			EntityTypeName::from_str("Action").unwrap(),
-			EntityId::from_str(&action.id()).unwrap(),
-		)
-	}
+    fn from(action: &Action) -> Self {
+        EntityUid::from_type_name_and_id(
+            EntityTypeName::from_str("Action").unwrap(),
+            EntityId::from_str(&action.id()).unwrap(),
+        )
+    }
 }
 
 impl std::convert::From<&Action> for Entity {
-	fn from(action: &Action) -> Self {
-		Entity::new(action.into(), Default::default(), Default::default())
-	}
+    fn from(action: &Action) -> Self {
+        Entity::new(action.into(), Default::default(), Default::default())
+    }
 }
 
 impl From<&Statement<'_>> for Action {
-	fn from(stmt: &Statement) -> Self {
-		match stmt {
-			Statement::Live(_) => Action::View,
-			Statement::Select(_) => Action::View,
-			Statement::Show(_) => Action::View,
-			Statement::Create(_) => Action::Edit,
-			Statement::Upsert(_) => Action::Edit,
-			Statement::Update(_) => Action::Edit,
-			Statement::Relate(_) => Action::Edit,
-			Statement::Delete(_) => Action::Edit,
-			Statement::Insert(_) => Action::Edit,
-			Statement::Access(_) => Action::Edit,
-		}
-	}
+    fn from(stmt: &Statement) -> Self {
+        match stmt {
+            Statement::Live(_) => Action::View,
+            Statement::Select(_) => Action::View,
+            Statement::Show(_) => Action::View,
+            Statement::Create(_) => Action::Edit,
+            Statement::Upsert(_) => Action::Edit,
+            Statement::Update(_) => Action::Edit,
+            Statement::Relate(_) => Action::Edit,
+            Statement::Delete(_) => Action::Edit,
+            Statement::Insert(_) => Action::Edit,
+            Statement::Access(_) => Action::Edit,
+        }
+    }
 }

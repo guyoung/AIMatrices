@@ -82,7 +82,6 @@ impl SdContext {
                 free(slice as *mut c_void);
 
                 images
-
             };
 
             images
@@ -103,7 +102,7 @@ impl SdContext {
                 Some(suffix) => format!("{} {suffix}", &prompt),
                 None => prompt.clone(),
             }
-                .into();
+            .into();
 
             let negative_prompt: CLibString =
                 negative_prompt.unwrap_or_else(|| "".to_string()).into();
@@ -150,7 +149,6 @@ impl SdContext {
                 free(slice as *mut c_void);
 
                 images
-
             };
 
             images
@@ -238,7 +236,11 @@ fn output_files(path: PathBuf, batch_size: i32) -> Vec<CLibPath> {
     }
 }
 
-fn get_images(slice: *mut sd_image_t, config: Txt2imgConfig, context_config: &ContextConfig) -> Result<Vec<String>, DiffusionError> {
+fn get_images(
+    slice: *mut sd_image_t,
+    config: Txt2imgConfig,
+    context_config: &ContextConfig,
+) -> Result<Vec<String>, DiffusionError> {
     let files = output_files(config.output, config.batch_count);
 
     let mut images: Vec<String> = Vec::new();

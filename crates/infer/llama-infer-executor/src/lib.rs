@@ -4,18 +4,16 @@ pub(crate) use llama_cpp_2_v1 as llama_cpp_2;
 #[cfg(feature = "v2")]
 pub(crate) use llama_cpp_2_v2 as llama_cpp_2;
 
-
-
-
-mod sampler;
 mod model;
+mod sampler;
 
 mod context;
 mod infer;
+mod token;
 
-pub use model::{ModelInstance, ModelInstanceConfig };
 pub use context::{LlamaContext, LlamaContextConfig};
 pub use infer::InferBatch;
+pub use model::{ModelInstance, ModelInstanceConfig};
 
 /// performing inferencing for Large Language Models
 #[derive(Debug, Clone)]
@@ -51,7 +49,6 @@ pub struct InferencingParams {
 
     /// RNG seed
     seed: Option<u32>,
-
 }
 
 impl Default for InferencingParams {
@@ -70,7 +67,6 @@ impl Default for InferencingParams {
         };
     }
 }
-
 
 #[derive(Default, Debug, Clone)]
 pub struct InferencingResult {

@@ -1,10 +1,10 @@
-pub mod preset;
 mod clib;
 pub mod config;
 mod error;
+pub mod preset;
 
-mod image;
 pub mod context;
+mod image;
 
 /// Weight type
 pub use sd_infer_executor_sys::sd_type_t as WeightType;

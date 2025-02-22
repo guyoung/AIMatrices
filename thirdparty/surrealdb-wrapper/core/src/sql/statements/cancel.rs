@@ -10,7 +10,7 @@ use std::fmt;
 pub struct CancelStatement;
 
 impl fmt::Display for CancelStatement {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		f.write_str("CANCEL TRANSACTION")
-	}
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("CANCEL TRANSACTION")
+    }
 }

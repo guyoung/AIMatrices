@@ -26,7 +26,6 @@ pub type TriggerInstanceState<T, F> = spin_factors_executor::InstanceState<
     <T as Trigger<F>>::InstanceState,
 >;
 
-
 /// Configuration options that are common to all triggers.
 #[derive(Debug, Default)]
 pub struct FactorsConfig {
@@ -79,10 +78,7 @@ pub trait RuntimeFactorsBuilder {
     fn new() -> Self;
 
     /// Build the factors and runtime config from the given options.
-    fn build(
-        &mut self,
-        config: &FactorsConfig,
-    ) -> anyhow::Result<Self::Factors>;
+    fn build(&mut self, config: &FactorsConfig) -> anyhow::Result<Self::Factors>;
 
     /// Configure the factors in the spin-executor.
     fn configure_app<U: Send + 'static>(

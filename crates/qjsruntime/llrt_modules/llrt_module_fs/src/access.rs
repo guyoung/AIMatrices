@@ -5,10 +5,8 @@ use std::fs::Metadata;
 use llrt_utils::result::ResultExt;
 use rquickjs::{prelude::Opt, Ctx, Exception, Result};
 
-
 #[allow(dead_code, unused_imports)]
 use super::{CONSTANT_F_OK, CONSTANT_R_OK, CONSTANT_W_OK, CONSTANT_X_OK};
-
 
 pub fn access_sync(ctx: Ctx<'_>, path: String, mode: Opt<u32>) -> Result<()> {
     let metadata = std::fs::metadata(path.clone()).or_throw_msg(

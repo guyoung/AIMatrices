@@ -1,11 +1,10 @@
 use std::path::PathBuf;
 
-use crate::WeightType;
 use super::modifier::{sdxl_vae_fp16_fix, t5xxl_fp8_flux_1};
+use crate::WeightType;
 
-
-use crate::config::ContextConfigBuilder;
 use super::get_huggingface_model_path;
+use crate::config::ContextConfigBuilder;
 
 pub fn stable_diffusion_1_4() -> anyhow::Result<ContextConfigBuilder> {
     let model_path =
@@ -19,7 +18,9 @@ pub fn stable_diffusion_1_4() -> anyhow::Result<ContextConfigBuilder> {
 }
 
 pub fn stable_diffusion_1_5() -> anyhow::Result<ContextConfigBuilder> {
-    let model_path = get_huggingface_model_path("runwayml/stable-diffusion-v1-5/v1-5-pruned-emaonly.safetensors");
+    let model_path = get_huggingface_model_path(
+        "runwayml/stable-diffusion-v1-5/v1-5-pruned-emaonly.safetensors",
+    );
 
     let mut config = ContextConfigBuilder::default();
 
@@ -35,15 +36,12 @@ pub fn stable_diffusion_2_1() -> anyhow::Result<ContextConfigBuilder> {
 
     let mut config = ContextConfigBuilder::default();
 
-    config
-        .model(model_path)
-        .vae_tiling(true);
+    config.model(model_path).vae_tiling(true);
 
     // Tex2ImageConfig
     //      steps: 25
     //      width: 768,
     //      height: 768
-
 
     Ok(config)
 }
@@ -55,10 +53,7 @@ pub fn stable_diffusion_3_medium_fp16() -> anyhow::Result<ContextConfigBuilder> 
 
     let mut config = ContextConfigBuilder::default();
 
-    config
-        .model(model_path)
-        .vae_tiling(true);
-
+    config.model(model_path).vae_tiling(true);
 
     // Tex2ImageConfig
     //      sampling_method: SampleMethod::EULER
@@ -77,10 +72,7 @@ pub fn sdxl_base_1_0() -> anyhow::Result<ContextConfigBuilder> {
 
     let mut config = ContextConfigBuilder::default();
 
-    config
-        .model(model_path)
-        .vae_tiling(true);
-
+    config.model(model_path).vae_tiling(true);
 
     // Tex2ImageConfig
     //      width: 1024,
@@ -111,19 +103,21 @@ fn flux_1_model_weight(model: &str, sd_type: WeightType) -> anyhow::Result<PathB
     check_flux_type(sd_type);
     let weight_type = flux_type_to_model(sd_type);
 
-    Ok(get_huggingface_model_path(format!("city96/FLUX.1-{model}-gguf/flux1-{model}-{weight_type}.gguf").as_str()))
+    Ok(get_huggingface_model_path(
+        format!("city96/FLUX.1-{model}-gguf/flux1-{model}-{weight_type}.gguf").as_str(),
+    ))
 }
 
 fn flux_1(vae_model: &str) -> anyhow::Result<ContextConfigBuilder> {
     let mut config = ContextConfigBuilder::default();
-    let vae_path = get_huggingface_model_path(format!("black-forest-labs/FLUX.1-{vae_model}/ae.safetensors").as_str());
+    let vae_path = get_huggingface_model_path(
+        format!("black-forest-labs/FLUX.1-{vae_model}/ae.safetensors").as_str(),
+    );
 
-    let clip_l_path =  get_huggingface_model_path("comfyanonymous/flux_text_encoders/clip_l.safetensors");
+    let clip_l_path =
+        get_huggingface_model_path("comfyanonymous/flux_text_encoders/clip_l.safetensors");
 
-    config
-        .vae(vae_path)
-        .clip_l(clip_l_path)
-        .vae_tiling(true);
+    config.vae(vae_path).clip_l(clip_l_path).vae_tiling(true);
 
     // Tex2ImageConfig
     //      cfg_scale: 1.
@@ -132,7 +126,6 @@ fn flux_1(vae_model: &str) -> anyhow::Result<ContextConfigBuilder> {
     //      width: 1024,
     //      height: 1024
     //
-
 
     Ok(config)
 }
@@ -170,7 +163,6 @@ pub fn sd_turbo() -> anyhow::Result<ContextConfigBuilder> {
     //      cfg_scale: 1.
     //      steps: 4
 
-
     Ok(config)
 }
 
@@ -187,7 +179,6 @@ pub fn sdxl_turbo_1_0_fp16() -> anyhow::Result<ContextConfigBuilder> {
     //      cfg_scale: 1.
     //      steps: 4
 
-
     sdxl_vae_fp16_fix(config)
 }
 
@@ -203,22 +194,19 @@ pub fn stable_diffusion_3_5_medium_fp16() -> anyhow::Result<ContextConfigBuilder
     stable_diffusion_3_5("medium", "medium")
 }
 
-pub fn stable_diffusion_3_5(
-    model: &str,
-    file_model: &str,
-) -> anyhow::Result<ContextConfigBuilder> {
+pub fn stable_diffusion_3_5(model: &str, file_model: &str) -> anyhow::Result<ContextConfigBuilder> {
     let model_path = get_huggingface_model_path(
         format!("stabilityai/stable-diffusion-3.5-{model}/sd3.5_{file_model}.safetensors").as_str(),
     );
 
     let clip_g_path = get_huggingface_model_path(
-        "Comfy-Org/stable-diffusion-3.5-fp8/text_encoders/clip_g.safetensors"
+        "Comfy-Org/stable-diffusion-3.5-fp8/text_encoders/clip_g.safetensors",
     );
     let clip_l_path = get_huggingface_model_path(
-        "Comfy-Org/stable-diffusion-3.5-fp8/text_encoders/clip_l.safetensors"
+        "Comfy-Org/stable-diffusion-3.5-fp8/text_encoders/clip_l.safetensors",
     );
     let t5xxl_path = get_huggingface_model_path(
-        "Comfy-Org/stable-diffusion-3.5-fp8/text_encoders/t5xxl_fp16.safetensors"
+        "Comfy-Org/stable-diffusion-3.5-fp8/text_encoders/t5xxl_fp16.safetensors",
     );
 
     let mut config = ContextConfigBuilder::default();
@@ -237,7 +225,6 @@ pub fn stable_diffusion_3_5(
     //      width: 1024
     //      height: 1024
 
-
     Ok(config)
 }
 
@@ -248,10 +235,7 @@ pub fn juggernaut_xl_11() -> anyhow::Result<ContextConfigBuilder> {
 
     let mut config = ContextConfigBuilder::default();
 
-    config
-        .model(model_path)
-        .vae_tiling(true);
-
+    config.model(model_path).vae_tiling(true);
 
     // Tex2ImageConfig
     //      sampling_method: SampleMethod::DPM2

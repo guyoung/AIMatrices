@@ -10,9 +10,6 @@ mod openai_api_rs;
 
 pub use openai_api_rs::v1;
 
-
-
-
 #[rquickjs::class]
 #[derive(rquickjs::class::Trace, rquickjs::JsLifetime)]
 pub struct Client {
@@ -32,7 +29,8 @@ impl<'js> Client {
             }
         };
 
-        let client = v1::api::OpenAIClient::builder(api_endpoint, api_key).build()
+        let client = v1::api::OpenAIClient::builder(api_endpoint, api_key)
+            .build()
             .map_err(|_| Exception::throw_type(&ctx, "Failed to create client"))?;
 
         Ok(Self {

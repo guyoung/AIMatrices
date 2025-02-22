@@ -6,7 +6,6 @@ use rquickjs::{
     Ctx, Error, Result,
 };
 
-
 pub use llrt_utils::module::ModuleInfo;
 
 #[derive(Debug, Default)]
@@ -66,27 +65,22 @@ impl Default for ModuleBuilder {
             .with_global(crate::modules::timers::init)
             .with_module(crate::modules::url::UrlModule)
             .with_global(crate::modules::url::init)
-
             .with_module(crate::modules::module::ModuleModule)
             .with_module(crate::modules::console::ConsoleModule)
             .with_global(crate::modules::console::init)
             .with_module(crate::modules::util::UtilModule)
             .with_global(crate::modules::util::init)
-
             .with_module(crate::modules::hex::HexModule)
             .with_module(crate::modules::uuid::UuidModule)
             .with_module(crate::modules::xml::XmlModule)
-
             .with_global(crate::modules::navigator::init)
             .with_module(crate::modules::process::ProcessModule)
             .with_global(crate::modules::process::init)
             .with_module(crate::modules::zlib::ZlibModule)
-
             .with_module(crate::modules::variables::VariablesModule)
             .with_module(crate::modules::key_value::KeyValueModule)
             .with_module(crate::modules::http::HttpModule)
             .with_module(crate::modules::dbs::DbsModule)
-
             .with_module(crate::modules::openai::OpenAiModule)
     }
 }

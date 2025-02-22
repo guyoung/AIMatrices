@@ -1,10 +1,10 @@
 use rquickjs::{
     module::{Declarations, Exports, ModuleDef},
-    Class, Ctx, Exception, IntoJs, Result, Value, prelude::Opt
+    prelude::Opt,
+    Class, Ctx, Exception, IntoJs, Result, Value,
 };
 
 use llrt_utils::module::{export_default, ModuleInfo};
-
 
 use wasmruntime_comp_sdk::dbs;
 
@@ -19,12 +19,11 @@ pub struct Connection {
 impl<'js> Connection {
     #[qjs(constructor)]
     fn new(ctx: Ctx<'js>, database: String, shared: Opt<bool>) -> Result<Self> {
-
         let shared = {
             if let Some(shared) = shared.0 {
                 shared
             } else {
-               false
+                false
             }
         };
 
@@ -36,7 +35,7 @@ impl<'js> Connection {
         })
     }
 
-    fn create(
+    fn create_sync(
         &self,
         ctx: Ctx<'js>,
         table: String,
@@ -70,7 +69,7 @@ impl<'js> Connection {
         val.into_js(&ctx)
     }
 
-    fn update(
+    fn update_sync(
         &self,
         ctx: Ctx<'js>,
         table: String,
@@ -92,7 +91,7 @@ impl<'js> Connection {
         val.into_js(&ctx)
     }
 
-    fn delete(&self, ctx: Ctx<'js>, table: String, uid: String) -> Result<Value<'js>> {
+    fn delete_sync(&self, ctx: Ctx<'js>, table: String, uid: String) -> Result<Value<'js>> {
         let val = self
             .connection_inner
             .delete(table.as_str(), uid.as_str())
@@ -101,7 +100,7 @@ impl<'js> Connection {
         val.into_js(&ctx)
     }
 
-    fn select_all(&self, ctx: Ctx<'js>, table: String) -> Result<Value<'js>> {
+    fn select_all_sync(&self, ctx: Ctx<'js>, table: String) -> Result<Value<'js>> {
         let val = self
             .connection_inner
             .select_all(table.as_str())
@@ -110,7 +109,7 @@ impl<'js> Connection {
         val.into_js(&ctx)
     }
 
-    fn select(&self, ctx: Ctx<'js>, table: String, uid: String) -> Result<Value<'js>> {
+    fn select_sync(&self, ctx: Ctx<'js>, table: String, uid: String) -> Result<Value<'js>> {
         let val = self
             .connection_inner
             .select(table.as_str(), uid.as_str())
@@ -119,7 +118,7 @@ impl<'js> Connection {
         val.into_js(&ctx)
     }
 
-    fn query(&self, ctx: Ctx<'js>, sql: String) -> Result<Value<'js>> {
+    fn query_sync(&self, ctx: Ctx<'js>, sql: String) -> Result<Value<'js>> {
         let val = self
             .connection_inner
             .query(sql.as_str())

@@ -16,79 +16,77 @@ use std::marker::PhantomData;
 #[derive(Debug)]
 #[must_use = "futures do nothing unless you `.await` or poll them"]
 pub struct Content<'r, C: Connection, R> {
-	pub(super) client: Cow<'r, Surreal<C>>,
-	pub(super) command: Result<Command>,
-	pub(super) response_type: PhantomData<R>,
+    pub(super) client: Cow<'r, Surreal<C>>,
+    pub(super) command: Result<Command>,
+    pub(super) response_type: PhantomData<R>,
 }
 
 impl<'r, C, R> Content<'r, C, R>
 where
-	C: Connection,
+    C: Connection,
 {
-	pub(crate) fn from_closure<F>(client: Cow<'r, Surreal<C>>, f: F) -> Self
-	where
-		F: FnOnce() -> Result<Command>,
-	{
-		Content {
-			client,
-			command: f(),
-			response_type: PhantomData,
-		}
-	}
+    pub(crate) fn from_closure<F>(client: Cow<'r, Surreal<C>>, f: F) -> Self
+    where
+        F: FnOnce() -> Result<Command>,
+    {
+        Content {
+            client,
+            command: f(),
+            response_type: PhantomData,
+        }
+    }
 
-	/// Converts to an owned type which can easily be moved to a different thread
-	pub fn into_owned(self) -> Content<'static, C, R> {
-		Content {
-			client: Cow::Owned(self.client.into_owned()),
-			..self
-		}
-	}
+    /// Converts to an owned type which can easily be moved to a different thread
+    pub fn into_owned(self) -> Content<'static, C, R> {
+        Content {
+            client: Cow::Owned(self.client.into_owned()),
+            ..self
+        }
+    }
 }
 
 macro_rules! into_future {
-	($method:ident) => {
-		fn into_future(self) -> Self::IntoFuture {
-			let Content {
-				client,
-				command,
-				..
-			} = self;
-			Box::pin(async move {
-				let router = client.router.extract()?;
-				router.$method(command?).await
-			})
-		}
-	};
+    ($method:ident) => {
+        fn into_future(self) -> Self::IntoFuture {
+            let Content {
+                client, command, ..
+            } = self;
+            Box::pin(async move {
+                let router = client.router.extract()?;
+                router.$method(command?).await
+            })
+        }
+    };
 }
 
 impl<'r, Client> IntoFuture for Content<'r, Client, Value>
 where
-	Client: Connection,
+    Client: Connection,
 {
-	type Output = Result<Value>;
-	type IntoFuture = BoxFuture<'r, Self::Output>;
+    type Output = Result<Value>;
+    type IntoFuture = BoxFuture<'r, Self::Output>;
 
-	into_future! {execute_value}
+    into_future! {execute_value}
 }
 
 impl<'r, Client, R> IntoFuture for Content<'r, Client, Option<R>>
 where
-	Client: Connection,
-	R: DeserializeOwned,
+    Client: Connection,
+    R: DeserializeOwned,
 {
-	type Output = Result<Option<R>>;
-	type IntoFuture = BoxFuture<'r, Self::Output>;
+    type Output = Result<Option<R>>;
+    type IntoFuture = BoxFuture<'r, Self::Output>;
 
-	into_future! {execute_opt}
+    into_future! {execute_opt}
 }
 
 impl<'r, Client, R> IntoFuture for Content<'r, Client, Vec<R>>
 where
-	Client: Connection,
-	R: DeserializeOwned,
+    Client: Connection,
+    R: DeserializeOwned,
 {
-	type Output = Result<Vec<R>>;
-	type IntoFuture = BoxFuture<'r, Self::Output>;
+    type Output = Result<Vec<R>>;
+    type IntoFuture = BoxFuture<'r, Self::Output>;
 
-	into_future! {execute_vec}
+    into_future! {execute_vec}
 }

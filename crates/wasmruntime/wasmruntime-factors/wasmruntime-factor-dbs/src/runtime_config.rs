@@ -7,4 +7,3 @@ use crate::engine::SurrealDbEngine;
 pub struct RuntimeConfig {
     pub engine: Arc<SurrealDbEngine>,
 }
-

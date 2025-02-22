@@ -162,7 +162,7 @@ pub use self::with::With;
 // module reexporting parsing function to prevent a breaking change.
 #[doc(hidden)]
 mod parser {
-	pub use crate::syn::*;
+    pub use crate::syn::*;
 }
 
 pub use self::parser::{idiom, json, parse, subquery, thing, value};

@@ -7,8 +7,9 @@ edition = "2021"
 [workspace]
 members = [
     "crates/candle",
-	
+
     "crates/infer/*",
+
     "crates/qjsruntime/llrt/*",
     "crates/qjsruntime/qjsruntime-modules/*",
     "crates/qjsruntime/qjsruntime-compression",
@@ -25,15 +26,20 @@ members = [
 
     "packages/*",
 
-    "components/*",
-
-    
-
+    "components/*",   
 ]
 
 exclude = [
     "crates/infer/build",
 ]
+
+[workspace.package]
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/guyoung/AIMatrices"
+
 
 [workspace.dependencies]
 

@@ -4,7 +4,8 @@ const LOCAL_NAME = 'settingsStorage'
 
 export interface SettingsState {
   systemMessage: string,
-  max_tokens: number,
+  multiRoundChat: number,
+  maxTokens: number,
   temperature: number
   top_p: number,
 
@@ -13,7 +14,8 @@ export interface SettingsState {
 export function defaultSetting(): SettingsState {
   return {
     systemMessage: 'You are DeepSeek, a large language model. Follow the user\'s instructions carefully. Respond using markdown.',
-    max_tokens: 1000,
+    multiRoundChat: 1,
+    maxTokens: 1000,
     temperature: 0.8,
     top_p: 1,
   }

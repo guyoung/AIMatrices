@@ -15,7 +15,6 @@ use std::{
 use llrt_utils::result::ResultExt;
 use rquickjs::{Ctx, Result};
 
-
 // The Stats implementation is very much based on Unix. The Windows implementation
 // tries its best to mimic the implementation of libuv since it is the standard.
 // See: https://github.com/libuv/libuv/blob/90648ea3e55125a5a819b32106da6462da310da6/src/win/fs.c
@@ -313,8 +312,6 @@ impl Stats {
         }
     }
 }
-
-
 
 pub fn stat_fn_sync(ctx: Ctx<'_>, path: String) -> Result<Stats> {
     let metadata =

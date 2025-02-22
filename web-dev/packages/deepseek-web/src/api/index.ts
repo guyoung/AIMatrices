@@ -61,7 +61,7 @@ export function fetchChatAPIProcess<T = any>(
 export function fetchChatAPIProcess<T = any>(
   params: {
     model: String,
-    prompt: string
+    messages: any
     options?: { conversationId?: string; parentMessageId?: string }
     signal?: GenericAbortSignal
   }
@@ -70,7 +70,7 @@ export function fetchChatAPIProcess<T = any>(
   
   let data: Record<string, any> = {
     model: params.model,
-    prompt: params.prompt,
+    messages: params.messages,
     options: params.options,
   }
 

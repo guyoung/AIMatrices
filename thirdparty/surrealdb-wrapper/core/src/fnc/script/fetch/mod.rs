@@ -17,37 +17,37 @@ use func::js_fetch;
 #[derive(Debug, Clone)]
 #[non_exhaustive]
 pub enum RequestError {
-	Reqwest(Arc<reqwest::Error>),
+    Reqwest(Arc<reqwest::Error>),
 }
 
 impl fmt::Display for RequestError {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		match *self {
-			RequestError::Reqwest(ref e) => writeln!(f, "request error: {e}"),
-		}
-	}
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match *self {
+            RequestError::Reqwest(ref e) => writeln!(f, "request error: {e}"),
+        }
+    }
 }
 
 impl Error for RequestError {}
 
 /// Register the fetch types in the context.
 pub fn register(ctx: &Ctx<'_>) -> Result<()> {
-	let globals = ctx.globals();
-	globals.set("fetch", js_fetch)?;
-	Class::<Response>::define(&globals)?;
-	Class::<Request>::define(&globals)?;
-	Class::<Blob>::define(&globals)?;
-	Class::<FormData>::define(&globals)?;
-	Class::<Headers>::define(&globals)?;
+    let globals = ctx.globals();
+    globals.set("fetch", js_fetch)?;
+    Class::<Response>::define(&globals)?;
+    Class::<Request>::define(&globals)?;
+    Class::<Blob>::define(&globals)?;
+    Class::<FormData>::define(&globals)?;
+    Class::<Headers>::define(&globals)?;
 
-	Ok(())
+    Ok(())
 }
 
 #[cfg(test)]
 mod test {
-	use js::Function;
+    use js::Function;
 
-	macro_rules! create_test_context{
+    macro_rules! create_test_context{
 		($ctx:ident => { $($t:tt)* }) => {
 			async {
 
@@ -96,45 +96,45 @@ mod test {
 			}
 		};
 	}
-	pub(crate) use create_test_context;
+    pub(crate) use create_test_context;
 
-	#[tokio::test]
-	async fn exists() {
-		create_test_context!(ctx => {
-			let globals = ctx.globals();
-			globals.get::<_,Function>("fetch").unwrap();
-			let response = globals.get::<_,Function>("Response").unwrap();
-			assert!(response.is_constructor());
-			let request = globals.get::<_,Function>("Request").unwrap();
-			assert!(request .is_constructor());
-			let blob = globals.get::<_,Function>("Blob").unwrap();
-			assert!(blob.is_constructor());
-			let form_data = globals.get::<_,Function>("FormData").unwrap();
-			assert!(form_data.is_constructor());
-			let headers = globals.get::<_,Function>("Headers").unwrap();
-			assert!(headers.is_constructor());
-		})
-		.await
-	}
+    #[tokio::test]
+    async fn exists() {
+        create_test_context!(ctx => {
+            let globals = ctx.globals();
+            globals.get::<_,Function>("fetch").unwrap();
+            let response = globals.get::<_,Function>("Response").unwrap();
+            assert!(response.is_constructor());
+            let request = globals.get::<_,Function>("Request").unwrap();
+            assert!(request .is_constructor());
+            let blob = globals.get::<_,Function>("Blob").unwrap();
+            assert!(blob.is_constructor());
+            let form_data = globals.get::<_,Function>("FormData").unwrap();
+            assert!(form_data.is_constructor());
+            let headers = globals.get::<_,Function>("Headers").unwrap();
+            assert!(headers.is_constructor());
+        })
+        .await
+    }
 
-	#[tokio::test]
-	async fn test_tests() {
-		create_test_context!(ctx => {
-			assert!(ctx.eval::<(),_>("assert(false)").is_err());
-			assert!(ctx.eval::<(),_>("assert(true)").is_ok());
-			assert!(ctx.eval::<(),_>("assert.eq(1,2)").is_err());
-			assert!(ctx.eval::<(),_>("assert.eq(1,1)").is_ok());
-			assert!(ctx.eval::<(),_>("assert.eq(1,'1')").is_ok());
-			assert!(ctx.eval::<(),_>("assert.seq(1,1)").is_ok());
-			assert!(ctx.eval::<(),_>("assert.seq(1,2)").is_err());
-			assert!(ctx.eval::<(),_>("assert.seq(1,'1')").is_err());
-			assert!(ctx.eval::<(),_>("assert.mustThrow(() => {
+    #[tokio::test]
+    async fn test_tests() {
+        create_test_context!(ctx => {
+            assert!(ctx.eval::<(),_>("assert(false)").is_err());
+            assert!(ctx.eval::<(),_>("assert(true)").is_ok());
+            assert!(ctx.eval::<(),_>("assert.eq(1,2)").is_err());
+            assert!(ctx.eval::<(),_>("assert.eq(1,1)").is_ok());
+            assert!(ctx.eval::<(),_>("assert.eq(1,'1')").is_ok());
+            assert!(ctx.eval::<(),_>("assert.seq(1,1)").is_ok());
+            assert!(ctx.eval::<(),_>("assert.seq(1,2)").is_err());
+            assert!(ctx.eval::<(),_>("assert.seq(1,'1')").is_err());
+            assert!(ctx.eval::<(),_>("assert.mustThrow(() => {
 				// don't throw
 			})").is_err());
-			assert!(ctx.eval::<(),_>("assert.mustThrow(() => {
+            assert!(ctx.eval::<(),_>("assert.mustThrow(() => {
 				throw new Error('an error')
 			})").is_ok());
-		})
-		.await;
-	}
+        })
+        .await;
+    }
 }

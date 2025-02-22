@@ -1,5 +1,3 @@
-
-
 pub mod zstd {
     use std::io::{BufReader, Read, Result};
 
@@ -13,10 +11,6 @@ pub mod zstd {
         ZstdDecoder::new(r)
     }
 }
-
-
-
-
 
 pub mod deflate {
     use std::io::Read;
@@ -33,7 +27,6 @@ pub mod deflate {
     }
 }
 
-
 pub mod gz {
     use std::io::Read;
 
@@ -49,7 +42,6 @@ pub mod gz {
     }
 }
 
-
 pub mod zlib {
     use std::io::Read;
 
@@ -64,7 +56,6 @@ pub mod zlib {
         ZlibDecoder::new(r)
     }
 }
-
 
 pub mod brotli {
     use std::io::Read;

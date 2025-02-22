@@ -16,7 +16,6 @@ use rquickjs::{
 
 use llrt_utils::{bytes::ObjectBytes, object::ObjectExt};
 
-
 const AMP: &str = "&amp;";
 const LT: &str = "&lt;";
 const GT: &str = "&gt;";
@@ -138,7 +137,7 @@ impl<'js> XMLParser<'js> {
                     current_obj.has_value = true;
 
                     Self::process_end(&ctx, &current_obj, obj.into_value(&ctx)?, &current_key)?;
-                },
+                }
                 Ok(Event::Start(ref tag)) => {
                     has_attributes = false;
                     current_key = Self::get_tag_name(&ctx, &reader, tag)?;
@@ -155,7 +154,7 @@ impl<'js> XMLParser<'js> {
                         &mut current_obj,
                         &mut has_attributes,
                     )?;
-                },
+                }
                 Ok(Event::End(_)) => {
                     let (parent_tag, mut parent_obj) = path.pop().unwrap();
                     parent_obj.has_value = true;
@@ -168,7 +167,7 @@ impl<'js> XMLParser<'js> {
                     current_obj = parent_obj;
 
                     Self::process_end(&ctx, &current_obj, value, &parent_tag)?;
-                },
+                }
                 Ok(Event::CData(text)) => {
                     let text = text.escape().or_throw(&ctx)?;
                     let tag_value = String::from_utf8_lossy(text.as_ref());
@@ -183,7 +182,7 @@ impl<'js> XMLParser<'js> {
                     } else {
                         current_value = Some(tag_value)
                     }
-                },
+                }
                 Ok(Event::Text(ref text)) => {
                     let tag_value = text
                         .unescape_with(|v| {
@@ -203,10 +202,10 @@ impl<'js> XMLParser<'js> {
                     } else {
                         current_value = Some(tag_value)
                     }
-                },
+                }
                 Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
                 Ok(Event::Eof) => break,
-                _ => {},
+                _ => {}
             }
         }
         Ok(current_obj.obj)
@@ -508,12 +507,12 @@ impl<'js> XmlNode<'js> {
                         xml_text.push_str("/>");
                     }
                     drop(borrow);
-                },
+                }
                 NodeStackEntry::End(name) => {
                     xml_text.push_str("</");
                     xml_text.push_str(&name);
                     xml_text.push('>');
-                },
+                }
             }
         }
 

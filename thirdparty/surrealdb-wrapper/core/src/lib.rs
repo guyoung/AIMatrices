@@ -53,15 +53,15 @@ pub mod obs;
 
 #[doc(hidden)]
 pub mod test_helpers {
-	pub use crate::vs::conv::to_u128_be;
-	pub use crate::vs::generate_versionstamp_sequences;
+    pub use crate::vs::conv::to_u128_be;
+    pub use crate::vs::generate_versionstamp_sequences;
 }
 
 #[doc(hidden)]
 /// Channels for receiving a SurrealQL database export
 pub mod channel {
-	pub use async_channel::bounded;
-	pub use async_channel::unbounded;
-	pub use async_channel::Receiver;
-	pub use async_channel::Sender;
+    pub use async_channel::bounded;
+    pub use async_channel::unbounded;
+    pub use async_channel::Receiver;
+    pub use async_channel::Sender;
 }

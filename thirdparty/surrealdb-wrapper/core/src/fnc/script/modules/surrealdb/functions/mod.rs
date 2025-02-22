@@ -32,60 +32,64 @@ mod vector;
 pub struct Package;
 
 impl_module_def!(
-	Package,
-	"", // root path
-	"array" => (array::Package),
-	"bytes" => (bytes::Package),
-	"count" => run,
-	"crypto" => (crypto::Package),
-	"duration" => (duration::Package),
-	"encoding" => (encoding::Package),
-	"geo" => (geo::Package),
-	"http" => (http::Package),
-	"math" => (math::Package),
-	"meta" => (meta::Package),
-	"not" => run,
-	"object" => (object::Package),
-	"parse" => (parse::Package),
-	"rand" => (rand::Package),
-	"record" => (record::Package),
-	"search" => (search::Package),
-	"session" => (session::Package),
-	"sleep" => fut Async,
-	"string" => (string::Package),
-	"time" => (time::Package),
-	"type" => (r#type::Package),
-	"value" => (value::Package),
-	"vector" => (vector::Package)
+    Package,
+    "", // root path
+    "array" => (array::Package),
+    "bytes" => (bytes::Package),
+    "count" => run,
+    "crypto" => (crypto::Package),
+    "duration" => (duration::Package),
+    "encoding" => (encoding::Package),
+    "geo" => (geo::Package),
+    "http" => (http::Package),
+    "math" => (math::Package),
+    "meta" => (meta::Package),
+    "not" => run,
+    "object" => (object::Package),
+    "parse" => (parse::Package),
+    "rand" => (rand::Package),
+    "record" => (record::Package),
+    "search" => (search::Package),
+    "session" => (session::Package),
+    "sleep" => fut Async,
+    "string" => (string::Package),
+    "time" => (time::Package),
+    "type" => (r#type::Package),
+    "value" => (value::Package),
+    "vector" => (vector::Package)
 );
 
 fn run(js_ctx: js::Ctx<'_>, name: &str, args: Vec<Value>) -> Result<Value> {
-	let res = {
-		let this = js_ctx.userdata::<QueryContext<'_>>().expect("query context should be set");
-		// Process the called function
-		fnc::synchronous(this.context, this.doc, name, args)
-	};
-	// Convert any response error
-	res.map_err(|err| {
-		js::Exception::from_message(js_ctx, &err.to_string())
-			.map(js::Exception::throw)
-			.unwrap_or(js::Error::Exception)
-	})
+    let res = {
+        let this = js_ctx
+            .userdata::<QueryContext<'_>>()
+            .expect("query context should be set");
+        // Process the called function
+        fnc::synchronous(this.context, this.doc, name, args)
+    };
+    // Convert any response error
+    res.map_err(|err| {
+        js::Exception::from_message(js_ctx, &err.to_string())
+            .map(js::Exception::throw)
+            .unwrap_or(js::Error::Exception)
+    })
 }
 
 async fn fut(js_ctx: js::Ctx<'_>, name: &str, args: Vec<Value>) -> Result<Value> {
-	let res = {
-		let this = js_ctx.userdata::<QueryContext<'_>>().expect("query context should be set");
-		// Process the called function
-		Stk::enter_scope(|stk| {
-			stk.run(|stk| fnc::asynchronous(stk, this.context, this.opt, this.doc, name, args))
-		})
-		.await
-	};
-	// Convert any response error
-	res.map_err(|err| {
-		js::Exception::from_message(js_ctx, &err.to_string())
-			.map(js::Exception::throw)
-			.unwrap_or(js::Error::Exception)
-	})
+    let res = {
+        let this = js_ctx
+            .userdata::<QueryContext<'_>>()
+            .expect("query context should be set");
+        // Process the called function
+        Stk::enter_scope(|stk| {
+            stk.run(|stk| fnc::asynchronous(stk, this.context, this.opt, this.doc, name, args))
+        })
+        .await
+    };
+    // Convert any response error
+    res.map_err(|err| {
+        js::Exception::from_message(js_ctx, &err.to_string())
+            .map(js::Exception::throw)
+            .unwrap_or(js::Error::Exception)
+    })
 }

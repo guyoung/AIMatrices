@@ -2,7 +2,6 @@ use rquickjs::{class::Trace, function::Opt, ArrayBuffer, Coerced, Ctx, Object, R
 
 use llrt_utils::time;
 
-
 use crate::blob::Blob;
 
 #[rquickjs::class]

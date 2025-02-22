@@ -6,7 +6,6 @@ use serde::ser::SerializeMap;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use serde_json::Value;
 
-
 use crate::impl_builder_methods;
 
 use super::{common, types};

@@ -47,7 +47,6 @@ where
         }
     }
 
-
     fn append_stack_sync(&mut self, dir: &PathBuf) -> io::Result<()> {
         let dir = std::fs::read_dir(dir)?;
 

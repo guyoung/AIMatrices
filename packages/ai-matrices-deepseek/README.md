@@ -5,6 +5,12 @@ AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatri
 
 ![AIMatrices DeepSeek](../../docs/ai-matrices-deepseek/assets/20250215-ai-matrices-deepseek3.png)
 
+
+## 最近更新
+
+* 2025-02-22
+  * 新增多轮聊天功能； 新增聊天记录保存至本地数据库功能；新增 Mermaid 图表预览及导出功能；新增 Markdwon 编辑及预览功能；
+
 ## 功能特性
 
 **开箱即用**
@@ -30,6 +36,10 @@ AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatri
 **可扩展性与自定义能力**
 
 遵循 OpenAI API 规范进行模型 API 调用，通过标准化的接口参数，如输入文本、模型选择、温度参数等，实现对模型的调用和结果获取，除 DeepSeek 模型外，还支持使用其他OpenAI API 模型 。同时支持使用 JavaScript 代码进行自定义扩展，允许用户根据业务需求实现个性化的逻辑处理。
+
+**AI聊天功能丰富**
+
+支持多轮聊天、聊天记录保存至本地数据库；Mermaid 图表预览及导出、Markdwon 编辑及预览等功能。
 
 **用户界面友好**
 

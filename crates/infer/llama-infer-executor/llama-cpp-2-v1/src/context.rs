@@ -322,8 +322,6 @@ impl<'model> LlamaContext<'model> {
         tracing::debug!("Remove lora adapter");
         Ok(())
     }
-
-
 }
 
 impl Drop for LlamaContext<'_> {

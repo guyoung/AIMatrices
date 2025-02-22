@@ -133,7 +133,6 @@ impl OpenAIClient {
     }
 
     async fn build_request(&self, method: Method, path: &str) -> reqwest::RequestBuilder {
-
         println!("build_request");
 
         println!("api_endpoint: {}", self.api_endpoint);
@@ -188,8 +187,6 @@ impl OpenAIClient {
         path: &str,
         body: &impl serde::ser::Serialize,
     ) -> Result<T, APIError> {
-
-
         let request = self.build_request(Method::POST, path).await;
         let request = request.json(body);
         let response = request.send().await?;

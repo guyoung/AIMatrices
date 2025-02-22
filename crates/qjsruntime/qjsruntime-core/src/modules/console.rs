@@ -270,35 +270,35 @@ fn format_raw_inner<'js>(
         Type::Uninitialized | Type::Null => {
             Color::BOLD.push(result, color_enabled_mask);
             result.push_str("null")
-        },
+        }
         Type::Undefined => {
             Color::BLACK.push(result, color_enabled_mask);
             result.push_str("undefined")
-        },
+        }
         Type::Bool => {
             Color::YELLOW.push(result, color_enabled_mask);
             const BOOL_STRINGS: [&str; 2] = ["false", "true"];
             result.push_str(BOOL_STRINGS[unsafe { value.as_bool().unwrap_unchecked() } as usize]);
-        },
+        }
         Type::BigInt => {
             Color::YELLOW.push(result, color_enabled_mask);
             let mut buffer = itoa::Buffer::new();
             let big_int = unsafe { value.as_big_int().unwrap_unchecked() };
             result.push_str(buffer.format(big_int.clone().to_i64().unwrap()));
             result.push('n');
-        },
+        }
         Type::Int => {
             Color::YELLOW.push(result, color_enabled_mask);
             let mut buffer = itoa::Buffer::new();
             result.push_str(buffer.format(unsafe { value.as_int().unwrap_unchecked() }));
-        },
+        }
         Type::Float => {
             Color::YELLOW.push(result, color_enabled_mask);
             let mut buffer = ryu::Buffer::new();
             result.push_str(float_to_string(&mut buffer, unsafe {
                 value.as_float().unwrap_unchecked()
             }));
-        },
+        }
         Type::String => {
             format_raw_string_inner(
                 result,
@@ -313,14 +313,14 @@ fn format_raw_inner<'js>(
                 color_enabled_mask,
                 not_root,
             );
-        },
+        }
         Type::Symbol => {
             Color::YELLOW.push(result, color_enabled_mask);
             let description = unsafe { value.as_symbol().unwrap_unchecked() }.description()?;
             result.push_str("Symbol(");
             result.push_str(&unsafe { description.get::<String>().unwrap_unchecked() });
             result.push(')');
-        },
+        }
         Type::Function | Type::Constructor => {
             Color::CYAN.push(result, color_enabled_mask);
             let obj = unsafe { value.as_object().unwrap_unchecked() };
@@ -344,7 +344,7 @@ fn format_raw_inner<'js>(
             result.push_str(CLASS_FUNCTION_LOOKUP[is_class as usize]);
             result.push_str(&name);
             result.push(']');
-        },
+        }
         Type::Promise => {
             let promise = unsafe { value.as_promise().unwrap_unchecked() };
             let state = promise.state();
@@ -358,11 +358,11 @@ fn format_raw_inner<'js>(
                     Color::CYAN.push(result, color_enabled_mask);
                     result.push_str("<pending>");
                     Color::reset(result, color_enabled_mask);
-                },
+                }
                 PromiseState::Resolved => {
                     let value: Value = unsafe { promise.result().unwrap_unchecked() }?;
                     format_raw_inner(result, value, options, visited, depth + 1)?;
-                },
+                }
                 PromiseState::Rejected => {
                     let value: Error =
                         unsafe { promise.result::<Value>().unwrap_unchecked() }.unwrap_err();
@@ -371,13 +371,13 @@ fn format_raw_inner<'js>(
                     result.push_str("<rejected> ");
                     Color::reset(result, color_enabled_mask);
                     format_raw_inner(result, value, options, visited, depth + 1)?;
-                },
+                }
             }
             write_sep(result, false, apply_indentation > 0, options.newline);
             push_indentation(result, apply_indentation & (depth));
             result.push('}');
             return Ok(());
-        },
+        }
         Type::Array | Type::Object | Type::Exception => {
             let hash = hash::default_hash(&value);
             if visited.contains(&hash) {
@@ -422,7 +422,7 @@ fn format_raw_inner<'js>(
                         result.push_str(&str);
                         Color::reset(result, color_enabled_mask);
                         return Ok(());
-                    },
+                    }
                     Some("RegExp") => {
                         Color::RED.push(result, color_enabled_mask);
                         let source: String = obj.get("source")?;
@@ -433,11 +433,11 @@ fn format_raw_inner<'js>(
                         result.push_str(&flags);
                         Color::reset(result, color_enabled_mask);
                         return Ok(());
-                    },
+                    }
                     None | Some("") | Some("Object") => {
                         class_name = None;
-                    },
-                    _ => {},
+                    }
+                    _ => {}
                 }
             }
 
@@ -492,8 +492,8 @@ fn format_raw_inner<'js>(
                 Color::CYAN.push(result, color_enabled_mask);
                 result.push_str(OBJECT_ARRAY_LOOKUP[is_object as usize]);
             }
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     Color::reset(result, color_enabled_mask);
@@ -634,7 +634,7 @@ fn format_values_internal<'js>(
                                     let str = next_value().get::<Coerced<String>>()?;
                                     result.push_str(str.as_str());
                                     continue;
-                                },
+                                }
                                 b'd' => options.number_function.call((next_value(),))?,
                                 b'i' => options.parse_int.call((next_value(),))?,
                                 b'f' => options.parse_float.call((next_value(),))?,
@@ -644,25 +644,25 @@ fn format_values_internal<'js>(
                                             .unwrap_or("undefined".into()),
                                     );
                                     continue;
-                                },
+                                }
                                 b'O' => {
                                     options.object_filter = default_filter;
                                     next_value()
-                                },
+                                }
                                 b'o' => next_value(),
                                 b'c' => {
                                     // CSS is ignored
                                     continue;
-                                },
+                                }
                                 b'%' => {
                                     result.push_byte(byte);
                                     continue;
-                                },
+                                }
                                 _ => {
                                     result.push_byte(byte);
                                     result.push_byte(next_byte);
                                     continue;
-                                },
+                                }
                             };
                             options.color = false;
 
@@ -822,15 +822,12 @@ fn write_lambda_log<'js>(
     let current_time: DateTime<Utc> = Utc::now();
     let formatted_time = current_time.format(time_format);
 
-
     if is_json_log_format {
         result.push('{');
         //time
         result.push_str("\"time\":\"");
         write!(result, "{}", formatted_time).unwrap();
         result.push_str("\",");
-
-
 
         //level
         result.push_str("\"level\":\"");
@@ -959,11 +956,11 @@ fn get_dimensions(ctx: Ctx<'_>) -> Result<Array<'_>> {
         Some((width, height)) => {
             array.set(0, width.0)?;
             array.set(1, height.0)?;
-        },
+        }
         None => {
             array.set(0, 0)?;
             array.set(1, 0)?;
-        },
+        }
     }
     Ok(array)
 }

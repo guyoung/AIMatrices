@@ -178,7 +178,8 @@ function saveAsSvg() {
 .zoom-container {
   overflow: auto; /* 允许滚动 */
   width: 100%;
-  height: 100%;
+  min-height: 300px;
+  max-height: 80vh;
 }
 
 .mermaid-el svg {

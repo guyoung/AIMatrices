@@ -3,7 +3,7 @@
 # AIMatrices Flux
 
 <p align="center">
-AIMatrices Flux is an image generation application based on the lightweight AI application rapid construction platform AIMatrices, developed using the Flux model, and supports the automatic translation function of prompt words.
+AIMatrices Flux 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 使用 Flux 模型开发的开文生图应用程序，支持提示词自动翻译功能。
 
 [English](README.md) / [简体中文](README_cn.md)
 </p>
@@ -14,71 +14,71 @@ AIMatrices Flux is an image generation application based on the lightweight AI a
 <br />
 <br />
 
-## Features
+## 功能特性
 
-**Out of the box**
+**开箱即用**
 
-AIMatrices Flux Developed in the Rust programming language, it directly compiles into a binary executable file, and the resulting executable is about 40MB in size. There is no need to install any external dependencies, which greatly simplifies the deployment process, and it can run on multiple operating systems (such as Windows, macOS, Linux) without using containers.
+使用 Rust 编程语言开发，直接编译成二进制可执行文件，生成的可执行文件大小约为 20MB 左右，无需安装任何外部依赖库，极大地简化了部署过程，无需使用容器即可在多种操作系统（如 Windows、macOS、Linux）上运行。
 
-**Broad hardware platform support**
+**广泛硬件平台支持**
 
-AIMatrices Flux uses Rust FFI technology to call the high-performance lama.cpp library, and uses Vulkan as the back-end for model inference. It supports NVIDIA, AMD, Intel and other mainstream graphics cards, which can provide significant GPU acceleration effect for model inference. This architectural design allows the project to take full advantage of the powerful computing power of modern Gpus while maintaining good cross-platform compatibility.
+通过 Rust 的 FFI 技术调用高性能的 llama.cpp、 stable-diffusion.cpp 库，并以 Vulkan 作为后端进行模型推理，支持NVIDIA、AMD 、Intel等多种主流显卡，能够为模型推理提供显著的GPU加速效果，这种架构设计使得项目能够充分利用现代 GPU 的强大计算能力，同时保持良好的跨平台兼容性。
 
-**Fully open source**
+**完全开源**
 
-AIMatrices DeepSeek is an open source project that gives developers free access to its code for customization and extension.
+AIMatrices Flux 是一个开源项目，开发者可以自由访问其代码，进行定制和扩展。
 
 
-## Getting Started
+## 快速开始
 
-### Install
+### 安装
 
-#### 1.Download executable files directly
+#### 方式一：直接下载可执行文件
 
-From AIMatrices [GitHub Release](https://github.com/guyoung/AIMatrices/releases) to download the ai-matrices-flux corresponding system version, after decompression can be used
+从 AIMatrices [GitHub Release](https://github.com/guyoung/AIMatrices/releases) 下载 ai-matrices-flux对应系统版本，解压后即可使用
 
-#### 2.Source code build
+#### 方式二：源码编译
 
-A prerequisite for build is the installation of the Rust environment
+编译前提条件是需要安装 Rust 环境
 
 ```shell
 
 git clone https://github.com/guyoung/AIMatrices.git
 
-## Build AIMatrices Flux main program
+## 编译 AIMatrices Flux 主程序
 cd AIMatrices/packages/ai-matrices-flux
 cagro build -- release
 
-## Build AIMatrices WebAssembly components
+## 编译 AIMatrices WebAssembly 组件
 cd AIMatrices/components/flux-handler-component
 cargo component build --release
 ```
 
-### Download model file
+### 下载模型文件
 
-* llama-translate model(Prompt word automatic translation)
+* llama-translate 模型（提示词自动翻译）
     * https://huggingface.co/dahara1/llama-translate-gguf/llama-translate.f16.Q4_K_M.gguf
     * mirror: https://hf-mirror.com/dahara1/llama-translate-gguf/llama-translate.f16.Q4_K_M.gguf
 
-* Flux.1 Dev model
+* Flux.1 Dev 模型
     * https://huggingface.co/city96/FLUX.1-dev-gguf/resolve/main/flux1-dev-Q4_0.gguf
     * mirror: https://hf-mirror.com/city96/FLUX.1-dev-gguf/resolve/main/flux1-dev-Q4_0.gguf
 
-* vae model
+* vae 模型
     * https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors
     * mirror: https://hf-mirror.com/black-forest-labs/FLUX.1-dev/resolve/main/ae.safetensors
 
-* clip_l model 
+* clip_l 模型  
     * https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors
     * mirror: https://hf-mirror.com/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors
 
-* t5xxl model
+* t5xxl 模型
     * https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors
     * mirror: https://hf-mirror.com/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp8_e4m3fn.safetensors
 
-### Configuration
+### 配置
 
-Open the app-config.json file in the app_data directory and change the model path.
+打开 app_data 目录下 app-config.json 文件，修改模型路径。
 ```json
 [{
       "id": "flux",
@@ -113,40 +113,40 @@ Open the app-config.json file in the app_data directory and change the model pat
 ```
 
 
-### Run
+### 运行应用
 
-Windows Command-line run
+Windows 命令行运行
 ```shell
 ai-matrices-flux-windows-amd64.exe
 ```
 
-Linux Command-line run
+Linux 命令行运行
 ```shell
 ./ai-matrices-flux-linux-amd64
 ```
 
-Command-line arguments:
-* -i,--ip <port_number>: Specifies the IP address that the server should listen on; default is 127.0.0.0.
+命令行参数：
+* -i,--ip <port_number>: 指定服务器监听的 IP 地址，默认为 127.0.0.0。
   * example: --ip 0.0.0.0
-* -p,--port <port_number>: Specifies the port on which the server should listen; default is 21500.
+* -p,--port <port_number>: 指定服务器监听的端口号，默认为 21500。
   * example: --port 3000
-* --appdir <appdir>: Specifies the working directory, default is ./app_data
-  * example:--app-dir ./dir1
-* --appconfig <appconfig>:  Specifies the app configuration file, default is ./app_data/app-config.json
-  * example:--appconfig ./dir1/config.json
-* --user <username>: Specifies the login username; default is empty
-  * example:--user admin
-* --pass <password>:Specifies the password of the logged-in user; the default is empty
-  * example:--pass admin
-* --version: Prints the system version number and exits.
-* --help: See the instructions and arguments for the command.
+* --appdir <appdir>: 指定工作目录，默认值为 ./app_data
+  * example：--app-dir ./dir1
+* --appconfig <appconfig>: 指定应用配置文件，默认值为 ./app_data/app-config.json
+  * example：--appconfig ./dir1/config.json
+* --user <username>: 指定登录用户名，默认值为空
+  * example：--user admin
+* --pass <password>: 指定登录用户密码，默认值为空
+  * example：--pass admin
+* --version: 打印系统版本号并退出。
+* --help: 查看命令的使用帮助和参数说明。
 
 ```shell
 ai-matrices-deepseek-flux-amd64.exe -i 0.0.0.0 -p 8080 --user admin -- pass admin
 ```
 
-## Other
+## 其它
 
-AIMatrices Flux front-end is generated using DeepSeek.
+AIMatrices Flux 前端程序使用 DeepSeek 生成。
 
 

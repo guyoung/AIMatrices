@@ -1,64 +1,73 @@
-AIMatrices
-==============
+<div align="center">
 
-AIMatrices 是一款轻量级、高性能、可扩展、开源的AI应用快速构建平台，旨在为开发者提供高效、便捷的 AI 应用开发体验。它通过集成多种先进的技术和工具，帮助用户快速搭建、部署和维护 AI 应用，无需从零开始编写复杂的代码。
+# AIMatrices
+
+<p align="center">
+AIMatrices is a lightweight, high-performance, scalable and open source AI application rapid construction platform, which aims to provide developers with efficient and convenient AI application development experience. It integrates a variety of advanced technologies and tools to help users quickly build, deploy, and maintain AI applications without writing complex code from scratch.
+
+[English](README.md) / [简体中文](README_cn.md)
+</p>
 
 > [!WARNING]
-> AIMatrices 是一个实验性的软件包。它可能会发生变化，仅用于评估目的。
+> AIMatrices is an experimental package. It is subject to change and is only used for evaluation purposes.
 
-## 功能特性
-
-**开箱即用**
-
-使用 Rust 编程语言开发，直接编译成二进制可执行文件，生成的可执行文件大小约为 40MB左右，无需安装任何外部依赖库，极大地简化了部署过程，无需使用容器即可在多种操作系统（如 Windows、macOS、Linux）上运行。
-
-**广泛硬件平台支持**
-
-通过 Rust 的 FFI 技术调用高性能的 llama.cpp 库，并以 Vulkan 作为后端进行模型推理，支持 NVIDIA、AMD 、Intel 等多种主流显卡，能够为模型推理提供显著的GPU加速效果，这种架构设计使得项目能够充分利用现代 GPU 的强大计算能力，同时保持良好的跨平台兼容性。
-
-**安全高效**
-
-使用 Rust 编程语言开发，确保应用在不同设备和操作系统上都能安全高效运行。Rust 的所有权系统和生命周期检查机制从根本上杜绝了空指针、数据竞争、内存泄漏等常见错误，使得程序在编译阶段就能发现大部分潜在的内存问题，从而减少运行时错误和崩溃。Rust 的性能接近于 C/C++，同时避免了垃圾回收机制的开销。它通过零成本抽象和高效的编译器优化，确保代码执行效率极高。
-
-**灵活配置与组件化**
-
-采用 WebAssembly 组件技术，通过应用配置文件定义应用的组件、路由规则、环境变量等配置信息，实现高度灵活的组件化开发。例如，可通过配置 allowed_outbound_hosts 控制组件的外部请求权限，或通过文件映射实现静态资源托管。
-
-**可扩展性与自定义能力**
-
-遵循 OpenAI API 规范进行模型 API 调用，通过标准化的接口参数，如输入文本、模型选择、温度参数等，实现对模型的调用和结果获取。同时支持使用 JavaScript 代码进行自定义扩展，允许用户根据业务需求实现个性化的逻辑处理。
-
-**完全开源**
-
-AIMatrices 是一个开源项目，开发者可以自由访问其代码，进行定制和扩展。
+</div>
+<br />
+<br />
 
 
-## 应用案例
+## Features
+
+**Out of the box**
+
+Developed in the Rust programming language, it directly compiles into a binary executable file, and the resulting executable is about 40MB in size. There is no need to install any external dependencies, which greatly simplifies the deployment process, and it can run on multiple operating systems (such as Windows, macOS, Linux) without using containers.
+
+**Broad hardware platform support**
+
+It uses Rust FFI technology to call the high-performance lama.cpp library, and uses Vulkan as the back-end for model inference. It supports NVIDIA, AMD, Intel and other mainstream graphics cards, which can provide significant GPU acceleration effect for model inference. This architectural design allows the project to take full advantage of the powerful computing power of modern Gpus while maintaining good cross-platform compatibility.
+
+**Secure and efficient**
+
+Written in the Rust programming language, it ensures that the application runs safely and efficiently on different devices and operating systems. Rust's ownership system and lifecycle checking fundamentally eliminate common errors such as null Pointers, data races, and memory leaks, allowing the majority of potential memory issues to be found at compile time, resulting in fewer runtime errors and crashes. Rust's performance is close to C/C++ while avoiding the overhead of garbage collection mechanisms. It ensures extremely efficient code execution through zero-cost abstractions and efficient compiler optimizations.
+
+**Flexible configuration and componentization**
+
+The WebAssembly component technology is used to realize highly flexible component-based development by defining application configuration information such as components, routing rules, and environment variables through application configuration files. For example, you can configure allowed_outbound_hosts to control a component's access to external requests, or file mappings to enable static resource hosting.
+
+**Extensibility and customization**
+
+The OpenAI API specification is followed for model API calls, and the model calls and results are obtained through standardized interface parameters, such as input text, model selection, and temperature parameters. At the same time, it supports the use of JavaScript code for custom extension, allowing users to achieve personalized logic processing according to business needs.
+
+**Open source**
+
+AIMatrices is an open source project with free access to its code for developers to customize and extend.
+
+## Use Cases
 
 ### [AIMatrices DeepSeek](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-deepseek)
 
-AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 开发的开源 DeepSeek 本地化部署工具，支持本地模型、远程 API 灵活切换，旨在为用户提供高效、灵活且低成本的 DeepSeek 大模型部署解决方案。
+AIMatrices DeepSeek is an open source DeepSeek localization deployment tool based on AIMatrices, a lightweight AI application rapid construction platform, which supports flexible switching between local models and remote apis. This paper aims to provide users with an efficient, flexible and low-cost DeepSeek large model deployment solution.
 
 ![AIMatrices DeepSeek](docs/ai-matrices-deepseek/assets/20250215-ai-matrices-deepseek3.png)
 
 ### [AIMatrices Flux](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-flux)
 
-AIMatrices Flux 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 使用 Flux 模型开发的开文生图应用程序，支持提示词自动翻译功能。
+AIMatrices Flux is a lightweight AI application rapid construction platform AIMatrices using Flux model to develop open Vincenson diagram application, support prompt word automatic translation function.
 
 ![AIMatrices Flux](docs/ai-matrices-flux/assets/20250214-ai-matrices-flux.png)
 
-## 文档
+## Documentation
+
+## FAQ
 
 
-## 常见问题
+## Getting Help
 
 
-## 获取帮助
+GitHub [Issues](https://github.com/guyoung/AIMatrices/issues) Submit bugs and feature requests
 
-GitHub [Issues](https://github.com/guyoung/AIMatrices/issues) 提交 bug 和功能请求
+## License
 
-## 许可证
-
-本项目采用 [Apache License 2.0](LICENSE)
+ [Apache License 2.0](LICENSE)
 
 

@@ -1,77 +1,86 @@
-AIMatrices DeepSeek
-=========================
+<div align="center">
 
-AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 开发的开源 DeepSeek 本地化部署工具，支持本地模型、远程 API 灵活切换，旨在为用户提供高效、灵活且低成本的 DeepSeek 大模型部署解决方案。
+# AIMatrices DeepSeek
+
+<p align="center">
+AIMatrices DeepSeek is an open source DeepSeek localization deployment tool based on AIMatrices, a lightweight AI application rapid construction platform, which supports flexible switching between local models and remote apis. This paper aims to provide users with an efficient, flexible and low-cost DeepSeek large model deployment solution.
+
+[English](README.md) / [简体中文](README_cn.md)
+</p>
 
 ![AIMatrices DeepSeek](../../docs/ai-matrices-deepseek/assets/20250215-ai-matrices-deepseek3.png)
 
+</div>
+<br />
+<br />
 
-## 最近更新
+
+## What's new
 
 * 2025-02-22
-  * 新增多轮聊天功能； 新增聊天记录保存至本地数据库功能；新增 Mermaid 图表预览及导出功能；新增 Markdwon 编辑及预览功能；
+  * Added multi-round dialogue function; Added the function of saving dialogue records to the local database; Added Mermaid chart preview and export functionality Added Markdwon editing and preview function
 
-## 功能特性
+## Features
 
-**开箱即用**
+**Out of the box**
 
-使用 Rust 编程语言开发，直接编译成二进制可执行文件，生成的可执行文件大小约为 40MB左右，无需安装任何外部依赖库，极大地简化了部署过程，无需使用容器即可在多种操作系统（如 Windows、macOS、Linux）上运行。
+Developed in the Rust programming language, it directly compiles into a binary executable file, and the resulting executable is about 40MB in size. There is no need to install any external dependencies, which greatly simplifies the deployment process, and it can run on multiple operating systems (such as Windows, macOS, Linux) without using containers.
 
-**广泛硬件平台支持**
+**Broad hardware platform support**
 
-通过 Rust 的 FFI 技术调用高性能的 llama.cpp 库，并以 Vulkan 作为后端进行模型推理，支持NVIDIA、AMD 、Intel等多种主流显卡，能够为模型推理提供显著的GPU加速效果，这种架构设计使得项目能够充分利用现代 GPU 的强大计算能力，同时保持良好的跨平台兼容性。
+It uses Rust FFI technology to call the high-performance lama.cpp library, and uses Vulkan as the back-end for model inference. It supports NVIDIA, AMD, Intel and other mainstream graphics cards, which can provide significant GPU acceleration effect for model inference. This architectural design allows the project to take full advantage of the powerful computing power of modern Gpus while maintaining good cross-platform compatibility.
 
-**多模型支持与灵活切换**
+**Multi-model support and flexible switching**
 
-支持多种 DeepSeek-R1-Distill-Qwen 模型版本，包括 1.5B、7B、14B 等，用户可以根据硬件配置选择合适的模型进行本地部署，以满足对数据隐私和性能的双重需求，同时支持通过远程 API 调用 DeepSeek 模型服务，无需本地硬件支持。用户可以根据实际需求灵活切换本地模型和远程 API，实现高效部署和资源优化。
+Multiple DeepSeek-R1-Distill-Qwen model versions are supported, including 1.5B, 7B, 14B, etc. Users can choose the appropriate model for local deployment according to their hardware configuration to meet the dual requirements of data privacy and performance. At the same time, it supports calling DeepSeek model service through remote API without local hardware support. Users can flexibly switch between local model and remote API according to actual needs to achieve efficient deployment and resource optimization.
 
-**安全高效**
+**Secure and efficient**
 
-使用 Rust 编程语言基于 AIMatrices 平台开发，确保应用在不同设备和操作系统上都能安全高效运行。Rust 的所有权系统和生命周期检查机制从根本上杜绝了空指针、数据竞争、内存泄漏等常见错误，使得程序在编译阶段就能发现大部分潜在的内存问题，从而减少运行时错误和崩溃。Rust 的性能接近于 C/C++，同时避免了垃圾回收机制的开销。它通过零成本抽象和高效的编译器优化，确保代码执行效率极高。
+The Rust programming language is developed based on AIMatrices platform to ensure that the application can run safely and efficiently on different devices and operating systems. Rust's ownership system and lifecycle checking fundamentally eliminate common errors such as null Pointers, data races, and memory leaks, allowing the majority of potential memory issues to be found at compile time, resulting in fewer runtime errors and crashes. Rust's performance is close to C/C++ while avoiding the overhead of garbage collection mechanisms. It ensures extremely efficient code execution through zero-cost abstractions and efficient compiler optimizations.
 
-**灵活配置与组件化**
+**Flexible configuration and componentization**
 
-采用 WebAssembly 组件技术，通过应用配置文件定义应用的组件、路由规则、环境变量等配置信息，实现高度灵活的组件化开发。例如，可通过配置 allowed_outbound_hosts 控制组件的外部请求权限，或通过文件映射实现静态资源托管。
+The WebAssembly component technology is used to realize highly flexible component-based development by defining application configuration information such as components, routing rules, and environment variables through application configuration files. For example, you can configure allowed_outbound_hosts to control a component's access to external requests, or file mappings to enable static resource hosting.
 
-**可扩展性与自定义能力**
+**Extensibility and customization**
 
-遵循 OpenAI API 规范进行模型 API 调用，通过标准化的接口参数，如输入文本、模型选择、温度参数等，实现对模型的调用和结果获取，除 DeepSeek 模型外，还支持使用其他OpenAI API 模型 。同时支持使用 JavaScript 代码进行自定义扩展，允许用户根据业务需求实现个性化的逻辑处理。
+Model API calls are made according to the OpenAI API specification, and the model calls and results are obtained through standardized interface parameters, such as input text, model selection, temperature parameters, etc. In addition to the DeepSeek model, other OpenAI API models are also supported. At the same time, it supports the use of JavaScript code for custom extension, allowing users to achieve personalized logic processing according to business needs.
 
-**AI聊天功能丰富**
+**AI Chat is feature-rich**
 
-支持多轮聊天、聊天记录保存至本地数据库；Mermaid 图表预览及导出、Markdwon 编辑及预览等功能。
+Support multi-round dialogue, dialogue records saved to the local database, Mermaid chart preview and export, Markdwon editing and preview functions.
 
-**用户界面友好**
+**User-friendly interface**
 
-支持多国语言切换，用户可以根据自语言偏好选择界面语言，确保使用体验的便捷性和舒适性。前端页面采用了响应式设计，能够根据设备屏幕大小自动调整布局和元素大小，确保在手机、平板等移动设备上也能提供清晰、流畅的视觉效果，提供更好的移动端体验。
+Multi-language switching is supported, and users can choose the interface language according to their language preferences to ensure the convenience and comfort of the use experience. The front-end page adopts a responsive design, which can automatically adjust the layout and element size according to the device screen size, ensuring that it can also provide clear and smooth visual effects on mobile phones, tablets and other mobile devices, providing a better mobile terminal experience.
 
-**完全开源**
+**Open source**
 
-AIMatrices DeepSeek 是一个开源项目，开发者可以自由访问其代码，进行定制和扩展。
+AIMatrices DeepSeek is an open source project that gives developers free access to its code for customization and extension.
 
 
-## 快速开始
+## Getting Started
 
-### 安装
+### Install
 
-#### 方式一：直接下载可执行文件
+#### 1.Download executable files directly
 
-从 AIMatrices [GitHub Release](https://github.com/guyoung/AIMatrices/releases) 下载 ai-matrices-deepseek 对应系统版本，解压后即可使用
+From AIMatrices [GitHub Release](https://github.com/guyoung/AIMatrices/releases) to download the ai-matrices-deepseek corresponding system version, after decompression can be used
 
-#### 方式二：源码编译
+#### 2.Source code build
 
-编译前提条件是需要安装 Rust 环境
+A prerequisite for build is the installation of the Rust environment
 
 ```shell
 
 
 git clone https://github.com/guyoung/AIMatrices.git
 
-## 编译 AIMatrices DeepSeek 主程序
+## Build AIMatrices DeepSeek main program
 cd AIMatrices/packages/ai-matrices-deepseek
 cagro build -- release
 
-## 编译 AIMatrices WebAssembly 组件
+## Build AIMatrices WebAssembly components
 cd AIMatrices/components/llm-handler-component
 cargo component build --release
 cd AIMatrices/components/llm-local-handler-component
@@ -80,17 +89,17 @@ cd AIMatrices/components/static-file-handler-component
 cargo component build --release
 ```
 
-### 下载模型
+### Download model file
 
-* DeepSeek-R1-Distill-Qwen-7B-GGUF
+* DeepSeek-R1-Distill-Qwen-7B-GGUF 
     * https://huggingface.co/lmstudio-community/DeepSeek-R1-Distill-Qwen-7B-GGUF/DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf
     * mirror: https://hf-mirror.com/lmstudio-community/DeepSeek-R1-Distill-Qwen-7B-GGUF/DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf
 
-可以根据运行计算机实际情况，选择其他模型
+Other models can be selected according to the actual situation of the running computer
 
-### 配置
+### Configuration
 
-如需运行本地模型，需要修改应用配置文件中本地模型相关信息，打开 app_data 目录下 app-config.json 文件，修改模型路径。
+To run a local model, you need to change the local model information in the application config file by opening the app-config.json file in the app_data directory and changing the model path.
 
 ```json
 {
@@ -103,13 +112,13 @@ cargo component build --release
     },
     "source": {
       "content_type": "application/wasm",
-      "source": "./app_data/components/ai_matrices_llm_local_handler_component.wasm"
+      "source": "./app_data/components/http_llm_local_handler_component.wasm"
     }
 }
 ```
-local/DeepSeek-R1 为 model_id，值为模型所在路径。
+local/DeepSeek-R1 is the model_id, and the value is the path of the model.
 
-可以同时配置多个本模型。
+Multiple models can be configured at the same time.
 ```json
 {
   "local_llm_models": {
@@ -119,17 +128,17 @@ local/DeepSeek-R1 为 model_id，值为模型所在路径。
 }
 ```
 
-如为源码编译安装，还需修改 WebAssembly 组件文件位置
+If you want to build from source code, you will also need to change the location of the WebAssembly component file
 ```json
 {
   "source": {
     "content_type": "application/wasm",
-    "source": "./app_data/components/ai_matrices_llm_local_handler_component.wasm"
+    "source": "./app_data/components/http_llm_local_handler_component.wasm"
   }
 }
 ```
 
-打开 app_data/codes/deepseek-api 目录下 index.js 文件，修改本地模型和远程 API 配置信息。
+Open the index.js file in app_data/codes/deepseek-api directory and change the local model and remote API configuration information.
 ```javascript
 const models = {
   "local/deepseek-r1": {
@@ -172,9 +181,9 @@ const models = {
 
 ```
 
-key 为 model_id，local 值 true 为本地模型，本地模型 model_id 与 name 保持一致，远程 API model 和 url 查看 API 文档，远程 API 需配置 api_key。
+key is model_id, local value true is the local model, the local model model_id is consistent with the name, remote API model and url view API documentation, remote API needs to configure api_key.
 
-如果使用其他网址 API， 需修改 deepseek-api 组件 allowed_outbound_hosts 值，打开 app_data 目录下 app-config.json 文件。
+If you are using a different URL API, change the deepseek-api component allowed_outbound_hosts value and open the app-config.json file in the app_data directory.
 
 ```json
 {
@@ -193,15 +202,15 @@ key 为 model_id，local 值 true 为本地模型，本地模型 model_id 与 na
   },
   "source": {
     "content_type": "application/wasm",
-    "source": "../../target/wasm32-wasip1/release/ai_matrices_llm_handler_component.wasm"
+    "source": "../../target/wasm32-wasip1/release/http_llm_local_handler_component.wasm"
   }
 }
 ```
 
 
-### 运行应用
+### Run
 
-Windows 命令行运行
+Windows Command-line run
 ```shell
 ai-matrices-deepseek-windows-amd64.exe
 ```
@@ -214,26 +223,26 @@ Linux 命令行运行
 
 ![AIMatrices DeepSeek](../../docs/ai-matrices-deepseek/assets/20250215-ai-matrices-deepseek.png)
 
-命令行参数：
-* -i,--ip <port_number>: 指定服务器监听的 IP 地址，默认为 127.0.0.0。
+Command-line arguments:
+* -i,--ip <port_number>: Specifies the IP address that the server should listen on; default is 127.0.0.0.
   * example: --ip 0.0.0.0
-* -p,--port <port_number>: 指定服务器监听的端口号，默认为 21500。
+* -p,--port <port_number>: Specifies the port on which the server should listen; default is 21500.
   * example: --port 3000
-* --appdir <appdir>: 指定工作目录，默认值为 ./app_data
-  * example：--app-dir ./dir1
-* --appconfig <appconfig>: 指定应用配置文件，默认值为 ./app_data/app-config.json
-  * example：--appconfig ./dir1/config.json
-* --user <username>: 指定登录用户名，默认值为空
-  * example：--user admin
-* --pass <password>: 指定登录用户密码，默认值为空
-  * example：--pass admin
-* --version: 打印系统版本号并退出。
-* --help: 查看命令的使用帮助和参数说明。
+* --appdir <appdir>: Specifies the working directory, default is ./app_data
+  * example:--app-dir ./dir1
+* --appconfig <appconfig>:  Specifies the app configuration file, default is ./app_data/app-config.json
+  * example:--appconfig ./dir1/config.json
+* --user <username>: Specifies the login username; default is empty
+  * example:--user admin
+* --pass <password>:Specifies the password of the logged-in user; the default is empty
+  * example:--pass admin
+* --version: Prints the system version number and exits.
+* --help: See the instructions and arguments for the command.
 
 ```shell
 ai-matrices-deepseek-windows-amd64.exe -i 0.0.0.0 -p 8080 --user admin -- pass admin
 ```
 
-## 其它
+## Other
 
-AIMatrices DeepSeek 前端程序使用了 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web) 项目代码。
+AIMatrices DeepSeek Front end program use [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web) project code.

@@ -45,13 +45,13 @@ AIMatrices 是一个开源项目，开发者可以自由访问其代码，进行
 
 ## 应用案例
 
-### [AIMatrices DeepSeek](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-deepseek)
+### [AIMatrices DeepSeek](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-deepseek/README_cn.md)
 
 AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 开发的开源 DeepSeek 本地化部署工具，支持本地模型、远程 API 灵活切换，旨在为用户提供高效、灵活且低成本的 DeepSeek 大模型部署解决方案。
 
 ![AIMatrices DeepSeek](docs/ai-matrices-deepseek/assets/20250215-ai-matrices-deepseek3.png)
 
-### [AIMatrices Flux](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-flux)
+### [AIMatrices Flux](https://github.com/guyoung/AIMatrices/tree/main/packages/ai-matrices-flux/README_cn.md)
 
 AIMatrices Flux 是一款基于轻量级 AI 应用快速构建平台 AIMatrices 使用 Flux 模型开发的开文生图应用程序，支持提示词自动翻译功能。
 

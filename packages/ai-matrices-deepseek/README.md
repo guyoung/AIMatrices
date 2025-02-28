@@ -18,7 +18,9 @@ AIMatrices DeepSeek is an open source DeepSeek localization deployment tool base
 ## What's new
 
 * 2025-02-22
-  * Added multi-round dialogue function; Added the function of saving dialogue records to the local database; Added Mermaid chart preview and export functionality Added Markdwon editing and preview function
+  * Added multi-round dialogue feature; Added the feature of saving dialogue records to the local database; Added Mermaid chart preview and export feature;Added Markdwon editing and preview feature
+* 2025-02-28
+  * Added Ollama Api interface call feature; Added Python code directly run and edit feature; Added Html code directly browse and edit feature
 
 ## Features
 
@@ -48,7 +50,7 @@ Model API calls are made according to the OpenAI API specification, and the mode
 
 **AI Chat is feature-rich**
 
-Support multi-round dialogue, dialogue records saved to the local database, Mermaid chart preview and export, Markdwon editing and preview functions.
+The model API call was carried out according to the OpenAI API specification, and the model call and result acquisition were realized through standardized interface parameters, such as input text, model selection, temperature parameters, etc. In addition to the DeepSeek model, other OpenAI API models were also supported. Ollama Api interface calls are also supported to interact with the local model. At the same time, it supports the use of JavaScript code for custom extension, allowing users to achieve personalized logic processing according to business needs.
 
 **User-friendly interface**
 

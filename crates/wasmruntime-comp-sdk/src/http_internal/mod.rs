@@ -722,7 +722,6 @@ where
         blocking_write_util(&request_stream, body_buffer)
             .map_err(|_| SendError::RequestConversion("Failed to write HTTP body".into()))?;
 
-
         //The OutputStream is a child resource: it must be dropped
         //before the parent OutgoingBody resource is dropped (or finished),
         //otherwise the OutgoingBody drop or finish will trap.
@@ -732,11 +731,7 @@ where
             .map_err(|_| SendError::RequestConversion("Failed to finalize HTTP body".into()))?;
     }
 
-
-
     let response = executor::outgoing_request_send_sync(request).map_err(SendError::Http)?;
-
-
 
     let body = response
         .into_body_sync()

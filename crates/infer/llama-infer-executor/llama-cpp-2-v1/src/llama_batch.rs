@@ -51,8 +51,6 @@ impl LlamaBatch {
         seq_ids: &[i32],
         logits: bool,
     ) -> Result<(), BatchAddError> {
-
-
         if self.allocated
             < usize::try_from(self.n_tokens() + 1).expect("cannot fit n_tokens into a usize")
         {

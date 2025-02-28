@@ -18,6 +18,16 @@ use rquickjs::{
 
 use llrt_utils::module::{export_default, ModuleInfo};
 
+pub fn init<'js>(ctx: &Ctx<'js>) -> Result<()> {
+    let globals = ctx.globals();
+
+    blob::init(ctx, &globals)?;
+
+    Class::<file::File>::define(&globals)?;
+
+    Ok(())
+}
+
 pub struct HttpModule;
 
 impl ModuleDef for HttpModule {

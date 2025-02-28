@@ -25,8 +25,12 @@ general = [
     "variables",
     "key-value",
     "http",
+
+    "openai",
+    "ollama",
+
     "dbs",
-    "openai"
+
 
 ]
 
@@ -49,8 +53,12 @@ zlib = ["qjsruntime-module-zlib"]
 variables = ["qjsruntime-module-variables"]
 key-value = ["qjsruntime-module-key-value"]
 http= ["qjsruntime-module-http"]
-dbs = ["qjsruntime-module-dbs"]
+
 openai = ["qjsruntime-module-openai"]
+ollama = ["qjsruntime-module-ollama"]
+
+dbs = ["qjsruntime-module-dbs"]
+
 
 [dependencies]
 llrt_utils = { path = "../../llrt/llrt_utils", default-features =  false }
@@ -73,5 +81,8 @@ qjsruntime-module-zlib = {path = "../qjsruntime-module-zlib", optional = true }
 qjsruntime-module-variables = {path = "../qjsruntime-module-variables", optional = true }
 qjsruntime-module-key-value = {path = "../qjsruntime-module-key-value", optional = true }
 qjsruntime-module-http = {path = "../qjsruntime-module-http", optional = true }
-qjsruntime-module-dbs = {path = "../qjsruntime-module-dbs", optional = true }
+
 qjsruntime-module-openai = {path = "../qjsruntime-module-openai", optional = true }
+qjsruntime-module-ollama = {path = "../qjsruntime-module-ollama", optional = true }
+
+qjsruntime-module-dbs = {path = "../qjsruntime-module-dbs", optional = true }

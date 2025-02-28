@@ -1,28 +1,37 @@
 <template>
-    <div v-if="props.visible" class="mask">
-        <div class="mask-content">
-            <NCard title="Markdown" hoverable closable @close="handleClose">
-                <MdEditor v-model="props.content" />
-            </NCard>
-        </div>
-    </div>
+    <v-dialog v-model="show" width="auto" min-width="80vw" min-height="80vh" :fullscreen="fullscreen" scrollable>
+        <v-card>
+            <v-card-title>
+                <v-toolbar height="36">
+                    <v-toolbar-title>Markdown</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn v-if="fullscreen" @click="fullscreen = false" size="32">
+                        <v-icon :size="24">mdi-window-restore</v-icon>
+                    </v-btn>
+                    <v-btn v-if="!fullscreen" @click="fullscreen = true" size="32">
+                        <v-icon :size="24">mdi-window-maximize</v-icon>
+                    </v-btn>
+                    <v-btn @click="show = false" size="32">
+                        <v-icon :size="24">mdi-close</v-icon>
+                    </v-btn>
+                </v-toolbar>
+            </v-card-title>
+            <v-card-text class="px-2">
+                <MdEditor v-model="code" style="height: 100%;" />
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script setup lang='ts'>
-import type { CSSProperties } from 'vue'
-import { onMounted, computed, defineProps, ref } from 'vue'
-
-import { NCard, } from 'naive-ui'
-
-// NCard, NDataTable, NDivider, NInput, NList, NListItem,
-// NPopconfirm, NSpace, NTabPane, NTabs, NThing, useMessage
+import { computed, defineProps, ref, onMounted } from 'vue'
 
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 
 interface Props {
     visible: boolean,
-    content: string
+    code: string
 }
 
 interface Emit {
@@ -33,9 +42,17 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<Emit>()
 
+const fullscreen = ref(false)
+
 const show = computed({
     get: () => props.visible,
     set: (visible: boolean) => emit('update:visible', visible),
+})
+
+const code = ref("")
+
+onMounted(async () => {
+    code.value = props.code
 })
 
 
@@ -46,25 +63,17 @@ const handleClose = () => {
 
 </script>
 <style>
-.mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+.preview-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
 }
 
-.mask-content {
-    min-width: 80%;
-    min-height: 300px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.preview-iframe {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #ddd;
+  background-color: #fff;
 }
 </style>

@@ -80,8 +80,11 @@ impl Default for ModuleBuilder {
             .with_module(crate::modules::variables::VariablesModule)
             .with_module(crate::modules::key_value::KeyValueModule)
             .with_module(crate::modules::http::HttpModule)
-            .with_module(crate::modules::dbs::DbsModule)
+
             .with_module(crate::modules::openai::OpenAiModule)
+
+
+            .with_module(crate::modules::dbs::DbsModule)
     }
 }
 

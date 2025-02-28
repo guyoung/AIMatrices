@@ -19,14 +19,12 @@ pub trait LlmInferEngine: Send + Sync {
         params: llm_infer::InferencingParams,
     ) -> Result<llm_infer::InferencingResult, llm_infer::Error>;
 
-
     async fn infer_chat(
         &self,
         model_id: String,
         messages: Vec<(String, String)>,
         params: llm_infer::InferencingParams,
     ) -> Result<llm_infer::InferencingResult, llm_infer::Error>;
-
 
     async fn generate_embeddings(
         &self,

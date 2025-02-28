@@ -18,7 +18,6 @@ pub mod wit {
     pub use wasmruntime::comp;
 }
 
-
 /// Needed by the export macro
 ///
 /// See [this commit](https://github.com/bytecodealliance/wit-bindgen/pull/394/commits/9d2ea88f986f4a883ba243449e3a070cac18958e) for more info.

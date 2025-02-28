@@ -61,8 +61,18 @@ onMounted(async() => {
 })
 
 const model = computed({
-  get() {
-    return appStore.model
+   get() {
+    if (appStore.model) {
+      return appStore.model
+    } else {   
+      if (modelOptions.value && modelOptions.value.length > 0) {
+        appStore.setModel(modelOptions.value[0].value)
+
+        return modelOptions.value[0].value
+      }
+      
+    }
+    
   },
   set(value: String) {
     appStore.setModel(value)

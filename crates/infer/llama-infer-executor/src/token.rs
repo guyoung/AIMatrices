@@ -80,13 +80,9 @@ fn generate_infer_tokens_inner(
             //}
              ***/
 
-
     if tokens_list.len() >= params.max_tokens as usize {
         bail!("Maximum token length is smaller than the prompt...");
     }
-
-
-
 
     Ok(tokens_list)
 }

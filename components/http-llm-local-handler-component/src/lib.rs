@@ -33,32 +33,23 @@ async fn handle_chat(req: Request, _params: Params) -> anyhow::Result<impl IntoR
 
     let mut messages: Vec<(String, String)> = Vec::new();
 
-
     for message in &req.messages {
-
         match message.role {
             MessageRole::system => match &message.content {
-                Content::Text(text) => {
-                    messages.push(("system".to_string(), text.to_string()))
-                },
+                Content::Text(text) => messages.push(("system".to_string(), text.to_string())),
                 _ => {}
             },
             MessageRole::user => match &message.content {
-                Content::Text(text) => {
-                    messages.push(("user".to_string(), text.to_string()))
-                },
+                Content::Text(text) => messages.push(("user".to_string(), text.to_string())),
                 _ => {}
             },
             MessageRole::assistant => match &message.content {
-                Content::Text(text) => {
-                    messages.push(("assistant".to_string(), text.to_string()))
-                },
+                Content::Text(text) => messages.push(("assistant".to_string(), text.to_string())),
                 _ => {}
             },
             _ => {}
         }
     }
-
 
     let options = llm_infer::InferencingParams {
         max_tokens: req.max_tokens.unwrap_or(256) as u32,

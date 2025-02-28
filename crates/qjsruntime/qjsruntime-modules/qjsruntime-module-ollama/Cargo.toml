@@ -1,0 +1,32 @@
+[package]
+name = "qjsruntime-module-ollama"
+version = "0.1.0"
+authors = ["guyoung"]
+edition = "2021"
+
+[dependencies]
+llrt_utils = { path = "../../llrt/llrt_utils", default-features = false }
+llrt_json = { path = "../../llrt/llrt_json" }
+
+wasmruntime-comp-sdk = { path = "../../../wasmruntime-comp-sdk" }
+
+rquickjs = { workspace = true, default-features = false }
+
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror= { workspace = true }
+
+url = { workspace = true }
+
+schemars = { version = "0.8", features = ["preserve_order"] }
+
+
+calc = { version = "0.4.0", optional = true }
+
+[features]
+default = []
+stream = []
+rustls = []
+headers = []
+tool-implementations = ["calc"]

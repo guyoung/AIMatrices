@@ -526,21 +526,13 @@ onMounted(async () => {
 
   if (chatStore.conversations.length == 0) {
     await chatStore.addConversation({ title: t('chat.newChat'), isEdit: false, seq_num: new Date().getTime() })
-  }
+  } 
 
-  if (!route.params.conversationID) {
-    await chatStore.setActiveConversation(chatStore.conversations[0].id)
-  }
 
-  const filters = chatStore.conversations.filter(x => x.id == chatStore.active);
+  await activeConversation()
 
-  if (filters.length == 0) {
-    await chatStore.setActiveConversation(chatStore.conversations[0].id)
-  }
-
-  conversationRef.value = filters[0]
-
-  await chatStore.batchUpdateMessage(chatStore.active, false)
+  await updateMessages()
+ 
 
   scrollToBottom()
 
@@ -552,7 +544,28 @@ onUnmounted(() => {
   if (loadingRef.value)
     controller.abort()
 })
+/*** ***/
+async function activeConversation() {
+  if (!route.params.conversationID) {
+    await chatStore.setActiveConversation(chatStore.conversations[0].id)
+  } 
 
+  const filters = chatStore.conversations.filter(x => x.id == chatStore.active);
+
+  if (filters.length == 0) {
+    await chatStore.setActiveConversation(chatStore.conversations[0].id)
+
+    conversationRef.value = chatStore.conversations[0]
+  } else {
+    conversationRef.value = filters[0]
+  } 
+}
+
+async function updateMessages() {
+  await chatStore.batchUpdateMessages(chatStore.active, false)
+}
+
+/*** ***/
 
 </script>
 

@@ -167,12 +167,24 @@ impl dbs::HostConnection for InstanceState {
         &mut self,
         connection: Resource<dbs::Connection>,
         sql: String,
+        params: Option<Vec<u8>>,
     ) -> anyhow::Result<Result<Vec<u8>, dbs::Error>> {
         let (namespace, database) = self.get_conn(connection).await?;
 
+        let params = if let Some(params) = params {
+            let params: Value =
+                serde_json::from_slice(&params).map_err(|_| dbs::Error::BadParameter)?;
+
+            let _ = params.as_object().ok_or(dbs::Error::BadParameter)?;
+
+            Some(params)
+        } else {
+            None
+        };
+
         let res = self
             .engine
-            .query(namespace, database, sql)
+            .query(namespace, database, sql, params)
             .await
             .map_err(|_| dbs::Error::OperationFailed);
 

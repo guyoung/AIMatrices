@@ -50,10 +50,7 @@ impl<T: Into<String>> From<T> for HttpTriggerRouteConfig {
 #[serde(deny_unknown_fields, rename_all = "lowercase", tag = "type")]
 pub enum HttpExecutorType {
     /// The component implements an HTTP based interface.
-    ///
-    /// This can be either `fermyon:spin/inbound-http` or `wasi:http/incoming-handler`
     #[default]
-    #[serde(alias = "spin")]
     Http,
     /// The component implements the Wagi CGI interface.
     Wagi(WagiTriggerConfig),
@@ -83,6 +80,7 @@ impl Default for WagiTriggerConfig {
     fn default() -> Self {
         /// This is the default Wagi entrypoint.
         const WAGI_DEFAULT_ENTRYPOINT: &str = "_start";
+
         const WAGI_DEFAULT_ARGV: &str = "${SCRIPT_NAME} ${ARGS}";
 
         Self {

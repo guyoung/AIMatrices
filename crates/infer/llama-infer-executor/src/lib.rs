@@ -96,5 +96,3 @@ pub struct EmbeddingsResult {
 
     pub speed: f32,
 }
-
-

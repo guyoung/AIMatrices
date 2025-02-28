@@ -1,0 +1,32 @@
+[package]
+name = "http-ollama-handler-component"
+description = "AIMatrices http ollama handler"
+version = "0.2.0"
+authors = ["guyoung"]
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/guyoung/AIMatrices"
+
+[lib]
+crate-type = ["cdylib"]
+
+[package.metadata.component]
+package = "components:http-ollama-handler-component"
+
+[package.metadata.component.dependencies]
+
+[dependencies]
+wasmruntime-comp-sdk = { path = "../../crates/wasmruntime-comp-sdk", features = ["dbs"] }
+
+qjsruntime-module-ollama = { path = "../../crates/qjsruntime/qjsruntime-modules/qjsruntime-module-ollama"}
+qjsruntime-module-openai = { path = "../../crates/qjsruntime/qjsruntime-modules/qjsruntime-module-openai"}
+
+wit-bindgen-rt = {workspace = true}
+
+anyhow = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+uuid = { workspace = true, features = ["v4"] }
+
+http = { workspace = true }

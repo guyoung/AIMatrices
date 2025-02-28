@@ -10,6 +10,9 @@ import { copyToClip } from '@/utils/copy'
 
 import MarkdownEditor from '@/addons/markdown-editor/index.vue'
 import MermaidEditor from '@/addons/mermaid-editor/index.vue'
+import HtmlEditor from '@/addons/html-editor/index.vue'
+import CodeRunner from '@/addons/code-runner/index.vue'
+
 
 interface Props {
   inversion?: boolean
@@ -27,7 +30,10 @@ const textRef = ref<HTMLElement>()
 
 const showMarkdownEditor = ref(false)
 const showMermaidEditor = ref(false)
+const showCodeRunner = ref(false)
+const showHtmlEditor = ref(false)
 const handledCode = ref("")
+const handledCodeLanage = ref("")
 
 const mdi = new MarkdownIt({
   html: false,
@@ -73,6 +79,12 @@ function highlightBlock(str: string, language?: string, language2?: string) {
   }
   else if ((language && language.toLowerCase() == 'mermaid') || (language2 && language2.toLowerCase() == 'mermaid')) {
     html += `<span class="code-block-header__mermaid hover:cursor-pointer">${language || language2}</span>`
+  }
+  else if ((language && language.toLowerCase() == 'html') || (language2 && language2.toLowerCase() == 'html')) {
+    html += `<span class="code-block-header__html hover:cursor-pointer">${language || language2}</span>`
+  }
+  else if ((language && language.toLowerCase() == 'python') || (language2 && language2.toLowerCase() == 'python')) {
+    html += `<span class="code-block-header__python hover:cursor-pointer">${language || language2}</span>`
   }
   else {
     html += `<span class="code-block-header__lang">${language}</span>`
@@ -124,9 +136,41 @@ function addMermaidEvents() {
     btns.forEach((btn) => {
       btn.addEventListener('click', () => {
         const code = btn.parentElement?.nextElementSibling?.textContent
-        if (code) {       
+        if (code) {
           handledCode.value = code
           showMermaidEditor.value = true
+        }
+      })
+    })
+  }
+}
+
+function addHtmlEvents() {
+  if (textRef.value) {
+    const btns = textRef.value.querySelectorAll('.code-block-header__html')
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const code = btn.parentElement?.nextElementSibling?.textContent
+        if (code) {
+          handledCode.value = code
+          handledCodeLanage.value = "html"
+          showHtmlEditor.value = true
+        }
+      })
+    })
+  }
+}
+
+function addCodeRunEvents() {
+  if (textRef.value) {
+    let btns = textRef.value.querySelectorAll('.code-block-header__python')
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const code = btn.parentElement?.nextElementSibling?.textContent
+        if (code) {
+          handledCode.value = code
+          handledCodeLanage.value = "python"
+          showCodeRunner.value = true
         }
       })
     })
@@ -153,8 +197,27 @@ function removeMarkdownEvents() {
 
 function removeMermaidEvents() {
   if (textRef.value) {
-    const copyBtn = textRef.value.querySelectorAll('.code-block-header__mermaid')
-    copyBtn.forEach((btn) => {
+    const btns = textRef.value.querySelectorAll('.code-block-header__mermaid')
+    btns.forEach((btn) => {
+      btn.removeEventListener('click', () => { })
+    })
+  }
+}
+
+function removeHtmlEvents() {
+  if (textRef.value) {
+    let btns = textRef.value.querySelectorAll('.code-block-header_html')
+    btns.forEach((btn) => {
+      btn.removeEventListener('click', () => { })
+    })
+  }
+}
+
+
+function removeCodeRunEvents() {
+  if (textRef.value) {
+    let btns = textRef.value.querySelectorAll('.code-block-header__python')
+    btns.forEach((btn) => {
       btn.removeEventListener('click', () => { })
     })
   }
@@ -164,18 +227,24 @@ onMounted(() => {
   addCopyEvents()
   addMarkdownEvents()
   addMermaidEvents()
+  addHtmlEvents()
+  addCodeRunEvents()
 })
 
 onUpdated(() => {
   addCopyEvents()
   addMarkdownEvents()
   addMermaidEvents()
+  addHtmlEvents()
+  addCodeRunEvents()
 })
 
 onUnmounted(() => {
   removeCopyEvents()
   removeMarkdownEvents()
   removeMermaidEvents()
+  removeHtmlEvents()
+  removeCodeRunEvents()
 })
 </script>
 
@@ -189,8 +258,10 @@ onUnmounted(() => {
       <div v-else class="whitespace-pre-wrap" v-text="text" />
     </div>
   </div>
-  <MarkdownEditor :content="handledCode" v-model:visible="showMarkdownEditor" />
-  <MermaidEditor :content="handledCode" v-model:visible="showMermaidEditor" />
+  <MarkdownEditor :code="handledCode" v-if="showMarkdownEditor" v-model:visible="showMarkdownEditor" />
+  <MermaidEditor :code="handledCode"  v-if="showMermaidEditor" v-model:visible="showMermaidEditor" />
+  <HtmlEditor :code="handledCode"   v-if="showHtmlEditor" v-model:visible="showHtmlEditor" />
+  <CodeRunner :code="handledCode":language="handledCodeLanage"  v-if="showCodeRunner" v-model:visible="showCodeRunner" />
 </template>
 
 <style lang="less">

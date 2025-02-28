@@ -32,8 +32,7 @@ mod modules {
     #[cfg(feature = "zlib")]
     pub use qjsruntime_module_zlib as zlib;
 
-    #[cfg(feature = "dbs")]
-    pub use qjsruntime_module_dbs as dbs;
+
     #[cfg(feature = "http")]
     pub use qjsruntime_module_http as http;
     #[cfg(feature = "key-value")]
@@ -43,5 +42,10 @@ mod modules {
 
     #[cfg(feature = "openai")]
     pub use qjsruntime_module_openai as openai;
+    #[cfg(feature = "ollama")]
+    pub use qjsruntime_module_ollama as ollama;
+
+    #[cfg(feature = "dbs")]
+    pub use qjsruntime_module_dbs as dbs;
 }
 pub use llrt_utils::time;

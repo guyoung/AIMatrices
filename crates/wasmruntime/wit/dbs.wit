@@ -15,7 +15,7 @@ interface dbs {
 
         select: func(table: string, uid: string) -> result<payload, error>;
 
-        query: func(sql: string) -> result<payload, error>;
+        query: func(sql: string, params: option<payload>,) -> result<payload, error>;
 
     }
 

@@ -84,7 +84,6 @@ impl<'a> LlamaContext<'a> {
         // create a llama_batch with size 512
         // we use this object to submit token data for decoding
 
-
         /***
         let mut batch = LlamaBatch::new(512, 1);
 
@@ -133,13 +132,9 @@ impl<'a> LlamaContext<'a> {
         prompt: &str,
         params: &InferencingParams,
     ) -> anyhow::Result<InferencingResult> {
-        let tokens_list = generate_infer_tokens(
-            self.0.model,
-            prompt,
-            params
-        )?;
+        let tokens_list = generate_infer_tokens(self.0.model, prompt, params)?;
 
-        self.infer_inner(tokens_list,params)
+        self.infer_inner(tokens_list, params)
     }
 
     pub fn infer_chat(
@@ -147,13 +142,9 @@ impl<'a> LlamaContext<'a> {
         messages: Vec<(String, String)>,
         params: &InferencingParams,
     ) -> anyhow::Result<InferencingResult> {
-        let tokens_list = generate_infer_tokens_chat(
-            self.0.model,
-            messages,
-            params
-        )?;
+        let tokens_list = generate_infer_tokens_chat(self.0.model, messages, params)?;
 
-        self.infer_inner(tokens_list,params)
+        self.infer_inner(tokens_list, params)
     }
 
     fn infer_inner(

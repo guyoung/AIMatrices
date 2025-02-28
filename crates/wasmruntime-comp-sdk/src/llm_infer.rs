@@ -23,7 +23,10 @@ pub fn infer(model_id: &str, prompt: &str) -> Result<InferencingResult, Error> {
     llm_infer::infer(model_id, prompt, None)
 }
 
-pub fn infer_chat(model_id: &str, messages: &[(String, String)]) -> Result<InferencingResult, Error> {
+pub fn infer_chat(
+    model_id: &str,
+    messages: &[(String, String)],
+) -> Result<InferencingResult, Error> {
     llm_infer::infer_chat(model_id, messages, None)
 }
 

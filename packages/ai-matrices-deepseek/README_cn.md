@@ -19,6 +19,8 @@ AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatri
 
 * 2025-02-22
   * 新增多轮对话功能； 新增对话记录保存至本地数据库功能；新增 Mermaid 图表预览及导出功能；新增 Markdwon 编辑及预览功能
+* 2025-02-28
+  * 新增 Ollama Api 接口调用功能，实现与本地模型交互； 新增 Python 代码直接运行及编辑功能；新增 Html 代码直接浏览及编辑功能
 
 ## 功能特性
 
@@ -44,11 +46,11 @@ AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatri
 
 **可扩展性与自定义能力**
 
-遵循 OpenAI API 规范进行模型 API 调用，通过标准化的接口参数，如输入文本、模型选择、温度参数等，实现对模型的调用和结果获取，除 DeepSeek 模型外，还支持使用其他OpenAI API 模型 。同时支持使用 JavaScript 代码进行自定义扩展，允许用户根据业务需求实现个性化的逻辑处理。
+遵循 OpenAI API 规范进行模型 API 调用，通过标准化的接口参数，如输入文本、模型选择、温度参数等，实现对模型的调用和结果获取，除 DeepSeek 模型外，还支持使用其他OpenAI API 模型；还支持 Ollama Api 接口调用， 实现与本地模型交互。同时支持使用 JavaScript 代码进行自定义扩展，允许用户根据业务需求实现个性化的逻辑处理。
 
 **AI聊天功能丰富**
 
-支持多轮对话、对话记录保存至本地数据库、Mermaid 图表预览及导出、Markdwon 编辑及预览等功能。
+支持多轮对话、对话记录保存至本地数据库；支持 Mermaid 图表预览及导出、Markdwon 编辑及预览等功能；支持 Python 代码直接运行及编辑、 Html 代码直接浏览及编辑等功能。
 
 **用户界面友好**
 
@@ -138,7 +140,7 @@ local/DeepSeek-R1 为 model_id，值为模型所在路径。
 }
 ```
 
-打开 app_data/codes/deepseek-api 目录下 index.js 文件，修改本地模型和远程 API 配置信息。
+打开 app_data/codes/deepseek-api 目录下 config.js 文件，修改本地模型和远程 API 配置信息。
 ```javascript
 const models = {
   "local/deepseek-r1": {
@@ -146,6 +148,13 @@ const models = {
     model: "local/DeepSeek-R1", 
     local: true,
     url: "/service/deepseek-local",
+    api_key: ""
+  },
+  "ollama-qwen": {
+    name: "Ollama qwen2.5",
+    model: "qwen2.5",
+    local: false,
+    url: "/service/ollama-api",
     api_key: ""
   },
   "deepseek-chat": {

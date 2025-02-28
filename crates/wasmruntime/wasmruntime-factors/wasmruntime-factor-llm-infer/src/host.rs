@@ -74,8 +74,6 @@ impl llm_infer::Host for InstanceState {
         Ok(result.map_err(Into::into))
     }
 
-
-
     async fn generate_embeddings(
         &mut self,
         model_id: String,

@@ -72,6 +72,7 @@ impl Default for Config {
         inner.async_support(true);
         inner.epoch_interruption(true);
         inner.wasm_component_model(true);
+
         // If targeting musl, disable native unwind to address this issue:
         // https://github.com/fermyon/spin/issues/2889
         // TODO: remove this when wasmtime is updated to >= v27.0.0
@@ -95,15 +96,33 @@ impl Default for Config {
                 // globals, memories, etc. Instance allocations are relatively small and are largely inconsequential
                 // compared to other runtime state, but a number needs to be chosen here so a relatively large threshold
                 // of 10MB is arbitrarily chosen. It should be unlikely that any reasonably-sized module hits this limit.
+                /*** ***/
+                /***
                 .max_component_instance_size(
                     env("SPIN_WASMTIME_INSTANCE_SIZE", (10 * MB) as u32) as usize
                 )
+                ***/
+                .max_component_instance_size(
+                    env("SPIN_WASMTIME_INSTANCE_SIZE", (100 * MB) as u32) as usize
+                )
+                /*** ***/
+                /***
                 .max_core_instance_size(
                     env("SPIN_WASMTIME_CORE_INSTANCE_SIZE", (10 * MB) as u32) as usize
                 )
+                ***/
+                .max_core_instance_size(
+                    env("SPIN_WASMTIME_CORE_INSTANCE_SIZE", (100 * MB) as u32) as usize
+                )
+                /*** ***/
                 .max_core_instances_per_component(env("SPIN_WASMTIME_CORE_INSTANCE_COUNT", 200))
                 .max_tables_per_component(env("SPIN_WASMTIME_INSTANCE_TABLES", 20))
+                /*** ***/
+                /***
                 .table_elements(env("SPIN_WASMTIME_INSTANCE_TABLE_ELEMENTS", 100_000))
+                ***/
+                .table_elements(env("SPIN_WASMTIME_INSTANCE_TABLE_ELEMENTS", 655_350))
+                /*** ***/
                 // The number of memories an instance can have effectively limits the number of inner components
                 // a composed component can have (since each inner component has its own memory). We default to 32 for now, and
                 // we'll see how often this limit gets reached.

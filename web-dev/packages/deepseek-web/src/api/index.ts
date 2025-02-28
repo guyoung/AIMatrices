@@ -67,7 +67,7 @@ export function fetchChatAPIProcess<T = any>(
   }
 ) {
   const settingStore = useSettingStore()
-  
+
   let data: Record<string, any> = {
     model: params.model,
     messages: params.messages,
@@ -85,7 +85,7 @@ export function fetchChatAPIProcess<T = any>(
 
 
   return post<T>({
-    url: '/chat',
+    url: '/service/deepseek-api/chat/process',
     data,
     signal: params.signal,
   })
@@ -110,6 +110,30 @@ export function fetchVerify<T>(token: string) {
 
 export function fetchModels<T = any>() {
   return get<T>({
-    url: '/list-models',
+    url: '/service/deepseek-api/chat/list-models',
   })
+}
+
+
+export async function fetchCodeHandler(
+  data: string,
+  language: string
+) {
+
+  let url;
+
+  if (process.env.NODE_ENV === "development") {
+    url = import.meta.env.VITE_CONFIG_API_PROXY_URL + 'service/python-code-handler'
+  } else {
+    url = import.meta.env.VITE_CONFIG_API_URL + 'service/python-code-handler'
+  }
+
+  const res = await fetch(url, {
+    method: "POST",
+    body: data
+  })
+
+  let text = res.text()
+
+  return text
 }

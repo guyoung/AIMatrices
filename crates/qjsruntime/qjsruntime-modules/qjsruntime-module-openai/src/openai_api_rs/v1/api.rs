@@ -139,25 +139,18 @@ impl OpenAIClient {
         path: &str,
         body: &impl serde::ser::Serialize,
     ) -> Result<T, APIError> {
-
         let body = serde_json::to_vec(body).map_err(|e| APIError::CustomError {
             message: format!("{:?}", e),
         })?;
 
-
-
         let request = self.build_request(Method::Post, path, Some(body));
 
-
-
-        let response: Response =
-            wasmruntime_comp_sdk::http::send_sync(request).map_err(|e| {
-                println!("error: {:?}", e);
-                APIError::CustomError {
-                    message: format!("{:?}", e),
-                }
-            })?;
-
+        let response: Response = wasmruntime_comp_sdk::http::send_sync(request).map_err(|e| {
+            println!("error: {:?}", e);
+            APIError::CustomError {
+                message: format!("{:?}", e),
+            }
+        })?;
 
         self.handle_response(response)
     }

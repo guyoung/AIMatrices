@@ -171,6 +171,6 @@ function handleDownloadMarkdown(text: string) {
       </div>
     </div>
   </div>
-  <MarkdownEditor :content="props.text" v-model:visible="showMarkdownEditor" />
+  <MarkdownEditor :code="props.text" v-model:visible="showMarkdownEditor" />
 
 </template>

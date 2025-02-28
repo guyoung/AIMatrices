@@ -34,7 +34,7 @@ export const useChatStore = defineStore('chat-store', {
 
             try {
                 let res = await post({
-                    url: '/chat/add-conversation',
+                    url: '/service/deepseek-api/chat/history/add-conversation',
                     data: data
                 })
 
@@ -57,7 +57,7 @@ export const useChatStore = defineStore('chat-store', {
         async updateConversation(conversation: Chat.ChatConversation) {
             try {
                 await post({
-                    url: '/chat/update-conversation',
+                    url: '/service/deepseek-api/chat/history/update-conversation',
                     data: conversation
                 });
 
@@ -72,7 +72,7 @@ export const useChatStore = defineStore('chat-store', {
         async deleteConversation(conversation: Chat.ChatConversation) {
             try {
                 await post({
-                    url: '/chat/delete-conversation',
+                    url: '/service/deepseek-api/chat/history/delete-conversation',
                     data: conversation
                 });
 
@@ -86,7 +86,7 @@ export const useChatStore = defineStore('chat-store', {
         async deleteConversations() {
             try {
                 await post({
-                    url: '/chat/delete-conversations'
+                    url: '/service/deepseek-api/chat/history/delete-conversations'
                 });
 
                 await this.fetchConversations();
@@ -118,7 +118,7 @@ export const useChatStore = defineStore('chat-store', {
 
             try {
                 let res = await post({
-                    url: '/chat/add-message',
+                    url: '/service/deepseek-api/chat/history/add-message',
                     data: data
                 });
 
@@ -140,7 +140,7 @@ export const useChatStore = defineStore('chat-store', {
         async updateMessage(message: Chat.ChatMessage) {
             try {
                 await post({
-                    url: '/chat/update-message',
+                    url: '/service/deepseek-api/chat/history/update-message',
                     data: message
                 });
 
@@ -151,10 +151,10 @@ export const useChatStore = defineStore('chat-store', {
             }
         },
 
-        async batchUpdateMessage(conversation_id: string, loading: boolean) {
+        async batchUpdateMessages(conversation_id: string, loading: boolean) {
             try {
                 await post({
-                     url: `/chat/batch-update-messages?conversation=${conversation_id}&loading=${loading}`
+                     url: `/service/deepseek-api/chat/history/batch-update-messages?conversation=${conversation_id}&loading=${loading}`
              
                 });
 
@@ -170,7 +170,7 @@ export const useChatStore = defineStore('chat-store', {
         async deleteMessage(message: Chat.ChatMessage) {
             try {
                 await post({
-                    url: '/chat/delete-message',
+                    url: '/service/deepseek-api/chat/history/delete-message',
                     data: message
                 });
 
@@ -185,7 +185,7 @@ export const useChatStore = defineStore('chat-store', {
         async deleteMessages(conversation_id: string) {
             try {
                 await post({
-                    url: `/chat/delete-messages?conversation=${conversation_id}`,                   
+                    url: `/service/deepseek-api/chat/history/delete-messages?conversation=${conversation_id}`,                   
                 });
 
                 await this.fetchMessages();
@@ -199,7 +199,7 @@ export const useChatStore = defineStore('chat-store', {
         async fetchConversations() {
             try {
                 const res = await get({
-                    url: '/chat/conversations'
+                    url: '/service/deepseek-api/chat/history/conversations'
                 });
 
                 this.conversations = res.result;
@@ -214,7 +214,7 @@ export const useChatStore = defineStore('chat-store', {
         async fetchMessages() {
             try {
                 const res = await get({
-                    url: `/chat/messages?conversation=${this.active}`
+                    url: `/service/deepseek-api/chat/history/messages?conversation=${this.active}`
                 });
 
                 this.messages = res.result;

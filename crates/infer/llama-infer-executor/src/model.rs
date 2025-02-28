@@ -74,6 +74,4 @@ impl ModelInstance {
 
         Ok(Self { model, backend })
     }
-
-
 }

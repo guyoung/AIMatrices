@@ -45,7 +45,14 @@ impl FilesMounter for SpinFilesMounter {
             std::fs::create_dir_all(&shared_path)?;
         }
 
+        let cached_path = working_dir.join("files").join("__cached__");
+
+        if !cached_path.exists() {
+            std::fs::create_dir_all(&cached_path)?;
+        }
+
         ctx.preopened_dir(shared_path, "/__shared__", self.allow_transient_writes)?;
+        ctx.preopened_dir(cached_path, "/__cached__", self.allow_transient_writes)?;
 
         for content_dir in app_component.files() {
             let path = content_dir

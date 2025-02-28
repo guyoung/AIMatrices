@@ -118,10 +118,23 @@ impl<'js> Connection {
         val.into_js(&ctx)
     }
 
-    fn query_sync(&self, ctx: Ctx<'js>, sql: String) -> Result<Value<'js>> {
+    fn query_sync(
+        &self,
+        ctx: Ctx<'js>,
+        sql: String,
+        params: Opt<Value<'js>>,
+    ) -> Result<Value<'js>> {
+        let params = if let Some(parms) = params.0 {
+            let params = convert_params(&ctx, parms)?;
+
+            params
+        } else {
+            None
+        };
+
         let val = self
             .connection_inner
-            .query(sql.as_str())
+            .query(sql.as_str(), params.as_ref())
             .map_err(|e| Exception::throw_type(&ctx, &format!("Failed to query: {:?}", e)))?;
 
         val.into_js(&ctx)
@@ -153,5 +166,24 @@ impl From<DbsModule> for ModuleInfo<DbsModule> {
             name: "dbs",
             module: val,
         }
+    }
+}
+
+fn convert_params<'js>(ctx: &Ctx<'js>, value: Value<'js>) -> Result<Option<Vec<u8>>> {
+    if value.is_null() || value.is_undefined() {
+        return Ok(None);
+    }
+
+    if !value.is_object() {
+        return Err(Exception::throw_type(&ctx, "Bad parameter"));
+    }
+
+    let data = llrt_json::stringify::json_stringify(&ctx, value)
+        .map_err(|_| Exception::throw_type(&ctx, "Bad parameter"))?;
+
+    if let Some(data) = data {
+        Ok(Some(data.into_bytes()))
+    } else {
+        Ok(None)
     }
 }

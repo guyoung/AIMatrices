@@ -15,8 +15,8 @@ export function defaultSetting(): SettingsState {
   return {
     systemMessage: 'You are DeepSeek, a large language model. Follow the user\'s instructions carefully. Respond using markdown.',
     multiRoundChat: 1,
-    maxTokens: 1000,
-    temperature: 0.8,
+    maxTokens: 2048,
+    temperature: 0.6,
     top_p: 1,
   }
 }

@@ -78,7 +78,7 @@ export function fetchChatAPIProcess<T = any>(
   data = {
     ...data,
     systemMessage: settingStore.systemMessage,
-    max_tokens: settingStore.max_tokens,
+    max_tokens: settingStore.maxTokens,
     temperature: settingStore.temperature,
     top_p: settingStore.top_p,
   }

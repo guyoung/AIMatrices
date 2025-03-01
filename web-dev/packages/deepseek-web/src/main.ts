@@ -10,14 +10,17 @@ import riIcons from '@iconify/json/json/ri.json';
 
 import vuetify from './plugins/vuetify'
 
+
 async function bootstrap() {
   const app = createApp(App)
 
   app.use(vuetify)
 
-  app.component('IconifyIcon', Icon);
+  app.component('IconifyIcon', Icon)
   // 注册图标
   addCollection(riIcons);
+
+
 
   setupAssets()
 

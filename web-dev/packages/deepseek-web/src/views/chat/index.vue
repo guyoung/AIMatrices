@@ -404,11 +404,11 @@ const covertPromptAppendHistory = (prompt: String) => {
 
   let messages = []
 
-  if (settingStore.multiRoundChat >= 1) {
+  if (settingStore.multiRoundChat > 1) {
     let start = 0;
 
-    if (chatStore.messages.length > settingStore.multiRoundChat*2) {
-      start = chatStore.messages.length - settingStore.multiRoundChat*2
+    if (chatStore.messages.length > (settingStore.multiRoundChat-1)*2) {
+      start = chatStore.messages.length - (settingStore.multiRoundChat-1)*2
     }     
 
     for (let item of chatStore.messages.slice(start)) {

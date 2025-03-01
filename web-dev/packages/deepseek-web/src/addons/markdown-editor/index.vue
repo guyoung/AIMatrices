@@ -63,17 +63,7 @@ const handleClose = () => {
 
 </script>
 <style>
-.preview-container {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
-}
-
-.preview-iframe {
-  width: 100%;
-  height: 300px;
-  border: 1px solid #ddd;
-  background-color: #fff;
+.v-card-title {
+    padding: 0px 0px !important
 }
 </style>

@@ -170,6 +170,10 @@ function saveAsSvg() {
 
 </script>
 <style>
+.v-card-title {
+    padding: 0px 0px !important
+}
+
 .zoom-container {
     overflow: auto;
     /* 允许滚动 */

@@ -19,10 +19,12 @@ use spin_factor_outbound_networking::OutboundNetworkingFactor;
 
 #[cfg(feature = "dbs")]
 use wasmruntime_factor_dbs::DbsFactor;
-#[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+#[cfg(feature = "llm-infer")]
 use wasmruntime_factor_llm_infer::LlmInferFactor;
 #[cfg(feature = "sd-infer")]
 use wasmruntime_factor_sd_infer::SdInferFactor;
+#[cfg(feature = "whisper-infer")]
+use wasmruntime_factor_whisper_infer::WhisperInferFactor;
 
 pub use build::FactorsBuilder;
 pub use trigger_factors::TriggerFactors;
@@ -56,10 +58,12 @@ pub struct TriggerFactorsAppState {
     /*** ***/
     #[cfg(feature = "dbs")]
     pub dbs: Option<<DbsFactor as Factor>::AppState>,
-    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(feature = "llm-infer")]
     pub llm_infer: Option<<LlmInferFactor as Factor>::AppState>,
     #[cfg(feature = "sd-infer")]
     pub sd_infer: Option<<SdInferFactor as Factor>::AppState>,
+    #[cfg(feature = "whisper-infer")]
+    pub whisper_infer: Option<<WhisperInferFactor as Factor>::AppState>,
     /*** ***/
 }
 pub struct TriggerFactorsInstanceBuilders {
@@ -71,10 +75,12 @@ pub struct TriggerFactorsInstanceBuilders {
     /*** ***/
     #[cfg(feature = "dbs")]
     dbs: Option<<DbsFactor as Factor>::InstanceBuilder>,
-    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(feature = "llm-infer")]
     llm_infer: Option<<LlmInferFactor as Factor>::InstanceBuilder>,
     #[cfg(feature = "sd-infer")]
     sd_infer: Option<<SdInferFactor as Factor>::InstanceBuilder>,
+    #[cfg(feature = "whisper-infer")]
+    whisper_infer: Option<<WhisperInferFactor as Factor>::InstanceBuilder>,
     /*** ***/
 }
 
@@ -107,7 +113,7 @@ impl TriggerFactorsInstanceBuilders {
     pub fn dbs(&mut self) -> &mut <DbsFactor as Factor>::InstanceBuilder {
         self.dbs.as_mut().unwrap()
     }
-    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(feature = "llm-infer")]
     pub fn llm_infer(&mut self) -> &mut <LlmInferFactor as Factor>::InstanceBuilder {
         self.llm_infer.as_mut().unwrap()
     }
@@ -115,6 +121,10 @@ impl TriggerFactorsInstanceBuilders {
     #[cfg(feature = "sd-infer")]
     pub fn sd_infer(&mut self) -> &mut <SdInferFactor as Factor>::InstanceBuilder {
         self.sd_infer.as_mut().unwrap()
+    }
+    #[cfg(feature = "whisper-infer")]
+    pub fn whisper_infer(&mut self) -> &mut <WhisperInferFactor as Factor>::InstanceBuilder {
+        self.whisper_infer.as_mut().unwrap()
     }
     /*** ***/
 }
@@ -157,7 +167,7 @@ impl HasInstanceBuilder for TriggerFactorsInstanceBuilders {
             }
         }
 
-        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(feature = "llm-infer")]
         {
             if type_id == TypeId::of::<<LlmInferFactor as Factor>::InstanceBuilder>() {
                 let builder = self.llm_infer.as_mut().unwrap();
@@ -169,6 +179,14 @@ impl HasInstanceBuilder for TriggerFactorsInstanceBuilders {
         {
             if type_id == TypeId::of::<<SdInferFactor as Factor>::InstanceBuilder>() {
                 let builder = self.sd_infer.as_mut().unwrap();
+                return Some(<dyn Any>::downcast_mut(builder).unwrap());
+            }
+        }
+
+        #[cfg(feature = "whisper-infer")]
+        {
+            if type_id == TypeId::of::<<WhisperInferFactor as Factor>::InstanceBuilder>() {
+                let builder = self.whisper_infer.as_mut().unwrap();
                 return Some(<dyn Any>::downcast_mut(builder).unwrap());
             }
         }
@@ -188,10 +206,12 @@ pub struct TriggerFactorsInstanceState {
     /*** ***/
     #[cfg(feature = "dbs")]
     pub dbs: FactorInstanceState<DbsFactor>,
-    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(feature = "llm-infer")]
     pub llm_infer: FactorInstanceState<LlmInferFactor>,
     #[cfg(feature = "sd-infer")]
     pub sd_infer: FactorInstanceState<SdInferFactor>,
+    #[cfg(feature = "whisper-infer")]
+    pub whisper_infer: FactorInstanceState<WhisperInferFactor>,
     /*** ***/
 }
 
@@ -228,7 +248,7 @@ impl RuntimeFactorsInstanceState for TriggerFactorsInstanceState {
             }
         }
 
-        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(feature = "llm-infer")]
         {
             if let Some(state) = (&mut self.llm_infer as &mut (dyn Any + Send)).downcast_mut() {
                 return Some((state, &mut self.__table));
@@ -238,6 +258,13 @@ impl RuntimeFactorsInstanceState for TriggerFactorsInstanceState {
         #[cfg(feature = "sd-infer")]
         {
             if let Some(state) = (&mut self.sd_infer as &mut (dyn Any + Send)).downcast_mut() {
+                return Some((state, &mut self.__table));
+            }
+        }
+
+        #[cfg(feature = "whisper-infer")]
+        {
+            if let Some(state) = (&mut self.whisper_infer as &mut (dyn Any + Send)).downcast_mut() {
                 return Some((state, &mut self.__table));
             }
         }

@@ -1,13 +1,14 @@
 use std::ffi::CString;
 use std::path::PathBuf;
-use std::pin::pin;
+use std::pin::{pin, Pin};
+
 
 use anyhow::Context;
 
-use crate::llama_cpp_2::llama_backend::LlamaBackend;
-use crate::llama_cpp_2::model::params::kv_overrides::ParamOverrideValue;
-use crate::llama_cpp_2::model::params::LlamaModelParams;
-use crate::llama_cpp_2::model::LlamaModel;
+use llama_cpp_2::llama_backend::LlamaBackend;
+use llama_cpp_2::model::params::kv_overrides::ParamOverrideValue;
+use llama_cpp_2::model::params::LlamaModelParams;
+use llama_cpp_2::model::LlamaModel;
 
 #[derive(Debug, Clone)]
 pub struct ModelInstanceConfig {
@@ -62,7 +63,7 @@ impl ModelInstance {
             }
         };
 
-        let mut model_params = pin!(model_params);
+        let mut model_params : Pin<&mut _>  = pin!(model_params);
 
         for (k, v) in &config.kv_overrides {
             let k = CString::new(k.as_bytes()).with_context(|| format!("Invalid key: {k}"))?;

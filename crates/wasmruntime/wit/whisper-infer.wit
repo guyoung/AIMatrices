@@ -1,0 +1,32 @@
+
+interface whisper-infer {
+	record inferencing-params {
+		audio-format: string,
+		language: string,
+		threads: u32
+	}
+
+	record segment-item {
+    	text: string,
+    	t0: u64,
+    	t1: u64
+    }
+
+
+	variant error {
+		model-not-supported,
+		runtime-error(string),
+		invalid-input(string)
+	}
+
+
+	record inferencing-result {
+		segments: list<segment-item>,
+	}
+
+
+	infer: func(model-id: string, input: list<u8>, params: option<inferencing-params>) -> result<inferencing-result, error>;
+
+
+
+}

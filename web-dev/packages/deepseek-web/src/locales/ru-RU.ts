@@ -53,7 +53,8 @@ export default {
 
     newChat: 'Новый чат',
     thinking: 'В чем дело?...',
-    downlaod: 'Многораундная беседа'
+    menuExport: 'Экспорт..',
+    menuEditMarkdown: 'Редактирование(Markdown)'
   },
   setting: {
     setting: 'Настройки',

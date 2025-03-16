@@ -11,7 +11,7 @@ repository = "https://github.com/guyoung/AIMatrices"
 crate-type = ["cdylib"]
 
 [package.metadata.component]
-package = "components:http-flux-handler-component"
+package = "components:http-markdown-handler-component"
 
 [package.metadata.component.dependencies]
 
@@ -24,4 +24,17 @@ anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 
+futures = { workspace = true }
+
+
+hyper = { workspace = true }
+multer = { workspace = true }
+
 pulldown-cmark = "0.13.0"
+markdown = "=1.0.0-alpha.23"
+markitdown = "=0.1.8"
+
+html2pdf = "0.8.2"
+lopdf = "0.35.0"
+pdfium-render = "0.8.29"
+pdf-extract = "0.8.2"

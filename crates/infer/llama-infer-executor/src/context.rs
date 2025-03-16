@@ -3,11 +3,10 @@ use std::time::Duration;
 
 use anyhow::Context;
 
-use crate::llama_cpp_2;
-use crate::llama_cpp_2::context::params::LlamaContextParams;
-use crate::llama_cpp_2::ggml_time_us;
-use crate::llama_cpp_2::llama_batch::LlamaBatch;
-use crate::llama_cpp_2::token::LlamaToken;
+use llama_cpp_2::context::params::LlamaContextParams;
+use llama_cpp_2::ggml_time_us;
+use llama_cpp_2::llama_batch::LlamaBatch;
+use llama_cpp_2::token::LlamaToken;
 
 use crate::sampler::generate_sampler;
 use crate::token::{generate_embeddings_tokens, generate_infer_tokens, generate_infer_tokens_chat};
@@ -27,7 +26,7 @@ pub struct LlamaContextConfig {
     pub threads_batch: Option<i32>,
 }
 
-pub struct LlamaContext<'a>(llama_cpp_2::context::LlamaContext<'a>);
+pub struct LlamaContext<'a>(pub llama_cpp_2::context::LlamaContext<'a>);
 
 unsafe impl Send for LlamaContext<'_> {}
 unsafe impl Sync for LlamaContext<'_> {}
@@ -42,7 +41,14 @@ impl<'a> LlamaContext<'a> {
             let mut ctx_params = LlamaContextParams::default();
 
             ctx_params =
-                ctx_params.with_n_ctx(config.ctx_size.or(Some(NonZeroU32::new(2048).unwrap())));
+                ctx_params.with_n_ctx(config.ctx_size.or(Some(NonZeroU32::new(4096).unwrap())));
+
+            /*
+            ctx_params =
+                ctx_params.with_n_ctx(config.ctx_size.or(Some(NonZeroU32::new( model_instance.model.n_ctx_train()).unwrap())));
+
+             */
+
 
             if let Some(threads) = config.threads {
                 ctx_params = ctx_params.with_n_threads(threads);
@@ -75,10 +81,13 @@ impl<'a> LlamaContext<'a> {
     }
 
     pub fn crate_infer_batch(
-        mut self,
+        &mut self,
         tokens_list: Vec<LlamaToken>,
         params: &InferencingParams,
-    ) -> anyhow::Result<InferBatch<'a>> {
+    ) -> anyhow::Result<InferBatch> {
+
+
+
         let last_index: i32 = (tokens_list.len() - 1) as i32;
 
         // create a llama_batch with size 512
@@ -118,7 +127,6 @@ impl<'a> LlamaContext<'a> {
         let decoder = encoding_rs::UTF_8.new_decoder();
 
         Ok(InferBatch {
-            ctx: self.0,
             n_cur: batch.n_tokens(),
             max_token: params.max_tokens,
             batch,
@@ -128,17 +136,19 @@ impl<'a> LlamaContext<'a> {
     }
 
     pub fn infer_simple(
-        self,
+        &mut self,
         prompt: &str,
         params: &InferencingParams,
     ) -> anyhow::Result<InferencingResult> {
+
+
         let tokens_list = generate_infer_tokens(self.0.model, prompt, params)?;
 
         self.infer_inner(tokens_list, params)
     }
 
     pub fn infer_chat(
-        self,
+        &mut self,
         messages: Vec<(String, String)>,
         params: &InferencingParams,
     ) -> anyhow::Result<InferencingResult> {
@@ -148,7 +158,7 @@ impl<'a> LlamaContext<'a> {
     }
 
     fn infer_inner(
-        self,
+        &mut self,
         tokens_list: Vec<LlamaToken>,
         params: &InferencingParams,
     ) -> anyhow::Result<InferencingResult> {
@@ -162,7 +172,7 @@ impl<'a> LlamaContext<'a> {
         let mut n_decode = 0;
 
         loop {
-            let str = infer_batch.next_token()?;
+            let str = infer_batch.next_token(&mut self.0)?;
 
             match str {
                 Some(str) => text.push(str),
@@ -171,6 +181,9 @@ impl<'a> LlamaContext<'a> {
 
             n_decode += 1;
         }
+
+
+        self.0.clear_kv_cache();
 
         let t_main_end = ggml_time_us();
         let duration = Duration::from_micros((t_main_end - t_main_start) as u64);

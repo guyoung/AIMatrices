@@ -79,7 +79,8 @@ export default {
 
     about: 'Ở ngoài',
     maxTokens: "Max tokens",
-    multiRoundChat: "Trò chuyện nhiều lần"
+    menuExport: 'Xuất khẩu..',
+    menuEditMarkdown: 'Biên tập(Markdown)'
   },
   store: {
     siderButton: 'Prompt Store',

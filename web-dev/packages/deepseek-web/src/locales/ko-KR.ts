@@ -53,7 +53,8 @@ export default {
 
     newChat: '새로 운 대화',
     thinking: '생각...',
-    downlaod: '다운로드'
+    menuExport: '내보 내기..',
+    menuEditMarkdown: '편집(Markdown)'
   },
   setting: {
     setting: '설정',

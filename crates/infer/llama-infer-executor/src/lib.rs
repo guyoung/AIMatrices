@@ -1,19 +1,15 @@
-#[cfg(feature = "v1")]
-pub(crate) use llama_cpp_2_v1 as llama_cpp_2;
-
-#[cfg(feature = "v2")]
-pub(crate) use llama_cpp_2_v2 as llama_cpp_2;
-
 mod model;
 mod sampler;
 
 mod context;
 mod infer;
 mod token;
+//mod model_metadata;
 
 pub use context::{LlamaContext, LlamaContextConfig};
 pub use infer::InferBatch;
 pub use model::{ModelInstance, ModelInstanceConfig};
+pub use token::{generate_infer_tokens, generate_infer_tokens_chat, generate_embeddings_tokens};
 
 /// performing inferencing for Large Language Models
 #[derive(Debug, Clone)]

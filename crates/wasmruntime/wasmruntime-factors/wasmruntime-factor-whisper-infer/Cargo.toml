@@ -1,0 +1,27 @@
+[package]
+name = "wasmruntime-factor-whisper-infer"
+version = "0.1.0"
+edition = "2021"
+
+
+
+[dependencies]
+spin-locked-app = { path = "../../spin/spin-locked-app" }
+
+spin-factors = { path = "../../spin/spin-factors" }
+spin-world = { path = "../../spin-factor/spin-world" }
+
+whisper-infer-executor = { path = "../../../infer/whisper-infer-executor" }
+
+anyhow = { workspace = true }
+rand  = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
+
+async-trait = { workspace = true }
+tokio = { workspace = true, features = ["sync"] }
+futures = { workspace = true }
+
+url = { version = "2", features = ["serde"] }
+
+

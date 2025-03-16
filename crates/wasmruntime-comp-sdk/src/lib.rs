@@ -39,3 +39,6 @@ pub mod dbs;
 pub mod llm_infer;
 #[cfg(feature = "sd-infer")]
 pub mod sd_infer;
+#[cfg(feature = "whisper-infer")]
+pub mod whisper_infer;
+

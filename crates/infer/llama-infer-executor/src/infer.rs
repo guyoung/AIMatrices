@@ -1,12 +1,11 @@
 use anyhow::Context;
 
-use crate::llama_cpp_2::context::LlamaContext;
-use crate::llama_cpp_2::llama_batch::LlamaBatch;
-use crate::llama_cpp_2::model::Special;
-use crate::llama_cpp_2::sampling::LlamaSampler;
+use llama_cpp_2::context::LlamaContext;
+use llama_cpp_2::llama_batch::LlamaBatch;
+use llama_cpp_2::model::Special;
+use llama_cpp_2::sampling::LlamaSampler;
 
-pub struct InferBatch<'a> {
-    pub ctx: LlamaContext<'a>,
+pub struct InferBatch {
     pub n_cur: i32,
     pub max_token: i32,
     pub batch: LlamaBatch,
@@ -14,22 +13,21 @@ pub struct InferBatch<'a> {
     pub decoder: encoding_rs::Decoder,
 }
 
-impl<'a> InferBatch<'a> {
-    pub fn next_token(&mut self) -> anyhow::Result<Option<String>> {
+impl InferBatch {
+    pub fn next_token<'a>(&mut self, ctx: & mut LlamaContext<'a>) -> anyhow::Result<Option<String>> {
         if self.n_cur >= self.max_token {
             return Ok(None);
         }
 
-        let token = self.sampler.sample(&self.ctx, self.batch.n_tokens() - 1);
+        let token = self.sampler.sample(ctx, self.batch.n_tokens() - 1);
         self.sampler.accept(token);
 
         // is it an end of stream?
-        if self.ctx.model.is_eog_token(token) {
+        if ctx.model.is_eog_token(token) {
             return Ok(None);
         }
 
-        let output_bytes = self
-            .ctx
+        let output_bytes = ctx
             .model
             .token_to_bytes(token, Special::Tokenize)
             .with_context(|| "Failed to convert token to byte")?;
@@ -48,7 +46,7 @@ impl<'a> InferBatch<'a> {
 
         self.n_cur += 1;
 
-        self.ctx
+       ctx
             .decode(&mut self.batch)
             .expect("Failed to decode batch!");
 

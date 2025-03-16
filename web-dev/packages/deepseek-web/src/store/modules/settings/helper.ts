@@ -9,15 +9,22 @@ export interface SettingsState {
   temperature: number
   top_p: number,
 
+  previewLanguages: string[],
+  exportFormat: string[],
+
 }
 
 export function defaultSetting(): SettingsState {
   return {
     systemMessage: 'You are DeepSeek, a large language model. Follow the user\'s instructions carefully. Respond using markdown.',
-    multiRoundChat: 1,
-    maxTokens: 2048,
+    multiRoundChat: 5,
+    maxTokens: 4096,
     temperature: 0.6,
     top_p: 1,
+
+    previewLanguages: ['markdown', 'mermaid', 'html', 'python', 'dot'],
+    exportFormat: ['md', 'html', 'docx', 'pptx', 'latex']
+
   }
 }
 

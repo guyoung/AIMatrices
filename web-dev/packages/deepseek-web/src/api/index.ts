@@ -137,3 +137,48 @@ export async function fetchCodeHandler(
 
   return text
 }
+
+export async function fetchGraphvizHandler(
+  data: string,
+) {
+
+  let url;
+
+  if (process.env.NODE_ENV === "development") {
+    url = import.meta.env.VITE_CONFIG_API_PROXY_URL + 'service/graphviz-handler'
+  } else {
+    url = import.meta.env.VITE_CONFIG_API_URL + 'service/graphviz-handler'
+  }
+
+  const res = await fetch(url, {
+    method: "POST",
+    body: data
+  })
+
+  let text = res.text()
+
+  return text
+}
+
+export async function fetchPandocHandler(
+  filename: string,
+  data: string, 
+) {
+
+  let url;
+
+  if (process.env.NODE_ENV === "development") {
+    url = import.meta.env.VITE_CONFIG_API_PROXY_URL + 'service/pandoc-handler?-o='+filename
+  } else {
+    url = import.meta.env.VITE_CONFIG_API_URL + 'service/pandoc-handler?-o='+filename
+  }
+
+  const res = await fetch(url, {
+    method: "POST",
+    body: data
+  })
+
+  let text = res.blob()
+
+  return text
+}

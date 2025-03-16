@@ -304,8 +304,8 @@ impl<'a, 'b> FullParams<'a, 'b> {
     /// for more information.
     ///
     /// Defaults to false.
-    pub fn set_suppress_non_speech_tokens(&mut self, suppress_non_speech_tokens: bool) {
-        self.fp.suppress_non_speech_tokens = suppress_non_speech_tokens;
+    pub fn set_suppress_nst(&mut self, suppress_nst: bool) {
+        self.fp.suppress_nst = suppress_nst;
     }
 
     /// Set initial decoding temperature.
@@ -376,6 +376,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     /// Do not use this function unless you know what you are doing.
     /// * Be careful not to mutate the state of the whisper_context pointer returned in the callback.
     ///   This could cause undefined behavior, as this violates the thread-safety guarantees of the underlying C library.
+    /// **Warning** Can't be used with DTW. DTW will produce inconsistent callback invocation
     ///
     /// Defaults to None.
     pub unsafe fn set_new_segment_callback(
@@ -389,6 +390,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     ///
     /// # Safety
     /// See the safety notes for `set_new_segment_callback`.
+    /// **Warning** Can't be used with DTW. DTW will produce inconsistent callback invocation
     ///
     /// Defaults to None.
     pub unsafe fn set_new_segment_callback_user_data(&mut self, user_data: *mut std::ffi::c_void) {
@@ -399,6 +401,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     ///
     /// Provides a limited segment_callback to ensure safety.
     /// See `set_new_segment_callback` if you need to use `whisper_context` and `whisper_state`
+    /// **Warning** Can't be used with DTW. DTW will produce inconsistent callback invocation
     ///
     /// Defaults to None.
     pub fn set_segment_callback_safe<O, F>(&mut self, closure: O)
@@ -468,6 +471,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     ///
     /// Provides a limited segment_callback to ensure safety with lossy handling of bad UTF-8 characters.
     /// See `set_new_segment_callback` if you need to use `whisper_context` and `whisper_state`.
+    /// **Warning** Can't be used with DTW. DTW will produce inconsistent callback invocation
     ///
     /// Defaults to None.
     pub fn set_segment_callback_safe_lossy<O, F>(&mut self, closure: O)
@@ -537,7 +541,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     /// # Safety
     /// Do not use this function unless you know what you are doing.
     /// * Be careful not to mutate the state of the whisper_context pointer returned in the callback.
-    ///  This could cause undefined behavior, as this violates the thread-safety guarantees of the underlying C library.
+    ///   This could cause undefined behavior, as this violates the thread-safety guarantees of the underlying C library.
     ///
     /// Defaults to None.
     pub unsafe fn set_progress_callback(
@@ -652,7 +656,7 @@ impl<'a, 'b> FullParams<'a, 'b> {
     /// # Safety
     /// Do not use this function unless you know what you are doing.
     /// * Be careful not to mutate the state of the whisper_context pointer returned in the callback.
-    ///  This could cause undefined behavior, as this violates the thread-safety guarantees of the underlying C library.
+    ///   This could cause undefined behavior, as this violates the thread-safety guarantees of the underlying C library.
     ///
     /// Defaults to None.
     pub unsafe fn set_start_encoder_callback(
@@ -799,8 +803,8 @@ impl<'a, 'b> FullParams<'a, 'b> {
 // following implementations are safe
 // see https://github.com/ggerganov/whisper.cpp/issues/32#issuecomment-1272790388
 // concurrent usage is prevented by &mut self on methods that modify the struct
-unsafe impl<'a, 'b> Send for FullParams<'a, 'b> {}
-unsafe impl<'a, 'b> Sync for FullParams<'a, 'b> {}
+unsafe impl Send for FullParams<'_, '_> {}
+unsafe impl Sync for FullParams<'_, '_> {}
 
 #[cfg(test)]
 mod test_whisper_params_initial_prompt {

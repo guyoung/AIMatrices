@@ -16,4 +16,5 @@ world platform {
  import dbs;
  import llm-infer;
  import sd-infer;
+ import whisper-infer;
 }

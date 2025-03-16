@@ -1,6 +1,6 @@
 [package]
 name = "wasmruntime-factor-llm-infer"
-version = "3.1.1"
+version = "0.1.0"
 edition = "2021"
 
 
@@ -23,6 +23,3 @@ futures = { workspace = true }
 
 url = { version = "2", features = ["serde"] }
 
-[features]
-v1 = ["llama-infer-executor/v1"]
-v2 = ["llama-infer-executor/v2"]

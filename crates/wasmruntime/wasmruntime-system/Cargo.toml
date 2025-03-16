@@ -25,6 +25,7 @@ wasmruntime-key-value = { path = "../wasmruntime-key-value" }
 wasmruntime-factor-dbs = { path = "../wasmruntime-factors/wasmruntime-factor-dbs", optional = true }
 wasmruntime-factor-llm-infer = { path = "../wasmruntime-factors/wasmruntime-factor-llm-infer", optional = true }
 wasmruntime-factor-sd-infer = { path = "../wasmruntime-factors/wasmruntime-factor-sd-infer", optional = true }
+wasmruntime-factor-whisper-infer = { path = "../wasmruntime-factors/wasmruntime-factor-whisper-infer", optional = true }
 
 
 wasmtime = { workspace = true }
@@ -46,12 +47,8 @@ toml =  { workspace = true }
 [features]
 default = []
 dbs = ["wasmruntime-factor-dbs", "surrealdb"]
-llm-infer-v1 = ["wasmruntime-factor-llm-infer/v1"]
-llm-infer-v2 = ["wasmruntime-factor-llm-infer/v2"]
+
+llm-infer = ["wasmruntime-factor-llm-infer"]
 sd-infer = ["wasmruntime-factor-sd-infer"]
-
-
-whisper-infer = []
+whisper-infer = ["wasmruntime-factor-whisper-infer"]
 ncnn-infer = []
-opencv = []
-ffmpeg = []

@@ -1,6 +1,6 @@
 use std::{
     env,
-    fs::{self, create_dir_all, read_dir},
+    fs::{self, create_dir_all},
     path::{Path, PathBuf},
 };
 
@@ -10,7 +10,6 @@ use fs_extra::dir;
 // Inspired by https://github.com/tazz4843/whisper-rs/blob/master/sys/build.rs
 
 fn main() {
-    // Link C++ standard library
     let target = env::var("TARGET").unwrap();
 
     println!("cargo:rerun-if-changed=build.rs");
@@ -89,13 +88,16 @@ fn main() {
 
     let destination = config.build();
 
-    add_link_search_path(&out.join("lib")).unwrap();
-    add_link_search_path(&out.join("build")).unwrap();
-    add_link_search_path(&out).unwrap();
-
+    // Search paths
+    println!("cargo:rustc-link-search=native={}", out.join("lib").display());
+    println!("cargo:rustc-link-search=native={}", out.join("lib64").display());
+    println!("cargo:rustc-link-search=native={}", out.join("build").display());
     println!("cargo:rustc-link-search=native={}", destination.display());
-    println!("cargo:rustc-link-lib=static=stable-diffusion");
 
+    let _ = add_lib_prefix_to_files(&format!("{}", out.join("lib").display()));
+    let _ = add_lib_prefix_to_files(&format!("{}", out.join("lib64").display()));
+
+    println!("cargo:rustc-link-lib=static=stable-diffusion");
     println!("cargo:rustc-link-lib=static=ggml");
     println!("cargo:rustc-link-lib=static=ggml-base");
     println!("cargo:rustc-link-lib=static=ggml-cpu");
@@ -105,50 +107,62 @@ fn main() {
 
     if target.contains("apple") {
         println!("cargo:rustc-link-lib=framework=Accelerate");
+        //println!("cargo:rustc-link-lib=framework=Foundation");
+        //println!("cargo:rustc-link-lib=framework=Metal");
+        //println!("cargo:rustc-link-lib=framework=MetalKit");
     }
 
-    if cfg!(target_os = "linux") {
-        println!(
-            "{}",
-            format!("cargo:rustc-link-lib={}={}", "static", "stdc++")
-        );
-    }
-
-    if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
-        println!(
-            "{}",
-            format!("cargo:rustc-link-lib={}={}", "static", "stdc++")
-        );
-    }
+    add_cpp_link_stdlib();
 }
 
-fn add_link_search_path(dir: &Path) -> std::io::Result<()> {
-    if dir.is_dir() {
-        println!("cargo:rustc-link-search={}", dir.display());
-        for entry in read_dir(dir)? {
-            add_link_search_path(&entry?.path())?;
-        }
-    }
-    Ok(())
-}
 
-// From https://github.com/alexcrichton/cc-rs/blob/fba7feded71ee4f63cfe885673ead6d7b4f2f454/src/lib.rs#L2462
-/***
-fn get_cpp_link_stdlib(target: &str) -> Option<&'static str> {
-    if target.contains("msvc") {
-        None
+
+fn add_cpp_link_stdlib() {
+    let target = env::var("TARGET").unwrap();
+
+    if cfg!(target_os = "windows") && cfg!(target_env = "msvc") {
+        println!("cargo:rustc-link-lib=dylib=msvcrtd");
+    } else if cfg!(target_os = "windows") && cfg!(target_env = "gnu") {
+        println!("cargo:rustc-link-lib={}={}", "static", "stdc++");
     } else if target.contains("apple") || target.contains("freebsd") || target.contains("openbsd") {
-        Some("c++")
+        println!("cargo:rustc-link-lib={}={}", "static", "c++");
     } else if target.contains("android") {
-        Some("c++_shared")
+        println!("cargo:rustc-link-lib={}={}", "static", "c++_shared");
     } else {
-        Some("stdc++")
+        println!("cargo:rustc-link-lib={}={}", "static", "stdc++");
     }
 }
-***/
+
 
 fn remove_default_params_stb(file: &Path) -> std::io::Result<()> {
     let data = fs::read_to_string(file)?;
     let new_data = data.replace("const char* parameters = NULL", "const char* parameters");
     fs::write(file, new_data)
+}
+
+
+fn add_lib_prefix_to_files(dir_path: &str) -> Result<(), std::io::Error> {
+    if !std::fs::exists(dir_path)? {
+        return Ok(());
+    }
+
+    let entries = std::fs::read_dir(dir_path)?;
+
+    for entry in entries {
+        let entry = entry?;
+        let path = entry.path();
+
+        if path.is_file() {
+            if let Some(file_name) = path.file_name() {
+                let file_name_str = file_name.to_string_lossy();
+                if!file_name_str.starts_with("lib") {
+                    let new_file_name = format!("lib{}", file_name_str);
+                    let new_path = path.with_file_name(new_file_name);
+                    std::fs::rename(&path, &new_path)?;
+                }
+            }
+        }
+    }
+
+    Ok(())
 }

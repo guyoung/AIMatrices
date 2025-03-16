@@ -17,10 +17,13 @@ AIMatrices DeepSeek 是一款基于轻量级 AI 应用快速构建平台 AIMatri
 
 ## 最近更新
 
-* 2025-02-22
-  * 新增多轮对话功能； 新增对话记录保存至本地数据库功能；新增 Mermaid 图表预览及导出功能；新增 Markdwon 编辑及预览功能
+* 2025-03-15
+  * 新增 Markdown、Html、Word、PowerPoint、Latex 格式文件导出功能；新增 Graphviz 编辑及预览功能
 * 2025-02-28
   * 新增 Ollama Api 接口调用功能，实现与本地模型交互； 新增 Python 代码直接运行及编辑功能；新增 Html 代码直接浏览及编辑功能
+* 2025-02-22
+  * 新增多轮对话功能； 新增对话记录保存至本地数据库功能；新增 Mermaid 图表预览及导出功能；新增 Markdwon 编辑及预览功能
+
 
 ## 功能特性
 

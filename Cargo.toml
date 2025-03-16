@@ -152,6 +152,7 @@ http = { version = "1.2" }
 http-body-util = { version = "0.1" }
 hyper = { version = "1.5", features = ["full"] }
 mime_guess = { version = "2.0" }
+multer = { version = "3.1" }
 reqwest = { version = "0.12",  features = ["json"] }
 routefinder = { version = "0.5" }
 url = { version = "2.5" }
@@ -176,6 +177,10 @@ cmake = { version = "0.1" }
 glob = { version = "0.3" }
 
 ## other
+
+### A macro to generate structures which behave like bitflags.
+bitflags = { version = "2.9" }
+
 ### Easy Ctrl-C handler for Rust projects
 ctrlc = { version = "3.4", features = ["termination"] }
 
@@ -217,6 +222,9 @@ terminal_size = { version = "0.4" }
 
 ### serde-compatible TOML decoder and encoder
 toml = { version = "0.8" }
+
+### Recursively walk a directory.
+walkdir = { version = "2.5" }
 
 [patch.crates-io]
 cudarc = { git = "https://github.com/guyoung/cudarc" }

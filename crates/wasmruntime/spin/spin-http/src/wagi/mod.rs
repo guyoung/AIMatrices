@@ -9,6 +9,7 @@ use http::{
     request::Parts,
     HeaderMap, HeaderValue, Response, StatusCode,
 };
+use base64::{engine::GeneralPurpose, prelude::BASE64_STANDARD, Engine};
 
 use crate::{body, routes::RouteMatch, Body};
 
@@ -220,11 +221,13 @@ pub fn compose_response(stdout: &[u8]) -> Result<Response<Body>, Error> {
     // looking for the double-newline that distinguishes the headers from the body.
     // The headers can then be parsed separately, while the body can be sent back
     // to the client.
+
     let mut last = 0;
     let mut scan_headers = true;
     let mut buffer: Vec<u8> = Vec::new();
     let mut out_headers: Vec<u8> = Vec::new();
     stdout.iter().for_each(|i| {
+
         // Ignore CR in headers
         if scan_headers && *i == 13 {
             return;
@@ -237,9 +240,11 @@ pub fn compose_response(stdout: &[u8]) -> Result<Response<Body>, Error> {
         last = *i;
         buffer.push(*i)
     });
-    let mut res = Response::new(body::full(buffer.into()));
+
+    let mut res = Response::new(body::empty());
     let mut sufficient_response = false;
     let mut explicit_status_code = false;
+    let mut base64_decoded = false;
 
     /*** ***/
     let mut str_headers = String::from_utf8_lossy(&out_headers).to_string();
@@ -254,7 +259,13 @@ pub fn compose_response(stdout: &[u8]) -> Result<Response<Body>, Error> {
         match h.0.to_lowercase().as_str() {
             "content-type" => {
                 sufficient_response = true;
-                res.headers_mut().insert(CONTENT_TYPE, h.1.parse().unwrap());
+                let val = h.1.as_str();
+
+                if is_binary(val) {
+                    base64_decoded = true;
+                }
+
+                res.headers_mut().insert(CONTENT_TYPE, val.parse().unwrap());
             }
             "status" => {
                 // The spec does not say that status is a sufficient response.
@@ -299,15 +310,53 @@ pub fn compose_response(stdout: &[u8]) -> Result<Response<Body>, Error> {
         }
     });
     if !sufficient_response {
-        tracing::debug!("{:?}", res.body());
         return Ok(internal_error(
             // Technically, we let `status` be sufficient, but this is more lenient
             // than the specification.
             "Exactly one of 'location' or 'content-type' must be specified",
         ));
     }
+
+    let buffer = {
+        if base64_decoded {
+            const BASE64: GeneralPurpose = BASE64_STANDARD;
+            //let buffer = String::from_utf8_lossy(&buffer).to_string();
+
+            let buffer = BASE64.decode(buffer);
+
+            if buffer.is_err() {
+                return Ok(internal_error(
+                    "Request body incorrect",
+                ));
+            }
+
+            buffer.unwrap()
+        } else {
+            buffer
+        }
+    };
+
+    *res.body_mut() = body::full(buffer.into());
+
     Ok(res)
 }
+
+fn is_binary(content_type: &str) -> bool {
+    if content_type.to_lowercase() == "application/vnd.openxmlformats-officedocument.presentationml.presentation" {
+        return true;
+    }
+
+    if content_type.to_lowercase() == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" {
+        return true;
+    }
+
+    if content_type.to_lowercase() == "application/octet-stream" {
+        return true;
+    }
+
+    return false;
+}
+
 
 fn parse_cgi_headers(headers: String) -> HashMap<String, String> {
     let mut map = HashMap::new();

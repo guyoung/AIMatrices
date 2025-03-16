@@ -12,3 +12,4 @@ whisper-rs-sys = { path = "whisper-rs-sys" }
 
 anyhow = { workspace = true }
 
+hound = { workspace = true }

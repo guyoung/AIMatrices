@@ -7,11 +7,13 @@ import hljs from 'highlight.js'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { t } from '@/locales'
 import { copyToClip } from '@/utils/copy'
+import { useSettingStore } from '@/store'
 
 import MarkdownEditor from '@/addons/markdown-editor/index.vue'
 import MermaidEditor from '@/addons/mermaid-editor/index.vue'
 import HtmlEditor from '@/addons/html-editor/index.vue'
 import CodeRunner from '@/addons/code-runner/index.vue'
+import GraphvizEditor from '@/addons/graphviz-editor/index.vue'
 
 
 interface Props {
@@ -28,10 +30,17 @@ const { isMobile } = useBasicLayout()
 
 const textRef = ref<HTMLElement>()
 
-const showMarkdownEditor = ref(false)
-const showMermaidEditor = ref(false)
-const showCodeRunner = ref(false)
-const showHtmlEditor = ref(false)
+const settingStore = useSettingStore()
+
+const previewComponents: any = {}
+
+for (let language of settingStore.previewLanguages) {
+  previewComponents[language] = false
+}
+
+
+
+const previewComponentsRef = ref(previewComponents)
 const handledCode = ref("")
 const handledCodeLanage = ref("")
 
@@ -39,6 +48,7 @@ const mdi = new MarkdownIt({
   html: false,
   linkify: true,
   highlight(code, language) {
+
     const validLang = !!(language && hljs.getLanguage(language))
     if (validLang) {
       const lang = language ?? ''
@@ -66,33 +76,29 @@ const wrapClass = computed(() => {
 
 const text = computed(() => {
   const value = props.text ?? ''
+
   if (!props.asRawText)
     return mdi.render(value)
   return value
 })
 
+
+
 function highlightBlock(str: string, language?: string, language2?: string) {
   let html = `<pre class="code-block-wrapper"><div class="code-block-header">`
 
-  if ((language && language.toLowerCase() == 'markdown') || (language2 && language2.toLowerCase() == 'markdown')) {
-    html += `<span class="code-block-header__markdown hover:cursor-pointer">${language || language2}</span>`
-  }
-  else if ((language && language.toLowerCase() == 'mermaid') || (language2 && language2.toLowerCase() == 'mermaid')) {
-    html += `<span class="code-block-header__mermaid hover:cursor-pointer">${language || language2}</span>`
-  }
-  else if ((language && language.toLowerCase() == 'html') || (language2 && language2.toLowerCase() == 'html')) {
-    html += `<span class="code-block-header__html hover:cursor-pointer">${language || language2}</span>`
-  }
-  else if ((language && language.toLowerCase() == 'python') || (language2 && language2.toLowerCase() == 'python')) {
-    html += `<span class="code-block-header__python hover:cursor-pointer">${language || language2}</span>`
-  }
-  else {
-    html += `<span class="code-block-header__lang">${language}</span>`
+  let codeLanguage = language || language2
+
+  if (codeLanguage && settingStore.previewLanguages.includes(codeLanguage.toLowerCase())) {
+    html += `<span class="code-block-header__${codeLanguage} hover:cursor-pointer">${codeLanguage}</span>`
+  } else {
+    html += `<span class="code-block-header__lang">${codeLanguage}</span>`
   }
 
   html += `<span class="code-block-header__copy">${t('chat.copyCode')}</span>`
 
-  html += `</div><code class="hljs code-block-body ${language}">${str}</code></pre>`
+  html += `</div><code class="hljs code-block-body ${codeLanguage}">${str}</code></pre>`
+
   return html
 }
 
@@ -104,73 +110,11 @@ function addCopyEvents() {
         const code = btn.parentElement?.nextElementSibling?.textContent
         if (code) {
           copyToClip(code).then(() => {
-            btn.textContent = '复制成功'
+            btn.textContent = t('chat.copied')
             setTimeout(() => {
-              btn.textContent = '复制代码'
+              btn.textContent = t('chat.copyCode')
             }, 1000)
           })
-        }
-      })
-    })
-  }
-}
-
-function addMarkdownEvents() {
-  if (textRef.value) {
-    const btns = textRef.value.querySelectorAll('.code-block-header__markdown')
-    btns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const code = btn.parentElement?.nextElementSibling?.textContent
-        if (code) {
-          handledCode.value = code
-          showMarkdownEditor.value = true
-        }
-      })
-    })
-  }
-}
-
-function addMermaidEvents() {
-  if (textRef.value) {
-    const btns = textRef.value.querySelectorAll('.code-block-header__mermaid')
-    btns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const code = btn.parentElement?.nextElementSibling?.textContent
-        if (code) {
-          handledCode.value = code
-          showMermaidEditor.value = true
-        }
-      })
-    })
-  }
-}
-
-function addHtmlEvents() {
-  if (textRef.value) {
-    const btns = textRef.value.querySelectorAll('.code-block-header__html')
-    btns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const code = btn.parentElement?.nextElementSibling?.textContent
-        if (code) {
-          handledCode.value = code
-          handledCodeLanage.value = "html"
-          showHtmlEditor.value = true
-        }
-      })
-    })
-  }
-}
-
-function addCodeRunEvents() {
-  if (textRef.value) {
-    let btns = textRef.value.querySelectorAll('.code-block-header__python')
-    btns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const code = btn.parentElement?.nextElementSibling?.textContent
-        if (code) {
-          handledCode.value = code
-          handledCodeLanage.value = "python"
-          showCodeRunner.value = true
         }
       })
     })
@@ -186,65 +130,55 @@ function removeCopyEvents() {
   }
 }
 
-function removeMarkdownEvents() {
+function addPreviewEvents(language: string) {
   if (textRef.value) {
-    const btns = textRef.value.querySelectorAll('.code-block-header__markdown')
+    const btns = textRef.value.querySelectorAll(`.code-block-header__${language}`)
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const code = btn.parentElement?.nextElementSibling?.textContent
+        if (code) {
+          handledCode.value = code
+          previewComponentsRef.value[language] = true
+        }
+      })
+    })
+  }
+}
+
+
+
+function removePreviewEvents(language: string) {
+  if (textRef.value) {
+    const btns = textRef.value.querySelectorAll(`.code-block-header__${language}`)
     btns.forEach((btn) => {
       btn.removeEventListener('click', () => { })
     })
   }
 }
 
-function removeMermaidEvents() {
-  if (textRef.value) {
-    const btns = textRef.value.querySelectorAll('.code-block-header__mermaid')
-    btns.forEach((btn) => {
-      btn.removeEventListener('click', () => { })
-    })
-  }
-}
-
-function removeHtmlEvents() {
-  if (textRef.value) {
-    let btns = textRef.value.querySelectorAll('.code-block-header_html')
-    btns.forEach((btn) => {
-      btn.removeEventListener('click', () => { })
-    })
-  }
-}
-
-
-function removeCodeRunEvents() {
-  if (textRef.value) {
-    let btns = textRef.value.querySelectorAll('.code-block-header__python')
-    btns.forEach((btn) => {
-      btn.removeEventListener('click', () => { })
-    })
-  }
-}
 
 onMounted(() => {
   addCopyEvents()
-  addMarkdownEvents()
-  addMermaidEvents()
-  addHtmlEvents()
-  addCodeRunEvents()
+
+  for (let language of settingStore.previewLanguages) {
+    addPreviewEvents(language)
+  }
 })
 
 onUpdated(() => {
   addCopyEvents()
-  addMarkdownEvents()
-  addMermaidEvents()
-  addHtmlEvents()
-  addCodeRunEvents()
+
+  for (let language of settingStore.previewLanguages) {
+    addPreviewEvents(language)
+  }
+
 })
 
 onUnmounted(() => {
   removeCopyEvents()
-  removeMarkdownEvents()
-  removeMermaidEvents()
-  removeHtmlEvents()
-  removeCodeRunEvents()
+  for (let language of settingStore.previewLanguages) {
+    removePreviewEvents(language)
+  }
 })
 </script>
 
@@ -258,10 +192,13 @@ onUnmounted(() => {
       <div v-else class="whitespace-pre-wrap" v-text="text" />
     </div>
   </div>
-  <MarkdownEditor :code="handledCode" v-if="showMarkdownEditor" v-model:visible="showMarkdownEditor" />
-  <MermaidEditor :code="handledCode"  v-if="showMermaidEditor" v-model:visible="showMermaidEditor" />
-  <HtmlEditor :code="handledCode"   v-if="showHtmlEditor" v-model:visible="showHtmlEditor" />
-  <CodeRunner :code="handledCode":language="handledCodeLanage"  v-if="showCodeRunner" v-model:visible="showCodeRunner" />
+  <MarkdownEditor :code="handledCode" v-if="previewComponentsRef.markdown" v-model:visible="previewComponentsRef.markdown" />
+  <MermaidEditor :code="handledCode" v-if="previewComponentsRef.mermaid" v-model:visible="previewComponentsRef.mermaid" />
+  <HtmlEditor :code="handledCode" v-if="previewComponentsRef.html" v-model:visible="previewComponentsRef.html" />
+  <GraphvizEditor :code="handledCode"  v-if="previewComponentsRef.dot"
+    v-model:visible="previewComponentsRef.dot" />
+  <CodeRunner :code="handledCode" :language="handledCodeLanage" v-if="previewComponentsRef.python"
+    v-model:visible="previewComponentsRef.python" />
 </template>
 
 <style lang="less">

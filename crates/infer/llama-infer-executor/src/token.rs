@@ -1,25 +1,24 @@
 use anyhow::{bail, Context};
 
-use crate::llama_cpp_2::model::{AddBos, LlamaChatMessage, LlamaModel};
-use crate::llama_cpp_2::token::LlamaToken;
+use llama_cpp_2::model::{AddBos, LlamaChatMessage, LlamaModel};
+use llama_cpp_2::token::LlamaToken;
 
 use crate::InferencingParams;
 
-const CHAT_TEMPLATE_BUF_SIZE: usize = 10240;
 
 pub fn generate_infer_tokens_chat(
     model: &LlamaModel,
     messages: Vec<(String, String)>,
     params: &InferencingParams,
 ) -> anyhow::Result<Vec<LlamaToken>> {
-    let template = model.get_chat_template(CHAT_TEMPLATE_BUF_SIZE)?;
+    let template = model.get_chat_template()?;
 
     let messages: Vec<LlamaChatMessage> = messages
         .iter()
         .map(|x| LlamaChatMessage::new(x.0.to_string(), x.1.to_string()).unwrap())
         .collect();
 
-    let augmented_prompt = model.apply_chat_template(Some(template), messages, true)?;
+    let augmented_prompt = model.apply_chat_template(&template, &messages, true)?;
 
     generate_infer_tokens_inner(model, &augmented_prompt, params)
 }
@@ -29,16 +28,21 @@ pub fn generate_infer_tokens(
     prompt: &str,
     params: &InferencingParams,
 ) -> anyhow::Result<Vec<LlamaToken>> {
-    let template = model.get_chat_template(CHAT_TEMPLATE_BUF_SIZE)?;
+    let template = model.get_chat_template();
 
-    let messages = vec![LlamaChatMessage::new(
-        "user".to_string(),
-        prompt.to_string(),
-    )?];
+    if let Ok(template) = template {
+        let messages = vec![LlamaChatMessage::new(
+            "user".to_string(),
+            prompt.to_string(),
+        )?];
 
-    let augmented_prompt = model.apply_chat_template(Some(template), messages, true)?;
+        let augmented_prompt = model.apply_chat_template(&template, &messages, true)?;
 
-    generate_infer_tokens_inner(model, &augmented_prompt, params)
+        generate_infer_tokens_inner(model, &augmented_prompt, params)
+    } else {
+        generate_infer_tokens_inner(model, &prompt, params)
+    }
+
 }
 
 fn generate_infer_tokens_inner(

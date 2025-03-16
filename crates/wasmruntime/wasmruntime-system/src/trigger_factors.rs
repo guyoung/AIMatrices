@@ -17,10 +17,12 @@ use spin_factors::{
 
 #[cfg(feature = "dbs")]
 use wasmruntime_factor_dbs::DbsFactor;
-#[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+#[cfg(feature = "llm-infer")]
 use wasmruntime_factor_llm_infer::LlmInferFactor;
 #[cfg(feature = "sd-infer")]
 use wasmruntime_factor_sd_infer::SdInferFactor;
+#[cfg(feature = "whisper-infer")]
+use wasmruntime_factor_whisper_infer::WhisperInferFactor;
 
 use crate::{TriggerFactorsAppState, TriggerFactorsInstanceBuilders, TriggerFactorsInstanceState};
 
@@ -34,10 +36,12 @@ pub struct TriggerFactors {
     /*** ***/
     #[cfg(feature = "dbs")]
     pub dbs: DbsFactor,
-    #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+    #[cfg(feature = "llm-infer")]
     pub llm_infer: LlmInferFactor,
     #[cfg(feature = "sd-infer")]
     pub sd_infer: SdInferFactor,
+    #[cfg(feature = "whisper-infer")]
+    pub whisper_infer: WhisperInferFactor,
     /*** ***/
 }
 
@@ -59,10 +63,12 @@ impl TriggerFactors {
             /*** ***/
             #[cfg(feature = "dbs")]
             dbs: DbsFactor::new(),
-            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(feature = "llm-infer")]
             llm_infer: LlmInferFactor::new(),
             #[cfg(feature = "sd-infer")]
             sd_infer: SdInferFactor::new(),
+            #[cfg(feature = "whisper-infer")]
+            whisper_infer: WhisperInferFactor::new(),
             /*** ***/
         })
     }
@@ -122,7 +128,7 @@ impl RuntimeFactors for TriggerFactors {
                     <DbsFactor as Factor>::AppState,
                 )>(),
             ),
-            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(feature = "llm-infer")]
             (
                 stringify!(LlmInferFactor),
                 TypeId::of::<(
@@ -136,6 +142,14 @@ impl RuntimeFactors for TriggerFactors {
                 TypeId::of::<(
                     <SdInferFactor as Factor>::InstanceBuilder,
                     <SdInferFactor as Factor>::AppState,
+                )>(),
+            ),
+            #[cfg(feature = "whisper-infer")]
+            (
+                stringify!(WhisperInferFactor),
+                TypeId::of::<(
+                    <WhisperInferFactor as Factor>::InstanceBuilder,
+                    <WhisperInferFactor as Factor>::AppState,
                 )>(),
             ),
             /*** ***/
@@ -229,7 +243,7 @@ impl RuntimeFactors for TriggerFactors {
         )
         .map_err(Error::factor_init_error::<DbsFactor>)?;
 
-        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(feature = "llm-infer")]
         Factor::init::<T>(
             &mut self.llm_infer,
             InitContext::<T, LlmInferFactor>::new(
@@ -256,6 +270,19 @@ impl RuntimeFactors for TriggerFactors {
             ),
         )
         .map_err(Error::factor_init_error::<SdInferFactor>)?;
+        #[cfg(feature = "whisper-infer")]
+        Factor::init::<T>(
+            &mut self.whisper_infer,
+            InitContext::<T, WhisperInferFactor>::new(
+                linker,
+                |data| &mut data.as_instance_state().whisper_infer,
+                |data| {
+                    let state = data.as_instance_state();
+                    (&mut state.whisper_infer, &mut state.__table)
+                },
+            ),
+        )
+            .map_err(Error::factor_init_error::<WhisperInferFactor>)?;
         /*** ***/
 
         Ok(())
@@ -273,10 +300,12 @@ impl RuntimeFactors for TriggerFactors {
             /*** ***/
             #[cfg(feature = "dbs")]
             dbs: None,
-            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(feature = "llm-infer")]
             llm_infer: None,
             #[cfg(feature = "sd-infer")]
             sd_infer: None,
+            #[cfg(feature = "whisper-infer")]
+            whisper_infer: None,
             /*** ***/
         };
         app_state.wasi = Some(
@@ -365,7 +394,7 @@ impl RuntimeFactors for TriggerFactors {
             );
         }
 
-        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(feature = "llm-infer")]
         {
             let llm_infer_runtime_config =
                 crate::rumtime_config::get_context(&self.working_dir, &app)
@@ -404,6 +433,26 @@ impl RuntimeFactors for TriggerFactors {
                 .map_err(Error::factor_configure_app_error::<SdInferFactor>)?,
             );
         }
+
+        #[cfg(feature = "whisper-infer")]
+        {
+            let whisper_infer_runtime_config =
+                crate::rumtime_config::get_context(&self.working_dir, &app)
+                    .whisper_infer_runtime_config
+                    .clone();
+
+            app_state.whisper_infer = Some(
+                Factor::configure_app(
+                    &self.whisper_infer,
+                    spin_factors::ConfigureAppContext::<Self, WhisperInferFactor>::new(
+                        &app,
+                        &app_state,
+                        whisper_infer_runtime_config,
+                    )?,
+                )
+                    .map_err(Error::factor_configure_app_error::<WhisperInferFactor>)?,
+            );
+        }
         /*** ***/
 
         Ok(spin_factors::ConfiguredApp::new(app, app_state))
@@ -427,10 +476,12 @@ impl RuntimeFactors for TriggerFactors {
             /*** ***/
             #[cfg(feature = "dbs")]
             dbs: None,
-            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(feature = "llm-infer")]
             llm_infer: None,
             #[cfg(feature = "sd-infer")]
             sd_infer: None,
+            #[cfg(feature = "whisper-infer")]
+            whisper_infer: None,
             /*** ***/
         };
 
@@ -512,7 +563,7 @@ impl RuntimeFactors for TriggerFactors {
             );
         }
 
-        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(feature = "llm-infer")]
         {
             builders.llm_infer = Some(
                 Factor::prepare::<Self>(
@@ -539,6 +590,21 @@ impl RuntimeFactors for TriggerFactors {
                     ),
                 )
                 .map_err(Error::factor_prepare_error::<SdInferFactor>)?,
+            );
+        }
+
+        #[cfg(feature = "whisper-infer")]
+        {
+            builders.whisper_infer = Some(
+                Factor::prepare::<Self>(
+                    &self.whisper_infer,
+                    PrepareContext::new(
+                        configured_app.app_state::<WhisperInferFactor>().unwrap(),
+                        &app_component,
+                        &mut builders,
+                    ),
+                )
+                    .map_err(Error::factor_prepare_error::<WhisperInferFactor>)?,
             );
         }
         /*** ***/
@@ -574,13 +640,16 @@ impl RuntimeFactors for TriggerFactors {
             dbs: FactorInstanceBuilder::build(builders.dbs.unwrap())
                 .map_err(Error::factor_build_error::<DbsFactor>)?,
 
-            #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+            #[cfg(feature = "llm-infer")]
             llm_infer: FactorInstanceBuilder::build(builders.llm_infer.unwrap())
                 .map_err(Error::factor_build_error::<LlmInferFactor>)?,
 
             #[cfg(feature = "sd-infer")]
             sd_infer: FactorInstanceBuilder::build(builders.sd_infer.unwrap())
                 .map_err(Error::factor_build_error::<SdInferFactor>)?,
+            #[cfg(feature = "whisper-infer")]
+            whisper_infer: FactorInstanceBuilder::build(builders.whisper_infer.unwrap())
+                .map_err(Error::factor_build_error::<WhisperInferFactor>)?,
             /*** ***/
         })
     }
@@ -623,7 +692,7 @@ impl RuntimeFactors for TriggerFactors {
             }
         }
 
-        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(feature = "llm-infer")]
         if let Some(state) = &app_state.llm_infer {
             if let Some(state) = <dyn Any>::downcast_ref(state) {
                 return Some(state);
@@ -632,6 +701,13 @@ impl RuntimeFactors for TriggerFactors {
 
         #[cfg(feature = "sd-infer")]
         if let Some(state) = &app_state.sd_infer {
+            if let Some(state) = <dyn Any>::downcast_ref(state) {
+                return Some(state);
+            }
+        }
+
+        #[cfg(feature = "whisper-infer")]
+        if let Some(state) = &app_state.whisper_infer {
             if let Some(state) = <dyn Any>::downcast_ref(state) {
                 return Some(state);
             }
@@ -731,7 +807,7 @@ impl RuntimeFactors for TriggerFactors {
             );
         }
 
-        #[cfg(any(feature = "llm-infer-v1", feature = "llm-infer-v2"))]
+        #[cfg(feature = "llm-infer")]
         if type_id
             == TypeId::of::<(
                 <LlmInferFactor as Factor>::InstanceBuilder,
@@ -756,6 +832,21 @@ impl RuntimeFactors for TriggerFactors {
             return Some(
                 builders
                     .sd_infer
+                    .as_mut()
+                    .map(|builder| <dyn Any>::downcast_mut(builder).unwrap()),
+            );
+        }
+
+        #[cfg(feature = "whisper-infer")]
+        if type_id
+            == TypeId::of::<(
+            <WhisperInferFactor as Factor>::InstanceBuilder,
+            <WhisperInferFactor as Factor>::AppState,
+        )>()
+        {
+            return Some(
+                builders
+                    .whisper_infer
                     .as_mut()
                     .map(|builder| <dyn Any>::downcast_mut(builder).unwrap()),
             );

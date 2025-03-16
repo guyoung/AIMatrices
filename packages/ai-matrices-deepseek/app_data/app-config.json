@@ -44,6 +44,37 @@
         "route": "/service/python-code-handler"
       }
     },
+
+    {
+      "id": "http-python-code-handler-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "python-code-handler",
+        "executor": {
+          "type": "wagi"
+        },
+        "route": "/service/python-code-handler"
+      }
+    },
+    {
+      "id": "http-graphviz-handler-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "http-graphviz-handler",
+        "route": "/service/graphviz-handler"
+      }
+    },
+    {
+      "id": "http-pandoc-handler-trigger",
+      "trigger_type": "http",
+      "trigger_config": {
+        "component": "pandoc-handler",
+        "executor": {
+          "type": "wagi"
+        },
+        "route": "/service/pandoc-handler"
+      }
+    },
     {
       "id": "http-static-file-trigger",
       "trigger_type": "http",
@@ -71,7 +102,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "./app_data/components/http_general_js_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_general_js_handler_component.wasm"
       }
     },
     {
@@ -79,12 +110,12 @@
       "metadata": {
         "build": {},
         "local_llm_models": {
-          "local/DeepSeek-R1": "./app_data/ai-models/huggingface/lmstudio-community/DeepSeek-R1-Distill-Qwen-7B-GGUF/DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf"
+          "local/DeepSeek-R1": "../../ai-models/huggingface/lmstudio-community/DeepSeek-R1-Distill-Qwen-7B-GGUF/DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf"
         }
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "./app_data/components/http_llm_local_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_local_llm_chat_handler_component.wasm"
       }
     },
     {
@@ -97,7 +128,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "./app_data/components/http_ollama_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_ollama_handler_component.wasm"
       }
     },
     {
@@ -107,7 +138,27 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "../../devs/wasi/cli-python-code-handler-component/cli-python-code-handler-component.wasm"
+        "source": "../../components2/wasm32-wasip1/release/cli-python-code-handler-component.wasm"
+      }
+    },
+    {
+      "id": "http-graphviz-handler",
+      "metadata": {
+        "build": {}
+      },
+      "source": {
+        "content_type": "application/wasm",
+        "source": "../../components2/wasm32-wasip1/release/http_graphviz_handler_component.wasm"
+      }
+    },
+    {
+      "id": "pandoc-handler",
+      "metadata": {
+        "build": {}
+      },
+      "source": {
+        "content_type": "application/wasm",
+        "source": "../../components2/wasm32-wasip1/release/cli-pandoc-handler-component.wasm"
       }
     },
     {
@@ -117,7 +168,7 @@
       },
       "source": {
         "content_type": "application/wasm",
-        "source": "./app_data/components/http_static_file_handler_component.wasm"
+        "source": "../../target/wasm32-wasip1/release/http_static_file_handler_component.wasm"
       }
     }
   ]

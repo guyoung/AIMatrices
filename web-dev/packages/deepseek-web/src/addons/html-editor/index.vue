@@ -39,9 +39,6 @@ import { computed, defineProps, ref, onMounted, watch, nextTick } from 'vue'
 
 import { Codemirror } from 'vue-codemirror'
 import { markdown } from '@codemirror/lang-markdown'
-import IframeResizer from '@iframe-resizer/vue/sfc'
-
-
 
 interface Props {
     visible: boolean,
@@ -77,9 +74,7 @@ onMounted(async () => {
     codeRef.value = props.code
 
     nextTick(() => {
-        const previewContainer = document.querySelector('.v-card-text');
-
-        console.log(previewContainer)
+        const previewContainer = document.querySelector('.v-card-text');   
 
         resizeObserver.observe(previewContainer);
 
@@ -133,9 +128,6 @@ const resizeObserver = new ResizeObserver((entries) => {
 
 /***
 const adjustHeight = () => {
-
-    console.log(previewContainer.value.parentNode.offsetHeight)
-
     if (previewContainer.value && previewContainer.value.parentNode && previewContainer.value.parentNode.offsetHeight) {
         let height = previewContainer.value.parentNode.offsetHeight - 32
 

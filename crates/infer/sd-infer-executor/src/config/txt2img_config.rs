@@ -21,13 +21,19 @@ pub struct Txt2imgConfig {
     #[builder(default = "3.5")]
     pub guidance: f32,
 
-    /// Image height, in pixel space (default: 512)
-    #[builder(default = "512")]
-    pub height: i32,
+    /// eta in DDIM, only for DDIM and TCD (default:0)
+    #[builder(default = "0.0")]
+    pub eta: f32,
 
     /// Image width, in pixel space (default: 512)
     #[builder(default = "512")]
     pub width: i32,
+
+    /// Image height, in pixel space (default: 512)
+    #[builder(default = "512")]
+    pub height: i32,
+
+
 
     /// Sampling-method (default: EULER_A)
     #[builder(default = "SampleMethod::EULER_A")]

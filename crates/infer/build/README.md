@@ -10,6 +10,8 @@ cargo run --release --bin simple -- --prompt "The way to kill a linux process is
 
 ## whisper-rs
 
+commit: 10c6501bd05a697e014f1bee3a84e5664290c489 2025-3-9
+
 git clone https://github.com/tazz4843/whisper-rs.git
 
 
@@ -21,11 +23,11 @@ cargo run --example audio_transcription
 
 ## stable-diffusion.cpp
 
-commit: d9b5942d988ee36c2f2d8a2d79820e90110947c3
+commit: 10c6501bd05a697e014f1bee3a84e5664290c489 2025-3-9
 
 git clone https://github.com/leejet/stable-diffusion.cpp.git
 
-git checkout d9b5942d988ee36c2f2d8a2d79820e90110947c3
+git checkout 10c6501bd05a697e014f1bee3a84e5664290c489
 
 
 mkdir build
@@ -37,13 +39,11 @@ sd -m F:\vol_ai\ai-models\huggingface\runwayml\stable-diffusion-v1-5\v1-5-pruned
 
 ## llama.cpp
 
-commit: dc39012cbaf8752fabecaeb60af78ccdd1dfb73b	2024-11-24
-
-commit: 64ed2091b24b2f9747148fdf49a34ed5938762c3	2024-12-2
+commit: 06c2b1561d8b882bc018554591f8c35eb04ad30e	2025-3-1
 
 git clone https://github.com/ggerganov/llama.cpp.git
 
-git checkout dc39012cbaf8752fabecaeb60af78ccdd1dfb73b
+git checkout 06c2b1561d8b882bc018554591f8c35eb04ad30e
 
 llama.cpp-CMakeLists.txt
 
@@ -54,19 +54,21 @@ cmake --build . --config Release
 
 ## whisper.cpp
 
+commit:  c98681e6d5f4b51fd49bf9868cc9fc27b48097ed 2025-02-28
+
 git clone https://github.com/ggerganov/whisper.cpp
 
-commit:  77e3e4a09051b4d6afa64e0430492e4df7f76f1c 2024-11-25
 
-git checkout 77e3e4a09051b4d6afa64e0430492e4df7f76f1c
+
+git checkout c98681e6d5f4b51fd49bf9868cc9fc27b48097ed
 
 
 ## ggml
 
-commit: 6fcbd60bc72ac3f7ad43f78c87e535f2e6206f58  2024-11-24
+commit: ff9052988b76e137bcf92bb335733933ca196ac0  2025-02-28
 
 
 git clone https://github.com/ggerganov/ggml.git
 
-git checkout 6fcbd60bc72ac3f7ad43f78c87e535f2e6206f58
+git checkout ff9052988b76e137bcf92bb335733933ca196ac0
 

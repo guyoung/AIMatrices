@@ -53,7 +53,8 @@ export default {
 
     newChat: '新的聊天',
     thinking: '思考中...',
-    download: '下载'
+    menuExport: '导出..',
+    menuEditMarkdown: "编辑(Markdown)"
   },
   setting: {
     setting: '设置',

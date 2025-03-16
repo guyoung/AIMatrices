@@ -206,7 +206,7 @@ async fn infer_inner(
 ) -> Result<llm_infer::InferencingResult, llm_infer::Error> {
     let context_config = LlamaContextConfig::default();
 
-    let context = LlamaContext::new(model_instance, &context_config, false)
+    let mut context = LlamaContext::new(model_instance, &context_config, false)
         .map_err(|e| llm_infer::Error::RuntimeError(e.to_string()))?;
 
     let mut infer_params = InferencingParams::default();
@@ -241,7 +241,7 @@ async fn infer_chat_inner(
 ) -> Result<llm_infer::InferencingResult, llm_infer::Error> {
     let context_config = LlamaContextConfig::default();
 
-    let context = LlamaContext::new(model_instance, &context_config, false)
+    let mut context = LlamaContext::new(model_instance, &context_config, false)
         .map_err(|e| llm_infer::Error::RuntimeError(e.to_string()))?;
 
     let mut infer_params = InferencingParams::default();

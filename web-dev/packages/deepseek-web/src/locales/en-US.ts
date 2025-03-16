@@ -53,7 +53,8 @@ export default {
 
     newChat: 'New Chat',
     thinking: 'Thinking...',
-    downlaod: 'Download'
+    menuExport: 'Export..',
+    menuEditMarkdown: 'Edit(Markdown)'
   },
   setting: {
     setting: 'Setting',

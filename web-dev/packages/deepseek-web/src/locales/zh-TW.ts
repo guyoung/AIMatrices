@@ -80,7 +80,8 @@ export default {
 
     about: '关于',
     maxTokens: "Max tokens",
-    multiRoundChat: "多轮聊天"
+    menuExport: '导出..',
+    menuEditMarkdown: "编辑(Markdown)"
   },
   store: {
     siderButton: '提示詞商店',

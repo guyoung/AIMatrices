@@ -407,9 +407,9 @@ const covertPromptAppendHistory = (prompt: String) => {
   if (settingStore.multiRoundChat > 1) {
     let start = 0;
 
-    if (chatStore.messages.length > (settingStore.multiRoundChat-1)*2) {
-      start = chatStore.messages.length - (settingStore.multiRoundChat-1)*2
-    }     
+    if (chatStore.messages.length > (settingStore.multiRoundChat - 1) * 2) {
+      start = chatStore.messages.length - (settingStore.multiRoundChat - 1) * 2
+    }
 
     for (let item of chatStore.messages.slice(start)) {
       messages.push({
@@ -526,13 +526,13 @@ onMounted(async () => {
 
   if (chatStore.conversations.length == 0) {
     await chatStore.addConversation({ title: t('chat.newChat'), isEdit: false, seq_num: new Date().getTime() })
-  } 
+  }
 
 
   await activeConversation()
 
   await updateMessages()
- 
+
 
   scrollToBottom()
 
@@ -548,7 +548,7 @@ onUnmounted(() => {
 async function activeConversation() {
   if (!route.params.conversationID) {
     await chatStore.setActiveConversation(chatStore.conversations[0].id)
-  } 
+  }
 
   const filters = chatStore.conversations.filter(x => x.id == chatStore.active);
 
@@ -558,7 +558,7 @@ async function activeConversation() {
     conversationRef.value = chatStore.conversations[0]
   } else {
     conversationRef.value = filters[0]
-  } 
+  }
 }
 
 async function updateMessages() {
@@ -584,10 +584,10 @@ async function updateMessages() {
           </template>
           <template v-else>
             <div>
-              <Message v-for="(item, index) of dataSources" :key="index" :date-time="convertUpdatedDate(item.updated_at)"
-                :text="getTextPart(item.content)" :think="getThinkPart(item.content)" :inversion="item.inversion"
-                :error="item.error" :loading="item.loading" @regenerate="onRegenerate(item)"
-                @delete="handleDelete(item)" />
+              <Message v-for="(item, index) of dataSources" :key="index"
+                :date-time="convertUpdatedDate(item.updated_at)" :text="getTextPart(item.content)"
+                :think="getThinkPart(item.content)" :inversion="item.inversion" :error="item.error"
+                :loading="item.loading" @regenerate="onRegenerate(item)" @delete="handleDelete(item)" />
               <div class="sticky bottom-0 left-0 flex justify-center">
                 <NButton v-if="loadingRef" type="warning" @click="handleStop">
                   <template #icon>

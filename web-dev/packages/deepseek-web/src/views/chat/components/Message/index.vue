@@ -12,6 +12,8 @@ import { copyToClip } from '@/utils/copy'
 
 import MarkdownEditor from '@/addons/markdown-editor/index.vue'
 
+import { fetchPandocHandler } from "@/api"
+
 
 interface Props {
   dateTime?: string
@@ -46,6 +48,7 @@ const messageRef = ref<HTMLElement>()
 const showMarkdownEditor = ref(false)
 
 
+
 const options = computed(() => {
   const common = [
     {
@@ -59,16 +62,42 @@ const options = computed(() => {
       icon: iconRender({ icon: 'ri:delete-bin-line' }),
     },
     {
-      label: 'Markdown',
+      label: t('chat.menuEditMarkdown'),
       key: 'markdown',
       icon: iconRender({ icon: 'ri:markdown-line' }),
-    },   
+    },
 
     {
-      label: `${t('chat.download')}(Markdown)`,
-      key: 'downlaodMarkdown',
+      label: t('chat.menuExport'),
+      key: 'export',
       icon: iconRender({ icon: 'ri:download-line' }),
-    },   
+      children: [{
+        label: 'Markdown',
+        key: 'export-md',
+        icon: iconRender({ icon: 'ri:download-line' }),
+      },
+      {
+        label: 'Html',
+        key: 'export-html',
+        icon: iconRender({ icon: 'ri:download-line' }),
+      },
+      {
+        label: 'Word',
+        key: 'export-docx',
+        icon: iconRender({ icon: 'ri:download-line' }),
+      },
+      {
+        label: 'PowerPoint',
+        key: 'export-pptx',
+        icon: iconRender({ icon: 'ri:download-line' }),
+      },
+      {
+        label: 'Latex',
+        key: 'export-latex',
+        icon: iconRender({ icon: 'ri:download-line' }),
+      },
+      ]
+    },
   ]
 
   if (!props.inversion) {
@@ -82,24 +111,39 @@ const options = computed(() => {
   return common
 })
 
-function handleSelect(key: 'copyText' | 'delete' | 'toggleRenderType' | 'markdown' | 'downlaodMarkdown') {
-  switch (key) {
-    case 'copyText':
-      handleCopy()
+function handleSelect(key: string) {
+  if (key == 'copyText') {
+    handleCopy()
+    return
+  }
+
+  if (key == 'toggleRenderType') {
+    asRawText.value = !asRawText.value
+    return
+  }
+
+  if (key == 'delete') {
+    emit('delete')
+    return
+  }
+
+  if (key == 'markdown') {
+    showMarkdownEditor.value = true
+    return
+  }
+
+  if (key.startsWith("export-")) {
+    let format = key.replace("export-", "")
+
+    if (format == "md") {
+      handleExportMarkdown(props.text)
+
       return
-    case 'toggleRenderType':
-      asRawText.value = !asRawText.value
+    } else {
+      handleExportPandoc(props.text, format)
+
       return
-    case 'delete':
-      emit('delete')
-      return
-    case 'markdown':
-      showMarkdownEditor.value = true
-      return
-    case 'downlaodMarkdown':
-      handleDownloadMarkdown(props.text)
-      return
-   
+    }
   }
 }
 
@@ -118,17 +162,41 @@ async function handleCopy() {
   }
 }
 
-function handleDownloadMarkdown(text: string) {
+function handleExportMarkdown(text: string) {
   const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
 
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "download.md"; 
-  a.click(); 
+  a.download = "export.md";
+  a.click();
 
   URL.revokeObjectURL(url);
+}
+
+async function handleExportPandoc(text: string, format: string) {
+  let filename = "export." + format;
+
+  try {
+
+    let blob = await fetchPandocHandler(filename, text)
+
+    const url = URL.createObjectURL(blob);
+
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+  }
+  catch (error) {
+    console.error("Error:", error);
+
+  }
 }
 
 
@@ -154,7 +222,7 @@ function handleDownloadMarkdown(text: string) {
       </div>
       <div class="flex items-end gap-1 mt-2" :class="[inversion ? 'flex-row-reverse' : 'flex-row']">
         <TextComponent ref="textRef" :inversion="inversion" :error="error" :text="text" :loading="loading"
-          :as-raw-text="asRawText"/>
+          :as-raw-text="asRawText" />
         <div class="flex flex-col">
           <button v-if="!inversion"
             class="mb-2 transition text-neutral-300 hover:text-neutral-800 dark:hover:text-neutral-300"
@@ -171,6 +239,7 @@ function handleDownloadMarkdown(text: string) {
       </div>
     </div>
   </div>
-  <MarkdownEditor :code="props.text" v-model:visible="showMarkdownEditor" />
+  <MarkdownEditor :code="props.text" v-if="showMarkdownEditor" v-model:visible="showMarkdownEditor" />
+
 
 </template>

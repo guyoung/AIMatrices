@@ -6,15 +6,11 @@ edition = "2021"
 
 [dependencies]
 
-llama-cpp-2-v1 = { path = "llama-cpp-2-v1", optional = true }
-llama-cpp-2-v2 = { path = "llama-cpp-2-v2", optional = true }
 
+llama-cpp-2 = { path = "llama-cpp-2"}
+llama-cpp-sys-2 = { path = "llama-cpp-2/sys" }
 
 anyhow = { workspace = true }
 rand = { workspace = true }
 encoding_rs = { workspace = true }
 
-[features]
-
-v1 = ["llama-cpp-2-v1"]
-v2 = ["llama-cpp-2-v2"]

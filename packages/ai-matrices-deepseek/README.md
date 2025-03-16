@@ -17,10 +17,13 @@ AIMatrices DeepSeek is an open source DeepSeek localization deployment tool base
 
 ## What's new
 
-* 2025-02-22
-  * Added multi-round dialogue feature; Added the feature of saving dialogue records to the local database; Added Mermaid chart preview and export feature;Added Markdwon editing and preview feature
+* 2025-03-15
+  * Added features to export Markdown, Html, Word, PowerPoint, Latex format files; Added Graphviz editing and preview feature
 * 2025-02-28
   * Added Ollama Api interface call feature; Added Python code directly run and edit feature; Added Html code directly browse and edit feature
+* 2025-02-22
+  * Added multi-round dialogue feature; Added the feature of saving dialogue records to the local database; Added Mermaid chart preview and export feature;Added Markdwon editing and preview feature
+
 
 ## Features
 

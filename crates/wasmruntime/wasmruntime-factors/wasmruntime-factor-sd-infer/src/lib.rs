@@ -96,18 +96,18 @@ impl Factor for SdInferFactor {
     }
 }
 
-/// The application state for the LLM factor.
+/// The application state for the SD factor.
 pub struct AppState {
     engine: Arc<Mutex<dyn SdInferEngine>>,
     component_allowed_models: HashMap<String, Arc<HashSet<String>>>,
 }
 
-/// The instance state for the LLM factor.
+/// The instance state for the SD factor.
 pub struct InstanceState {
     engine: Arc<Mutex<dyn SdInferEngine>>,
     pub allowed_models: Arc<HashSet<String>>,
 }
 
-/// The runtime configuration for the LLM factor.
+/// The runtime configuration for the SD factor.
 
 impl SelfInstanceBuilder for InstanceState {}
